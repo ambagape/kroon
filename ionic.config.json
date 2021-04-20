@@ -1,0 +1,7 @@
+{
+  "name": "kroon-bestel-app-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
