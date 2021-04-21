@@ -5,23 +5,25 @@ import { CommonModule } from "@angular/common";
 import { LoginComponent } from "./login/login.component";
 import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-// import { CartPageComponent } from "./cart/cart.component";
+import { CartComponent } from "./cart/cart.component";
+import {IonicModule} from "@ionic/angular";
 // import { ScanPageComponent } from "./scanner/scanner.component";
 // import { DetailPageComponent } from "./detail/detail.component";
 
 @NgModule({
     schemas: [ NO_ERRORS_SCHEMA ],
-    imports: [
-        CommonModule,
-        BrowserModule,
-        FormsModule,
-        ReactiveFormsModule
-        // ComponentsModule,
-    ],
+  imports: [
+    CommonModule,
+    BrowserModule,
+    FormsModule,
+    ReactiveFormsModule,
+    IonicModule,
+    // ComponentsModule,
+  ],
     declarations: [
         // HomePageComponent,
-        // LoginPageComponent,
-        // CartPageComponent,
+        LoginComponent,
+        // CartComponent,
         // ScanPageComponent,
         // DetailPageComponent
     ]

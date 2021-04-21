@@ -32,7 +32,7 @@ export class AuthRepository {
                 }
             }),
             catchError((response) => {
-                console.log("Something went wrong while logging in.")
+                console.log("Something went wrong while logging in.", response)
                 return of(null);
             })
         )

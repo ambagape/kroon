@@ -24,12 +24,12 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     const isLoggedIn = await this.authRepository.isLoggedIn()
 
-    console.log(isLoggedIn)
+    console.log(isLoggedIn + 'foo')
     if (isLoggedIn) {
-      this.router.navigate(['cart']);
+      await this.router.navigate(['cart']);
     } else {
       console.log('hey')
-      this.router.navigate(['login']);
+      await this.router.navigate(['login']);
     }
   }
 
