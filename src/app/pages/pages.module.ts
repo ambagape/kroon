@@ -23,7 +23,7 @@ import {IonicModule} from "@ionic/angular";
     declarations: [
         // HomePageComponent,
         LoginComponent,
-        // CartComponent,
+        CartComponent,
         // ScanPageComponent,
         // DetailPageComponent
     ]

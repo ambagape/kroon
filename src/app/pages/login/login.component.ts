@@ -9,6 +9,8 @@ import { AuthRepository } from '../../repositories/auth/auth.repository';
 // import { Toasty } from 'nativescript-toasty';
 // import * as appversion from "nativescript-appversion";
 // import {Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { ToastController } from '@ionic/angular';
+
 
 
 
@@ -25,8 +27,8 @@ export class LoginComponent {
   // private form: FormGroup;
   //
   // public response;
-  public email = '';
-  public password = '';
+  email: string;
+  password: string;
 
 
   // public version: string = "0.0.0";
@@ -35,53 +37,61 @@ export class LoginComponent {
     // private page: Page,
     private router: Router,
     private authRepository: AuthRepository,
+    public toastController: ToastController
     // private activityService: ActivityService
   ) {
 
     // this.page.actionBarHidden = true;
-    const isLoggedIn = this.authRepository.isLoggedIn();
 
-    if (isLoggedIn) {
-      this.router.navigate(['cart']);
-    } else {
-      console.log('Niet ingelogd');
-      // this.form = this.formBuilder.group({
-      //   email: ['', Validators.required],
-      //   password: ['', Validators.required],
-      // });
-    }
 
     // appversion.getVersionName().then((v: string) => {
     //   this.version = v;
     // });
   }
 
+  // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
+  async ngOnInit() {
+
+    const isLoggedIn = await this.authRepository.isLoggedIn();
+
+    if (isLoggedIn) {
+      this.router.navigate(['cart']);
+    } else {
+      this.router.navigate(['login']);
+    }
+  }
+
+  async toast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000
+    });
+    await toast.present();
+  }
+
   login() {
-    const email = 'casper.meijerink@beeproger.com';
-    const password = 'password';
+    const email = this.email;
+    const password = this.password;
 
 
     console.log(email, password);
     if (email && password) {
       // this.activityService.busy();
       this.authRepository.logIn(email, password).subscribe((res) => {
-        console.log(res);
         // this.activityService.done();
         if (res) {
           this.router.navigate(['cart']);
-          // this.router.navigate(['cart'], { clearHistory: true });
         } else {
           console.log('error');
-          // new Toasty({
-          //   text: "Inloggen mislukt.",
-          //   ios: {
-          //     displayShadow: false
-          //   }
-          // }).show();
+          this.toast('Check je gegevens');
         }
       });
+    } else {
+      this.toast('Vul je inloggegevens in');
     }
   }
+
+
 
   // forgotPassword() {
   //   utilsModule.openUrl('https://www.kroon.nl/index.php?route=account/forgotten');

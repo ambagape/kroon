@@ -24,6 +24,7 @@ import { AuthService } from './shared/auth/auth.service';
 // import { BarcodeScanner } from 'nativescript-barcodescanner';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { BrowserModule } from '@angular/platform-browser';
+import {LoginComponent} from "./pages/login/login.component";
 
 
 
@@ -41,6 +42,7 @@ import { BrowserModule } from '@angular/platform-browser';
       RepositoriesModule
   ],
   entryComponents: [
+    LoginComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },

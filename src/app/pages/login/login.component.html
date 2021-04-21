@@ -1,11 +1,29 @@
-<ion-view>
-  <ion-item>
-    <ion-label>Inloggen</ion-label>
-    <ion-input type="email" ngModel="email"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Wachtwoord</ion-label>
-    <ion-textarea type="password" ngModel="password"></ion-textarea>
-  </ion-item>
-  <button ion-button type="submit" (click)="login()" >Submit</button>
-</ion-view>
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Inloggen</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form>
+    <ion-item lines="full">
+      <ion-label position="floating">E-mail</ion-label>
+      <ion-input type="text" [(ngModel)]="email" [ngModelOptions]="{standalone: true}"></ion-input>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Wachtwoord</ion-label>
+      <ion-input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"></ion-input>
+    </ion-item>
+
+    <ion-row>
+      <ion-col>
+        <ion-button type="submit" color="danger" expand="block" (click)="login()">Log in</ion-button>
+        <a class="small-text">Wachtwoord vergeten</a>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>

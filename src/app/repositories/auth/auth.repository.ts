@@ -44,7 +44,6 @@ export class AuthRepository {
 
     // Moet nog worden aangepast
     async isLoggedIn(): Promise<boolean> {
-        console.log((await Storage.get({ key: 'token'})).value)
-        return (await Storage.get({ key: 'token'})).value !== ('' || null) ;
+        return (await Storage.get({ key: 'token'})).value !== ('' || null);
     }
 }
