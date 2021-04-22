@@ -54,8 +54,19 @@
 
 </ion-view>
 <ion-view>
-  <div style="display: flex; flex-direction: row; justify-content: center">
-    <ion-button expand="block" fill="outline">Bestellen</ion-button>
-    <ion-button size="default">Scan</ion-button>
-  </div>
+<!--  <div style="display: flex; flex-direction: row; justify-content: center">-->
+
+<div style="display: flex; flex-direction: row; width: 95%; margin: 0 auto;">
+  <ion-button icon-start expand="full" color="dark" (click)="presentModal()" style="width: 80%">
+    <ion-icon name="cart" style="margin-right: 10px" ></ion-icon>
+    Bestellen
+  </ion-button>
+  <ion-button icon-start expand="full" (click)="presentModal()" style="width: 20%">
+    <ion-icon name="barcode-outline"></ion-icon>
+  </ion-button>
+</div>
+
+<!--      <ion-button expand="full" color="dark" >Bestellen</ion-button>-->
+<!--    <ion-button size="default"  >Scan</ion-button>-->
+<!--  </div>-->
 </ion-view>

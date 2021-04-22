@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
-// import { ProductRepository } from "./product/product.repository";
+import { ProductRepository } from "./product/product.repository";
 import { AuthRepository } from "./auth/auth.repository";
 // import { OrderRepository } from "./order/order.repository";
 
@@ -9,7 +9,7 @@ import { AuthRepository } from "./auth/auth.repository";
         HttpClientModule,
     ],
     providers: [
-        // ProductRepository,
+        ProductRepository,
         AuthRepository,
         // OrderRepository
     ]

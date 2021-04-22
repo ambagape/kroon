@@ -82,6 +82,9 @@ export class LoginComponent {
         if (res) {
           this.router.navigate(['cart']);
         } else {
+          console.log('-----')
+          console.log(res);
+          console.log('-------')
           console.log('error');
           this.toast('Check je gegevens');
         }
