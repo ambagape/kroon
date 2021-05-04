@@ -27,15 +27,16 @@ export class ProductRepository {
   productForEan(ean: string): Observable<ProductResponse> {
     return this.productService.productForEan(ean).pipe(
       map((response: any) => {
-        if (response) {
-          if (response.success != 1) {
+        response = JSON.parse(response.data);
+        if (response && response.data) {
+          if (response.success !== 1) {
             return {
               status: ProductResponseStatus.Error,
               product: null,
               ean
             };
           }
-          if (response.data.length == 1) {
+          if (response.data.length === 1) {
             const product: Product = response.data[0];
             return {
               status: ProductResponseStatus.Success,
@@ -51,7 +52,7 @@ export class ProductRepository {
         }
       }),
       catchError((response) => {
-        console.log("Something went wrong while getting the product.")
+        console.log("Something went wrong while getting the product." + response.message)
         return of({
           status: ProductResponseStatus.Offline,
           product: null,
@@ -60,7 +61,6 @@ export class ProductRepository {
       })
     )
   }
-
 
   // MARK - Cart methods
 

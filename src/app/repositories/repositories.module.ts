@@ -11,6 +11,7 @@ import { AuthRepository } from "./auth/auth.repository";
     providers: [
         ProductRepository,
         AuthRepository,
+
         // OrderRepository
     ]
 })

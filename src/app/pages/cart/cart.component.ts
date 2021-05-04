@@ -7,12 +7,24 @@ import { AuthRepository } from '../../repositories/auth/auth.repository';
 // import { BarcodeScanner } from "nativescript-barcodescanner";
 import { CartItem } from '../../shared/product/cartitem.model';
 import { ProductRepository } from '../../repositories/product/product.repository';
-import {Router} from "@angular/router";
-import {ModalController} from "@ionic/angular";
-import {OrderModalComponent} from "../order-modal/order-modal.component";
+import {Router} from '@angular/router';
+import {ModalController} from '@ionic/angular';
+import {OrderModalComponent} from '../../components/order-modal/order-modal.component';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+// import '@capacitor-community/http';
+import { Plugins } from '@capacitor/core';
+import {ProductModalComponent} from '../../components/product-modal/product-modal.component';
+import {HTTP} from "@ionic-native/http/ngx";
+import {HttpHeaders} from "@angular/common/http";
+import {from} from "rxjs";
+import {NativeStorage} from "@ionic-native/native-storage/ngx";
 // import { RouterExtensions } from 'nativescript-angular/router';
 // import { SearchBar } from "tns-core-modules/ui/search-bar";
 // import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
+import { Storage } from '@ionic/storage-angular';
+import { Network } from '@ionic-native/network/ngx';
+
+
 
 @Component({
   selector: 'app-cart',
@@ -25,8 +37,14 @@ export class CartComponent implements OnDestroy, OnInit {
   showOrderModal = false;
   showSearch = false;
   public noSearchResults: boolean;
-  public filterText: string = '';
-  private _cartItems: CartItem[];
+  public filterText = '';
+  private _cartItems: CartItem[] = [];
+  private _scannedCartItem: CartItem;
+  private search: string = null;
+
+
+  productInformation=null;
+  barCode: any;
   // private iqKeyboard: IQKeyboardManager;
 
   constructor(
@@ -35,9 +53,14 @@ export class CartComponent implements OnDestroy, OnInit {
     private productRepository: ProductRepository,
     private authRepository: AuthRepository,
     private activityService: ActivityService,
-    public modalController: ModalController
+    public modalController: ModalController,
+  public barcodeScanner: BarcodeScanner,
+    private http: HTTP,
+    private storage: Storage,
 
   ) {
+
+
     // this.page.actionBarHidden = true;
 
     // if (isIOS) {
@@ -48,51 +71,82 @@ export class CartComponent implements OnDestroy, OnInit {
     // }
   }
 
-  ngOnInit() {
+  onSearchChange(args) {
+    const filtered = this._cartItems.filter(item => item.product.name.includes(args.target.value))
+    this._cartItems = filtered;
+  }
+
+ async ngOnInit() {
+   await this.storage.create();
+
+   const cartItems = await this.storage.get('cartItems');
+
+   if(cartItems) {
+     this._cartItems = cartItems;
+   }
+
+   // let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+   //   console.log('network was disconnected :-(');
+   // });
+
+
     // startMonitoring((type) => {
     //   if ((type === connectionType.mobile || type === connectionType.wifi) && this.productRepository.hasOfflineProducts) {
-    //     this.productRepository.updateOfflineProducts();
+        this.productRepository.updateOfflineProducts();
     //   }
 
-      const i = this._cartItems = this.productRepository.cartItems;
-        console.log(i)
-      // });
+
+    // });
       // this.productRepository.cartItems.on("change", (result) => {
       //   if (result.action === "add" || "splice") {
       //     this._cartItems = result.object.get('_array');
       //   }
       // });
     // });
+
+    // const headers = new HttpHeaders();
+    // headers.append('Content-Type', 'application/json');
+    // headers.append('Accept', 'application/json');
+
+
+    // this.http.get(`https://app.kroon.nl/api/product/ean/X362240`, {},     {}).then(res => {
+    //   console.log(JSON.stringify(res.data))
+    // });
+
   }
+
+
 
   ngOnDestroy() {
     // stopMonitoring();
   }
 
-  // order() {
-  //   if (this.canOrder) {
-  //     this.showOrderModal = true;
-  //   }
-  // }
+  async openBarCodeScanner() {
+    await this.barcodeScanner.scan().then(async res => {
+      await this.productRepository.productForEan(res.text).subscribe( async (productResponse) => {
+        await this.activityService.busy();
+        const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, res.text);
 
-  // scan() {
-  //   if (isIOS) {
-  //     this.router.navigate(['scan'], {
-  //       transition: {
-  //         name: 'slideTop'
-  //       }
-  //     });
-  //   } else {
-  //     this.handleScanning();
-  //   }
-  // }
+        const modal = await this.modalController.create({
+          component: ProductModalComponent,
+          componentProps: {
+            cartItem
+          }
+        });
 
-  // modalClosed() {
-  //   this._scannedCartItem = null;
-  //   if (isAndroid) {
-  //     this.handleScanning();
-  //   }
-  // }
+        modal.onDidDismiss().then((cartItem: any) => {
+          if(cartItem) {
+            this._cartItems.push(cartItem.data.data);
+            this.storage.set('cartItems', this._cartItems);
+            this.activityService.done();
+          }
+        });
+
+        return await modal.present();
+      });
+
+      });
+  }
 
   orderModalClosed() {
     this.showOrderModal = false;
@@ -101,9 +155,6 @@ export class CartComponent implements OnDestroy, OnInit {
   logOut() {
     this.authRepository.logOut();
     this.router.navigate(['login']);
-  }
-
-  searchQueryChanged(args) {
   }
 
   // public onSubmit(args) {
@@ -161,7 +212,8 @@ export class CartComponent implements OnDestroy, OnInit {
   //       console.log(error);
   //     });
   // }
-  async presentModal() {
+
+  async presentOrderModal() {
     const modal = await this.modalController.create({
       component: OrderModalComponent,
       cssClass: 'my-custom-class'

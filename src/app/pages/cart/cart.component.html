@@ -1,72 +1,47 @@
 
 <ion-view>
-<ion-toolbar color="light">
+<ion-toolbar>
   <ion-buttons slot="primary" (click)="logOut()">
     <img src="assets/logout.png" width="30px" height="30px" alt="">
   </ion-buttons>
-  <ion-title>Logo van Kroon</ion-title>
+  <ion-img src="assets/kroonlogo.png" style="width: 45%"></ion-img>
 </ion-toolbar>
-  <ion-toolbar color="dark">
+  <ion-toolbar color="primary">
     <ion-buttons slot="primary">
-      <img src="assets/androidsearch.png" width="30px" height="30px" alt="">
+      <img src="assets/androidsearch.png" width="30px" height="30px" (click)="showSearch = !showSearch">
     </ion-buttons>
     <ion-title>Gescande artikelen</ion-title>
   </ion-toolbar>
-  <ion-toolbar color="light">
+  <ion-toolbar color="light" *ngIf="showSearch" style="width: 90%; margin: 0 auto; ">
     <ion-buttons slot="primary">
       <img src="assets/search.png" width="30px" height="30px" alt="">
     </ion-buttons>
-    <ion-input placeholder="Zoeken..."></ion-input>
+    <ion-input placeholder="Zoeken..." [(ngModel)]="search" (input)="onSearchChange($event)"></ion-input>
   </ion-toolbar>
 
-  <ion-list>
+  <ion-list *ngFor="let item of cartItems">
 
     <ion-item lines="full">
       <ion-avatar slot="start">
-        <img src="assets/search.png">
+        <img src="{{ item.product.image }}">
       </ion-avatar>
-      <ion-label slot="start">
-        <h3>Accuboor</h3>
-      </ion-label>
-      <ion-input slot="end" value="1" type="number" style="max-width: 20% !important; border: 1px solid black;"></ion-input>
+<!--      <ion-label slot="start">-->
+        <p>{{ item.product.name }}</p>
+<!--      </ion-label>-->
+      <ion-label slot="end">{{ item.quantity }}</ion-label>
     </ion-item>
 
-    <ion-item lines="full">
-      <ion-avatar slot="start">
-        <img src="assets/search.png">
-      </ion-avatar>
-      <ion-label slot="start">
-        <h3>Accuboor</h3>
-      </ion-label>
-      <ion-input slot="end" value="1" type="number" style="max-width: 20% !important; border: 1px solid black;"></ion-input>
-    </ion-item>
-
-    <ion-item lines="full">
-      <ion-avatar slot="start">
-        <img src="assets/search.png">
-      </ion-avatar>
-      <ion-label slot="start">
-        <h3>Accuboor</h3>
-      </ion-label>
-      <ion-input slot="end" value="1" type="number" style="max-width: 20% !important; border: 1px solid black;"></ion-input>
-    </ion-item>
   </ion-list>
 
 </ion-view>
 <ion-view>
-<!--  <div style="display: flex; flex-direction: row; justify-content: center">-->
-
-<div style="display: flex; flex-direction: row; width: 95%; margin: 0 auto;">
-  <ion-button icon-start expand="full" color="dark" (click)="presentModal()" style="width: 80%">
-    <ion-icon name="cart" style="margin-right: 10px" ></ion-icon>
-    Bestellen
-  </ion-button>
-  <ion-button icon-start expand="full" (click)="presentModal()" style="width: 20%">
-    <ion-icon name="barcode-outline"></ion-icon>
-  </ion-button>
-</div>
-
-<!--      <ion-button expand="full" color="dark" >Bestellen</ion-button>-->
-<!--    <ion-button size="default"  >Scan</ion-button>-->
-<!--  </div>-->
+  <div style="display: flex; flex-direction: row; width: 95%; margin: 0 auto;">
+    <ion-button icon-start expand="full" color="dark" (click)="presentOrderModal()" style="width: 80%">
+      <ion-icon name="cart" style="margin-right: 10px" ></ion-icon>
+      Bestellen
+    </ion-button>
+    <ion-button icon-start expand="full" (click)="openBarCodeScanner()" style="width: 20%">
+      <ion-icon name="barcode-outline"></ion-icon>
+    </ion-button>
+  </div>
 </ion-view>

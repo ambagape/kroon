@@ -26,7 +26,8 @@ import {IonicModule} from "@ionic/angular";
         CartComponent,
         // ScanPageComponent,
         // DetailPageComponent
-    ]
+    ],
+
 })
 
 export class PagesModule { }

@@ -9,7 +9,8 @@ import { AuthRepository } from '../app/repositories/auth/auth.repository';
 @Component({
   // moduleId: module.id,
   selector: 'app-root',
-  templateUrl: 'app.component.html'
+  templateUrl: 'app.component.html',
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
 
@@ -21,13 +22,13 @@ export class AppComponent implements OnInit {
 
   }
 
-  async ngOnInit() {
-    const isLoggedIn = await this.authRepository.isLoggedIn();
+  ngOnInit() {
+    const isLoggedIn = this.authRepository.isLoggedIn;
 
     if (isLoggedIn) {
-      await this.router.navigate(['cart']);
+      this.router.navigate(['cart']);
     } else {
-      await this.router.navigate(['login'],  { replaceUrl: true });
+      this.router.navigate(['login'],  { replaceUrl: true });
     }
   }
 

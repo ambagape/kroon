@@ -5,13 +5,15 @@ import { AuthService } from '../../shared/auth/auth.service';
 // import { setString, getString, remove } from 'tns-core-modules/application-settings/application-settings';
 import { Plugins } from '@capacitor/core';
 
-const { Storage } = Plugins;
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
+
 
 @Injectable()
 export class AuthRepository {
 
     constructor(
-        private authService: AuthService
+        private authService: AuthService,
+        private nativeStorage: NativeStorage
     ) {
 
     }
@@ -20,12 +22,22 @@ export class AuthRepository {
         return this.authService.logIn(email, password).pipe(
             map((response: any) => {
                 console.log('hier')
+              console.log(JSON.stringify(response.data) + 'login')
 
                 if (response && response.success === true) {
+                  console.log(response.data.token + ' foo')
 
-                    Storage.set({ key: 'token', value: response.data.token });
-                    Storage.set({ key: 'email', value: email});
-                    console.log(Storage.get({key: 'token' }));
+                  this.nativeStorage.setItem('token', response.data.token);
+                  this.nativeStorage.setItem('email', email);
+
+
+                  // this.nativeStorage.getItem('token').then(token => {
+                  //   console.log(token + ' Token')
+                  // })
+
+                  // Storage.set({ key: 'token', value: response.data.token });
+                    // Storage.set({ key: 'email', value: email});
+                    // console.log(Storage.get({key: 'token' }).then(res => { console.log(res + ' Hallo') }));
                     return of(true);
                 } else {
                     return of(false);
@@ -39,11 +51,12 @@ export class AuthRepository {
     }
 
     logOut() {
-        Storage.remove({ key: 'token' });
+      this.nativeStorage.remove('token');
+        // Storage.remove({ key: 'token' });
     }
 
     // Moet nog worden aangepast
-    async isLoggedIn(): Promise<boolean> {
-        return (await Storage.get({ key: 'token'})).value !== ('' || null);
+    isLoggedIn(): boolean {
+       return !!this.nativeStorage.getItem('token');
     }
 }

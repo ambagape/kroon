@@ -14,6 +14,11 @@ import { AuthService } from './shared/auth/auth.service';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { BrowserModule } from '@angular/platform-browser';
 import {LoginComponent} from "./pages/login/login.component";
+import { HTTP } from '@ionic-native/http/ngx';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
+import { NativeStorage } from '@ionic-native/native-storage/ngx';
+import {IonicStorageModule} from "@ionic/storage-angular";
+
 
 
 
@@ -27,9 +32,11 @@ import {LoginComponent} from "./pages/login/login.component";
       PagesModule,
       BrowserModule,
       IonicModule.forRoot(),
+      IonicStorageModule.forRoot(),
       // ComponentsModule,
       ServicesModule,
-      RepositoriesModule
+
+    RepositoriesModule
   ],
   entryComponents: [
     LoginComponent
@@ -37,6 +44,9 @@ import {LoginComponent} from "./pages/login/login.component";
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     AuthService,
+    HTTP,
+    BarcodeScanner,
+    NativeStorage,
   ],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA],

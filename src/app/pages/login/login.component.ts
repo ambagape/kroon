@@ -10,6 +10,8 @@ import { AuthRepository } from '../../repositories/auth/auth.repository';
 // import * as appversion from "nativescript-appversion";
 // import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
+import {HttpHeaders} from "@angular/common/http";
+import {HTTP} from "@ionic-native/http/ngx";
 
 
 
@@ -37,7 +39,8 @@ export class LoginComponent {
     // private page: Page,
     private router: Router,
     private authRepository: AuthRepository,
-    public toastController: ToastController
+    public toastController: ToastController,
+    private http: HTTP
     // private activityService: ActivityService
   ) {
 
@@ -52,12 +55,21 @@ export class LoginComponent {
   // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
   async ngOnInit() {
 
+
+    const headers = new HttpHeaders();
+    headers.append('Content-Type', 'application/json');
+    headers.append('Accept', 'application/json');
+    headers.append('Authorization', 'Bearer bb007ff2755e935ee6fcc29eeab29ada62df7458')
+    await this.http.get(`https://app.kroon.nl/api/product/ean/314689`, {}, { headers }).then(res => console.log(JSON.stringify(res.data) + ' hey'))
+
     const isLoggedIn = await this.authRepository.isLoggedIn();
+    console.log('IS ingelogd:' + isLoggedIn)
 
     if (isLoggedIn) {
-      this.router.navigate(['cart']);
+      console.log('Is ingelogd' + isLoggedIn)
+      await this.router.navigate(['cart']);
     } else {
-      this.router.navigate(['login']);
+      await this.router.navigate(['login']);
     }
   }
 
@@ -69,21 +81,23 @@ export class LoginComponent {
     await toast.present();
   }
 
-  login() {
+  async login() {
     const email = this.email;
     const password = this.password;
+
+    const isLoggedIn = await this.authRepository.isLoggedIn();
+    console.log('IS ingelogd:' + isLoggedIn)
 
 
     console.log(email, password);
     if (email && password) {
       // this.activityService.busy();
-      this.authRepository.logIn(email, password).subscribe((res) => {
+      await this.authRepository.logIn(email, password).subscribe((res) => {
         // this.activityService.done();
         if (res) {
           this.router.navigate(['cart']);
         } else {
           console.log('-----')
-          console.log(res);
           console.log('-------')
           console.log('error');
           this.toast('Check je gegevens');
