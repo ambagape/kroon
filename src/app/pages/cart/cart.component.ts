@@ -61,9 +61,9 @@ export class CartComponent implements OnDestroy,  OnInit {
 
   ) {
 
-    this.storage.get('cartItems').then(res => {
-      this._cartItems = res;
-    })
+    // this.storage.get('cartItems').then(res => {
+    //   this._cartItems = res;
+    // })
 
     // this._cartItems = this.productRepository.cartItems;
 
@@ -91,9 +91,12 @@ async ngOnInit () {
 
 
 
-  // this.productRepository.readCartFromDisk().then(res => {
-  //   this._cartItems = res
-  // });
+  this.storage.get('cartItems').then(res => {
+    if(res) {
+      this._cartItems = res;
+
+    }
+  })
 
 
 

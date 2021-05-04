@@ -26,7 +26,7 @@ export class ProductRepository implements OnInit{
     private storage: Storage,
     private router: Router
   ) {
-     this.storage.create();
+     // this.storage.create();
       this.readCartFromDisk();
 
 
@@ -88,8 +88,10 @@ export class ProductRepository implements OnInit{
    */
   private findItemInCart(id: number): CartItem {
 
+    console.log(JSON.stringify(this._cartItems))
     const filtered = this.cartItems.filter((cartItem) => {
-      return cartItem.product && id == cartItem.product.id;
+      console.log('Filter', cartItem)
+      return cartItem.product && id === cartItem.product.id;
     });
     if (filtered.length) {
       return filtered[0];
@@ -119,6 +121,7 @@ export class ProductRepository implements OnInit{
 
   indexOfItemInCartByEan(ean: string): number {
     const filtered = this.cartItems.filter((cartItem) => {
+
       return ean == cartItem.ean;
     });
     if (filtered.length) {
@@ -141,7 +144,7 @@ export class ProductRepository implements OnInit{
 
         const i = this.indexOfItemInCartByEan(item.ean);
         const old = this._cartItems[i];
-        this._cartItems[i] = { ...old, quantity: quantity };
+        this._cartItems[i] =  { ...old, quantity: quantity };
 
       } else {
 
@@ -165,8 +168,8 @@ export class ProductRepository implements OnInit{
     }
     // Send request to write the cart to disk.
     this.writeCartToDisk();
+    window.location.reload();
 
-    window.location.reload()
   }
 
   removeItemFromCart(item: CartItem) {
@@ -328,7 +331,10 @@ export class ProductRepository implements OnInit{
   async readCartFromDisk() {
 
     await this.storage.get('cartItems').then(response => {
-      this._cartItems = response;
+      if(response) {
+        this._cartItems = response;
+      }
+
     });
    // .then(response => {
    //   console.log(JSON.stringify(response) + 'hallo jeroen')
