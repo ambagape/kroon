@@ -38,7 +38,7 @@ export class CartComponent implements OnDestroy, OnInit {
   showSearch = false;
   public noSearchResults: boolean;
   public filterText = '';
-  private _cartItems: CartItem[];
+  private _cartItems: CartItem[] = [];
   private _scannedCartItem: CartItem;
   private search: string = null;
 
@@ -83,7 +83,7 @@ export class CartComponent implements OnDestroy, OnInit {
 
    // this._cartItems = this.productRepository.cartItems;
 
-   // this._cartItems = this.productRepository.cartItems
+   this._cartItems = this.productRepository.cartItems
 
    this.network.onConnect().subscribe(() => {
      if ((this.network.type === 'wifi' || this.network.type === 'mobile') && this.productRepository.hasOfflineProducts) {
@@ -135,6 +135,8 @@ export class CartComponent implements OnDestroy, OnInit {
       await this.productRepository.productForEan(res.text).subscribe( async (productResponse) => {
         await this.activityService.busy();
         const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, res.text);
+        await this.activityService.done();
+
 
         const modal = await this.modalController.create({
           component: ProductModalComponent,

@@ -8,16 +8,16 @@ import { catchError, map } from 'rxjs/operators';
 
 import { ActivityService } from '../../shared/activity/activity.service';
 import { CartItem } from '../../shared/product/cartitem.model';
-import { Injectable } from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import { Product } from '../../shared/product/product.model';
 import { ProductService } from '../../shared/product/product.service';
 import { Storage } from '@ionic/storage-angular';
 
 
 @Injectable()
-export class ProductRepository {
+export class ProductRepository implements OnInit{
 
-  private _cartItems: CartItem[];
+  private _cartItems: CartItem[] = [];
 
   constructor(
     private productService: ProductService,
@@ -26,7 +26,12 @@ export class ProductRepository {
   ) {
 
 
-    // this.readCartFromDisk();
+    this.readCartFromDisk();
+  }
+
+  async ngOnInit() {
+    await this.storage.create();
+
   }
 
   productForEan(ean: string): Observable<ProductResponse> {
@@ -310,12 +315,14 @@ export class ProductRepository {
   // }
 
   private async readCartFromDisk() {
-    await this.storage.create();
 
    await this.storage.get('cartItems').then(response => {
       if(response) {
+        console.log(JSON.stringify(response))
         this._cartItems = response;
         console.log('Succesfully readed')
+      } else {
+        return;
       }
     }).catch(error => {
       console.log('Something went wrong')
