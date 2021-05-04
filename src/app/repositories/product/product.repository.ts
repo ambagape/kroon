@@ -12,6 +12,7 @@ import {Injectable, OnInit} from '@angular/core';
 import { Product } from '../../shared/product/product.model';
 import { ProductService } from '../../shared/product/product.service';
 import { Storage } from '@ionic/storage-angular';
+import {Router} from "@angular/router";
 
 
 @Injectable()
@@ -22,10 +23,12 @@ export class ProductRepository implements OnInit{
   constructor(
     private productService: ProductService,
     private activityService: ActivityService,
-    private storage: Storage
+    private storage: Storage,
+    private router: Router
   ) {
      this.storage.create();
       this.readCartFromDisk();
+
 
   }
 
@@ -76,6 +79,7 @@ export class ProductRepository implements OnInit{
   // MARK - Cart methods
 
   get cartItems(): CartItem[] {
+
     return this._cartItems;
   }
 
@@ -162,6 +166,7 @@ export class ProductRepository implements OnInit{
     // Send request to write the cart to disk.
     this.writeCartToDisk();
 
+    window.location.reload()
   }
 
   removeItemFromCart(item: CartItem) {
@@ -323,7 +328,7 @@ export class ProductRepository implements OnInit{
   async readCartFromDisk() {
 
     await this.storage.get('cartItems').then(response => {
-      return response;
+      this._cartItems = response;
     });
    // .then(response => {
    //   console.log(JSON.stringify(response) + 'hallo jeroen')

@@ -61,8 +61,9 @@ export class CartComponent implements OnDestroy,  OnInit {
 
   ) {
 
-    this._cartItems = this.productRepository.cartItems
-    console.log('Dit is de cart')
+    this.storage.get('cartItems').then(res => {
+      this._cartItems = res;
+    })
 
     // this._cartItems = this.productRepository.cartItems;
 
@@ -87,9 +88,8 @@ export class CartComponent implements OnDestroy,  OnInit {
 async ngOnInit () {
     console.log('Dit is na de storage')
 
-    this.storage.get('cartItems').then(res => {
-      this._cartItems = res;
-    })
+
+
 
   // this.productRepository.readCartFromDisk().then(res => {
   //   this._cartItems = res
@@ -160,11 +160,7 @@ async ngOnInit () {
         });
 
         // modal.onDidDismiss().then((cartItem: any) => {
-        //   // if(cartItem) {
-        //   //   // this._cartItems.push(cartItem.data.data);
-        //   //   this.storage.set('cartItems', this._cartItems);
-        //   //   this.activityService.done();
-        //   // }
+        //
         // });
 
         return await modal.present();

@@ -7,8 +7,10 @@ const routes: Routes = [
 
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-  { path: 'cart', component: CartComponent,  },
-  // { path: 'scan', component: ScanPageComponent },
+  { path: 'cart', component: CartComponent  },
+  { path: 'refresh', component: CartComponent  },
+
+// { path: 'scan', component: ScanPageComponent },
   // { path: 'detail', component: DetailPageComponent },
 ];
 

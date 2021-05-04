@@ -82,12 +82,13 @@ export class ProductModalComponent implements OnInit {
 
   public addItemToCart() {
     if(this.quantity > 0) {
-      console.log(this.cartItem)
+      // console.log(this.quantity)
       this.productRepository.addItemToCart(this.cartItem, this.quantity);
           this.modalController.dismiss({
             'dismissed': true,
             'data': this.cartItem
           });
+
       // this.closed.emit();
     }
   }
