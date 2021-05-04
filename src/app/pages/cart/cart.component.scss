@@ -2,7 +2,6 @@ ion-item {
   --highlight-color-focused: none;
 
   & ion-thumbnail {
-
     & img {
       border: white 5px solid;
       border-radius: 100%;
@@ -16,5 +15,12 @@ ion-item {
     & > p.smaller {
       font-size: x-small;
     }
+  }
+}
+
+ion-header {
+  & item-input {
+    // --background: transparent !important;
+    --background: red;
   }
 }

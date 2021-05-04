@@ -1,23 +1,34 @@
 <ion-header translucent>
   <ion-toolbar>
-    <ion-buttons slot="primary" (click)="logOut()">
-      <img src="assets/logout.png" width="30px" height="30px" alt="">
+    <ion-buttons slot="end" class="ion-margin-end" (click)="logOut()">
+      <img src="assets/logout.png" width="27px" height="27px" alt="">
     </ion-buttons>
-    <ion-img src="assets/kroonlogo.png" style="width: 45%"></ion-img>
+    <ion-img src="assets/kroonlogo.png" class="ion-margin-start" slot="start" style="width: 30%"></ion-img>
   </ion-toolbar>
   <ion-toolbar color="primary">
-    <ion-buttons slot="primary">
-      <img src="assets/androidsearch.png" width="30px" height="30px" (click)="showSearch = !showSearch">
+    <ion-title class="ion-margin-start" slot="start">Gescande artikelen</ion-title>
+    <ion-buttons slot="end" class="ion-margin-end">
+      <img src="assets/androidsearch.png" width="27px" height="27px" (click)="showSearch = !showSearch">
     </ion-buttons>
-    <ion-title>Gescande artikelen</ion-title>
   </ion-toolbar>
   <ion-toolbar color="light" *ngIf="showSearch" style="width: 90%; margin: 0 auto; ">
-    <ion-buttons slot="primary">
-      <img src="assets/search.png" width="30px" height="30px" alt="">
-    </ion-buttons>
-    <ion-input placeholder="Zoeken..." [(ngModel)]="search" (input)="onSearchChange($event)"></ion-input>
+    <ion-input clearInput placeholder="Zoeken..." [(ngModel)]="search" (input)="onSearchChange($event)"></ion-input>
   </ion-toolbar>
 </ion-header>
+
+
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>My Navigation Bar</ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar>
+    <ion-title>Subheader</ion-title>
+  </ion-toolbar>
+</ion-header> -->
 
 <ion-content fullscreen>
 
