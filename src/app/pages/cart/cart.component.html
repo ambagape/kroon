@@ -1,42 +1,47 @@
 
-<ion-view>
-<ion-toolbar>
-  <ion-buttons slot="primary" (click)="logOut()">
-    <img src="assets/logout.png" width="30px" height="30px" alt="">
-  </ion-buttons>
-  <ion-img src="assets/kroonlogo.png" style="width: 45%"></ion-img>
-</ion-toolbar>
-  <ion-toolbar color="primary">
-    <ion-buttons slot="primary">
-      <img src="assets/androidsearch.png" width="30px" height="30px" (click)="showSearch = !showSearch">
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="primary" (click)="logOut()">
+      <img src="assets/logout.png" width="30px" height="30px" alt="">
     </ion-buttons>
-    <ion-title>Gescande artikelen</ion-title>
+    <ion-img src="assets/kroonlogo.png" style="width: 45%"></ion-img>
   </ion-toolbar>
-  <ion-toolbar color="light" *ngIf="showSearch" style="width: 90%; margin: 0 auto; ">
-    <ion-buttons slot="primary">
-      <img src="assets/search.png" width="30px" height="30px" alt="">
-    </ion-buttons>
-    <ion-input placeholder="Zoeken..." [(ngModel)]="search" (input)="onSearchChange($event)"></ion-input>
-  </ion-toolbar>
+    <ion-toolbar color="primary">
+      <ion-buttons slot="primary">
+        <img src="assets/androidsearch.png" width="30px" height="30px" (click)="showSearch = !showSearch">
+      </ion-buttons>
+      <ion-title>Gescande artikelen</ion-title>
+    </ion-toolbar>
+    <ion-toolbar color="light" *ngIf="showSearch" style="width: 90%; margin: 0 auto; ">
+      <ion-buttons slot="primary">
+        <img src="assets/search.png" width="30px" height="30px" alt="">
+      </ion-buttons>
+      <ion-input placeholder="Zoeken..." [(ngModel)]="search" (input)="onSearchChange($event)"></ion-input>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
 
   <p *ngIf="cartItems.length === 0" style="text-align: center;">Scan een product om hem toe te voegen aan je winkelwagen</p>
 
   <ion-list *ngFor="let item of cartItems; let i = index" (click)="show(i)">
 
     <ion-item lines="full">
-      <ion-avatar slot="start">
-        <img src="{{ item.product.image }}">
-      </ion-avatar>
-<!--      <ion-label slot="start">-->
-        <p>{{ item.product.name }}</p>
-<!--      </ion-label>-->
-      <ion-label slot="end">{{ item.quantity }}</ion-label>
+      <ion-thumbnail slot="start">
+         <img src="{{ item.product.image }}">
+      </ion-thumbnail>
+      <ion-label class="ion-text-wrap">
+        <h3>{{ item.product.name }}</h3>
+        <p class="smaller">Artikelnummer: {{ item.product.model }}</p>
+        <p class="smaller">Verpakt per: {{ (item.product.jan ? item.product.jan : "1") }}</p>
+      </ion-label>
+      <ion-button fill="outline" slot="end">{{ item.quantity }}</ion-button>
     </ion-item>
 
   </ion-list>
 
-</ion-view>
-<ion-view>
+</ion-content>
+<ion-footer>
   <div style="display: flex; flex-direction: row; width: 95%; margin: 0 auto;">
     <ion-button icon-start expand="full" color="dark" (click)="presentOrderModal()" style="width: 80%">
       <ion-icon name="cart" style="margin-right: 10px" ></ion-icon>
@@ -46,4 +51,4 @@
       <ion-icon name="barcode-outline"></ion-icon>
     </ion-button>
   </div>
-</ion-view>
+</ion-footer>

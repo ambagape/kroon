@@ -1,3 +1,24 @@
 ion-item {
   --highlight-color-focused: none;
+
+  & ion-thumbnail {
+
+    & img {
+      border: white 5px solid;
+      border-radius: 100%;
+    }
+  }
+
+  & ion-button {
+
+  }
+
+  & ion-label {
+    & h3 {
+      font-weight: 700;
+    }
+    & > p.smaller {
+      font-size: x-small;
+    }
+  }
 }
