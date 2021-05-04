@@ -32,13 +32,13 @@
   <div class="content">
     <ion-img src="assets/kroonlogo.png" style="width: 90% !important;"></ion-img>
     <div class="login-container">
-      <ion-item style="margin-bottom: 20px">
-        <ion-label color="dark" position="stacked">E-mailadres</ion-label>
-        <ion-input class="input" type="email"  [(ngModel)]="email"></ion-input>
+      <ion-item class="ion-margin-bottom">
+        <ion-label color="dark" position="floating">E-mailadres</ion-label>
+        <ion-input  type="email"  [(ngModel)]="email"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-label position="stacked" color="dark">Wachtwoord</ion-label>
-        <ion-input class="input" type="password" [(ngModel)]="password"></ion-input>
+        <ion-label position="floating" color="dark">Wachtwoord</ion-label>
+        <ion-input  type="password" [(ngModel)]="password"></ion-input>
       </ion-item>
     </div>
 
