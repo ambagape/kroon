@@ -62,3 +62,49 @@
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
 }
+
+
+/* Set variables for all modes */
+:root {
+  /* Set the background of the entire app */
+  --ion-background-color: #fff;
+
+  /* Set the font family of the entire app */
+  --ion-font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto", sans-serif;
+
+}
+
+/* Set text color of the entire app for iOS only */
+.ios {
+  --ion-text-color: #000;
+}
+
+/* Set text color of the entire app for Material Design only */
+.md {
+  --ion-text-color: #222;
+}
+
+.open-sans-regular {
+  font-family: 'Open Sans';
+  font-weight: 400;
+}
+
+.open-sans-semibold {
+  font-family: 'Open Sans';
+  font-weight: 500;
+}
+
+.open-sans-bold {
+  font-family: 'Open Sans';
+  font-weight: 600;
+}
+
+.open-sans-extra-bold {
+  font-family: 'Open Sans';
+  font-weight: 800;
+}
+
+.open-sans-light {
+  font-family: 'Open Sans';
+  font-weight: 200;
+}
