@@ -57,6 +57,14 @@ export class AuthRepository {
 
     // Moet nog worden aangepast
     isLoggedIn(): boolean {
-       return !!this.nativeStorage.getItem('token');
+       const token = this.nativeStorage.getItem('token');
+
+       if(token) {
+        return true;
+       } else {
+         return false;
+       }
     }
+
+
 }
