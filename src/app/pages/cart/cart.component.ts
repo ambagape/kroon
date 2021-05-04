@@ -32,7 +32,7 @@ import { Network } from '@ionic-native/network/ngx';
   styleUrls: ['./cart.component.scss'],
   // moduleId: module.id,
 })
-export class CartComponent implements OnDestroy, OnInit {
+export class CartComponent implements OnDestroy,  OnInit {
 
   showOrderModal = false;
   showSearch = false;
@@ -61,6 +61,13 @@ export class CartComponent implements OnDestroy, OnInit {
 
   ) {
 
+    this._cartItems = this.productRepository.cartItems
+    console.log('Dit is de cart')
+
+    // this._cartItems = this.productRepository.cartItems;
+
+    // if(this.productRepository.cartItems) {
+    // }
 
     // this.page.actionBarHidden = true;
 
@@ -77,13 +84,20 @@ export class CartComponent implements OnDestroy, OnInit {
     this._cartItems = filtered;
   }
 
- async ngOnInit() {
-   // await this.storage.create();
+async ngOnInit () {
+    console.log('Dit is na de storage')
+
+    this.storage.get('cartItems').then(res => {
+      this._cartItems = res;
+    })
+
+  // this.productRepository.readCartFromDisk().then(res => {
+  //   this._cartItems = res
+  // });
 
 
-   // this._cartItems = this.productRepository.cartItems;
 
-   this._cartItems = this.productRepository.cartItems
+  console.log(this._cartItems + ' hallo')
 
    this.network.onConnect().subscribe(() => {
      if ((this.network.type === 'wifi' || this.network.type === 'mobile') && this.productRepository.hasOfflineProducts) {
@@ -145,13 +159,13 @@ export class CartComponent implements OnDestroy, OnInit {
           }
         });
 
-        modal.onDidDismiss().then((cartItem: any) => {
-          if(cartItem) {
-            this._cartItems.push(cartItem.data.data);
-            this.storage.set('cartItems', this._cartItems);
-            this.activityService.done();
-          }
-        });
+        // modal.onDidDismiss().then((cartItem: any) => {
+        //   // if(cartItem) {
+        //   //   // this._cartItems.push(cartItem.data.data);
+        //   //   this.storage.set('cartItems', this._cartItems);
+        //   //   this.activityService.done();
+        //   // }
+        // });
 
         return await modal.present();
       });

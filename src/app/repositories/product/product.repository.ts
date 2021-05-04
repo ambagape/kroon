@@ -24,13 +24,14 @@ export class ProductRepository implements OnInit{
     private activityService: ActivityService,
     private storage: Storage
   ) {
+     this.storage.create();
+      this.readCartFromDisk();
 
-
-    this.readCartFromDisk();
   }
 
   async ngOnInit() {
-    await this.storage.create();
+
+
 
   }
 
@@ -159,7 +160,7 @@ export class ProductRepository implements OnInit{
       }
     }
     // Send request to write the cart to disk.
-    // this.writeCarrtToDisk();
+    this.writeCartToDisk();
 
   }
 
@@ -169,20 +170,21 @@ export class ProductRepository implements OnInit{
 
     if (i !== null) {
       this._cartItems.splice(i, 1);
-      // this.writeCartToDisk();
+      this.writeCartToDisk();
 
     }
   }
 
   emptyCart() {
     this._cartItems.splice(0);
-    // this.writeCartToDisk();
+    this.writeCartToDisk();
   }
 
   getItemQuantity(item: CartItem): number {
     const i = this.indexOfItemInCartByEan(item.ean);
     let foundItem = this._cartItems[i];
     if (foundItem && foundItem.quantity) {
+      console.log(foundItem.quantity)
       return foundItem.quantity;
     }
     return 1;
@@ -199,7 +201,7 @@ export class ProductRepository implements OnInit{
 
         if (old.quantity != quantity) {
           this._cartItems[i] = { ...old, quantity: quantity };
-          // this.writeCartToDisk();
+          this.writeCartToDisk();
         }
       }
     }
@@ -283,12 +285,12 @@ export class ProductRepository implements OnInit{
       })
 
       this.activityService.done();
-      // this.writeCartToDisk();
+      this.writeCartToDisk();
 
     });
   }
 
-  // private get cartFile(): Promise<FileReadResult> {
+  // private async get cartFile(): Promise<FileReadResult> {
 
     //  return Filesystem.readFile({
     //   path: 'cartItems/cart-items.json',
@@ -297,36 +299,46 @@ export class ProductRepository implements OnInit{
     // });
     // const documents: FilesystemDirectory = knownFolders.documents();
     // const folder: Folder = documents.getFolder('cartItems');
-
-
-
-
+    //
+    //
+    //
+    //
     // return folder.getFile('cart-items.json');
+
+  //   await this.storage.get('')
   // }
   //
-  // private writeCartToDisk() {
-  //   const file = this.cartFile;
-  //   file.writeFile()
-  //   file.writeText(JSON.stringify(this._cartItems.map(ci => ci))).then((d) => {
-  //     console.log('Successfully wrote cart to disk.');
-  //   }).catch((err) => {
-  //     console.log('Error writing cart to disk:', err);
-  //   })
-  // }
+  private writeCartToDisk() {
+    // const file = this.cartFile;
+    // file.writeFile()
+    // file.writeText(JSON.stringify(this._cartItems.map(ci => ci))).then((d) => {
+    //   console.log('Successfully wrote cart to disk.');
+    // }).catch((err) => {
+    //   console.log('Error writing cart to disk:', err);
+    // })
 
-  private async readCartFromDisk() {
+    this.storage.set('cartItems', this._cartItems);
+  }
 
-   await this.storage.get('cartItems').then(response => {
-      if(response) {
-        console.log(JSON.stringify(response))
-        this._cartItems = response;
-        console.log('Succesfully readed')
-      } else {
-        return;
-      }
-    }).catch(error => {
-      console.log('Something went wrong')
-   });
+  async readCartFromDisk() {
+
+    await this.storage.get('cartItems').then(response => {
+      return response;
+    });
+   // .then(response => {
+   //   console.log(JSON.stringify(response) + 'hallo jeroen')
+   //
+   //   // if(response) {
+   //      console.log(JSON.stringify(response) + ' dit is van de storage')
+   //      this._cartItems = response;
+   //
+   //      console.log('Succesfully readed')
+   //    // } else {
+   //    //   return;
+   //    // }
+   //  }).catch(error => {
+   //    console.log('Something went wrong' + error.message)
+   // });
     // const file = this.cartFile;
     // file.readText()
     //   .then((res) => {
