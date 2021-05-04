@@ -11,6 +11,8 @@ import { CartItem } from '../../shared/product/cartitem.model';
 import { Injectable } from '@angular/core';
 import { Product } from '../../shared/product/product.model';
 import { ProductService } from '../../shared/product/product.service';
+import { Storage } from '@ionic/storage-angular';
+
 
 @Injectable()
 export class ProductRepository {
@@ -19,8 +21,11 @@ export class ProductRepository {
 
   constructor(
     private productService: ProductService,
-    private activityService: ActivityService
+    private activityService: ActivityService,
+    private storage: Storage
   ) {
+
+
     // this.readCartFromDisk();
   }
 
@@ -72,6 +77,7 @@ export class ProductRepository {
    * Returns the item with the given id from the cart.
    */
   private findItemInCart(id: number): CartItem {
+
     const filtered = this.cartItems.filter((cartItem) => {
       return cartItem.product && id == cartItem.product.id;
     });
@@ -148,7 +154,7 @@ export class ProductRepository {
       }
     }
     // Send request to write the cart to disk.
-    // this.writeCartToDisk();
+    // this.writeCarrtToDisk();
 
   }
 
@@ -303,17 +309,27 @@ export class ProductRepository {
   //   })
   // }
 
-  // private readCartFromDisk() {
-  //   const file = this.cartFile;
-  //   file.readText()
-  //     .then((res) => {
-  //       if (res) {
-  //         this._cartItems = JSON.parse(res);
-  //         console.log('Successfully read cart from disk.');
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log('Error while reading cart items from disk:', err);
-  //     })
-  // }
+  private async readCartFromDisk() {
+    await this.storage.create();
+
+   await this.storage.get('cartItems').then(response => {
+      if(response) {
+        this._cartItems = response;
+        console.log('Succesfully readed')
+      }
+    }).catch(error => {
+      console.log('Something went wrong')
+   });
+    // const file = this.cartFile;
+    // file.readText()
+    //   .then((res) => {
+    //     if (res) {
+    //       this._cartItems = JSON.parse(res);
+    //       console.log('Successfully read cart from disk.');
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.log('Error while reading cart items from disk:', err);
+    //   })
+  }
 }

@@ -19,6 +19,8 @@
     <ion-input placeholder="Zoeken..." [(ngModel)]="search" (input)="onSearchChange($event)"></ion-input>
   </ion-toolbar>
 
+  <p *ngIf="cartItems.length === 0" style="text-align: center;">Scan een product om hem toe te voegen aan je winkelwagen</p>
+
   <ion-list *ngFor="let item of cartItems">
 
     <ion-item lines="full">

@@ -38,7 +38,7 @@ export class CartComponent implements OnDestroy, OnInit {
   showSearch = false;
   public noSearchResults: boolean;
   public filterText = '';
-  private _cartItems: CartItem[] = [];
+  private _cartItems: CartItem[];
   private _scannedCartItem: CartItem;
   private search: string = null;
 
@@ -54,9 +54,10 @@ export class CartComponent implements OnDestroy, OnInit {
     private authRepository: AuthRepository,
     private activityService: ActivityService,
     public modalController: ModalController,
-  public barcodeScanner: BarcodeScanner,
+    public barcodeScanner: BarcodeScanner,
     private http: HTTP,
     private storage: Storage,
+    private network: Network
 
   ) {
 
@@ -77,13 +78,22 @@ export class CartComponent implements OnDestroy, OnInit {
   }
 
  async ngOnInit() {
-   await this.storage.create();
+   // await this.storage.create();
 
-   const cartItems = await this.storage.get('cartItems');
 
-   if(cartItems) {
-     this._cartItems = cartItems;
-   }
+   // this._cartItems = this.productRepository.cartItems;
+
+   // this._cartItems = this.productRepository.cartItems
+
+   this.network.onConnect().subscribe(() => {
+     if ((this.network.type === 'wifi' || this.network.type === 'mobile') && this.productRepository.hasOfflineProducts) {
+       this.productRepository.updateOfflineProducts();
+     }
+   });
+
+   // if(cartItems) {
+   //   this._cartItems = cartItems;
+   // }
 
    // let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
    //   console.log('network was disconnected :-(');
@@ -92,7 +102,6 @@ export class CartComponent implements OnDestroy, OnInit {
 
     // startMonitoring((type) => {
     //   if ((type === connectionType.mobile || type === connectionType.wifi) && this.productRepository.hasOfflineProducts) {
-        this.productRepository.updateOfflineProducts();
     //   }
 
 

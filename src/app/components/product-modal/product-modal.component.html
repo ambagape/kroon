@@ -9,7 +9,7 @@
   <p style="text-align: center;">{{ cartItem.product.name }}</p>
   <div style="display: flex; justify-content: center; align-items: center;">
     <ion-icon name="remove-circle" (click)="decrementQuantity()" size="large"></ion-icon>
-      <h2>{{ cartItem.quantity }}</h2>
+      <h2>{{ quantity }}</h2>
     <ion-icon name="add-circle" (click)="incrementQuantity()" size="large"></ion-icon>
   </div>
 </ion-content>

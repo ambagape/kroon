@@ -15,45 +15,112 @@ export class ProductModalComponent implements OnInit {
   @Input() cartItem: CartItem;
 
   private currentNumber = 1;
-  private quantity = 1;
+  private quantity = 0;
+
+  // constructor(
+  //   private productRepository: ProductRepository,
+  //
+  // ) {
+  // }
+  //
+  // ngOnInit() {
+  //   this.quantity = this.productRepository.getItemQuantity(this.cartItem);
+  //
+  // }
+  //
+
+  //
+  // dismiss() {
+  //   // using the injected ModalController this page
+  //   // can "dismiss" itself and optionally pass back data
+
+  // }
+  //
+  // addItemToCart() {
+  //   if(this.quantity > 0) {
+  //     // this.productRepository.addItemToCart(this.cartItem, this.quantity);
+
+  //   }
+  //
+  // }
+
+
+
+
 
   constructor(
     private productRepository: ProductRepository,
-    private modalController: ModalController
+      private modalController: ModalController
 
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit () {
     this.quantity = this.productRepository.getItemQuantity(this.cartItem);
-
   }
 
-  incrementQuantity() {
-    this.cartItem.quantity++;
-  }
-
-  decrementQuantity() {
-    this.cartItem.quantity--;
-  }
+  // close() {
+  //   this.closed.emit();
+  // }
 
   dismiss() {
-    // using the injected ModalController this page
-    // can "dismiss" itself and optionally pass back data
     this.modalController.dismiss({
       'dismissed': true,
     });
   }
 
-  addItemToCart() {
-    if(this.quantity > 0) {
-      // this.productRepository.addItemToCart(this.cartItem, this.quantity);
-      this.modalController.dismiss({
-        'dismissed': true,
-        'data': this.cartItem
-      });
-    }
-
+  incrementQuantity() {
+    this.quantity++;
+    this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
+    // this.quantity = quantity;
   }
+
+  decrementQuantity() {
+    this.quantity--;
+    this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
+  }
+
+  public addItemToCart() {
+    if(this.quantity > 0) {
+      console.log(this.cartItem)
+      this.productRepository.addItemToCart(this.cartItem, this.quantity);
+          this.modalController.dismiss({
+            'dismissed': true,
+            'data': this.cartItem
+          });
+      // this.closed.emit();
+    }
+  }
+
+  // public updateQuantity(quantity: number) {
+  //
+  // }
+
+  // takePicture() {
+  //   if (camera.isAvailable()) {
+  //     camera.takePicture({
+  //       width: 500,
+  //       height: 500,
+  //       keepAspectRatio: true,
+  //       saveToGallery: true,
+  //     })
+  //       .then((imageAsset: ImageAsset) => {
+  //         this._newImage = imageAsset;
+  //         this.addModal = true;
+  //       })
+  //       .catch((error) => {
+  //         console.log('Error while taking a picture', error);
+  //       });
+  //   }
+  // }
+  //
+  //
+  // // MARK - Accessors for view
+  //
+  // _newImage: ImageAsset;
+  //
+  // get newImage(): ImageAsset {
+  //   return this._newImage;
+  // }
 
 }

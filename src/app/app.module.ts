@@ -18,6 +18,7 @@ import { HTTP } from '@ionic-native/http/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import {IonicStorageModule} from "@ionic/storage-angular";
+import { Network } from '@ionic-native/network/ngx';
 
 
 
@@ -47,6 +48,8 @@ import {IonicStorageModule} from "@ionic/storage-angular";
     HTTP,
     BarcodeScanner,
     NativeStorage,
+    Network,
+
   ],
   bootstrap: [AppComponent],
   schemas: [NO_ERRORS_SCHEMA],
