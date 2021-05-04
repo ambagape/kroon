@@ -7,8 +7,8 @@ import { AuthRepository } from '../../repositories/auth/auth.repository';
 // import { BarcodeScanner } from "nativescript-barcodescanner";
 import { CartItem } from '../../shared/product/cartitem.model';
 import { ProductRepository } from '../../repositories/product/product.repository';
-import {Router} from '@angular/router';
-import {ModalController} from '@ionic/angular';
+import {NavigationExtras, Router} from '@angular/router';
+import {ModalController, NavController} from '@ionic/angular';
 import {OrderModalComponent} from '../../components/order-modal/order-modal.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 // import '@capacitor-community/http';
@@ -57,7 +57,8 @@ export class CartComponent implements OnDestroy,  OnInit {
     public barcodeScanner: BarcodeScanner,
     private http: HTTP,
     private storage: Storage,
-    private network: Network
+    private network: Network,
+    public navCtrl: NavController
 
   ) {
 
@@ -243,5 +244,17 @@ async ngOnInit () {
       cssClass: 'my-custom-class'
     });
     return await modal.present();
+  }
+
+  show(id) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        cartItem: JSON.stringify(this._cartItems[id]),
+
+      }
+    };
+    this.navCtrl.navigateForward(['detail'], navigationExtras);
+
+    // console.log(.product.name);
   }
 }

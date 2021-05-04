@@ -21,7 +21,7 @@
 
   <p *ngIf="cartItems.length === 0" style="text-align: center;">Scan een product om hem toe te voegen aan je winkelwagen</p>
 
-  <ion-list *ngFor="let item of cartItems">
+  <ion-list *ngFor="let item of cartItems; let i = index" (click)="show(i)">
 
     <ion-item lines="full">
       <ion-avatar slot="start">
