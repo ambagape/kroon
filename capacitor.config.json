@@ -13,7 +13,7 @@
   "server": {
     "url": "http://10.1.0.224:8100",
     "cleartext": true,
-    "originalUrl": "http://192.168.178.30:8100",
+    "originalUrl": "http://10.1.0.224:8100",
     "originalCleartext": true
   }
 }

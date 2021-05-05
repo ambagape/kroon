@@ -7,6 +7,7 @@ import { Address } from '../../shared/order/address.model';
 import { forkJoin } from 'rxjs';
 import { ActivityService } from '../../shared/activity/activity.service';
 import {Router} from "@angular/router";
+import {ModalController} from "@ionic/angular";
 // import { Toasty } from 'nativescript-toasty';
 // import { PickerComponent } from '../picker/picker.component';
 // import { TextField } from 'tns-core-modules/ui/text-field/text-field';
@@ -49,7 +50,8 @@ export class OrderModalComponent {
     private productRepository: ProductRepository,
     private cdRef: ChangeDetectorRef,
     private activityService: ActivityService,
-    private router: Router
+    private router: Router,
+    private modalController: ModalController
   ) {
 
     // if (isIOS) {
@@ -75,6 +77,9 @@ export class OrderModalComponent {
 
   close() {
     this.closed.emit();
+  }
+  dismiss() {
+    this.modalController.dismiss();
   }
 
   order() {
