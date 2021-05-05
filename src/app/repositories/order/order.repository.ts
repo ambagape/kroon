@@ -26,7 +26,6 @@ export class OrderRepository {
         return this.orderService.addresses().pipe(
             map((response: any) => {
               response = JSON.parse(response.data);
-              console.log(JSON.stringify(response))
 
                 if (response) {
                     if (response.success != 1) {
@@ -54,6 +53,7 @@ export class OrderRepository {
 
 
     selectPaymentAddress(addressId: number): Observable<boolean> {
+      console.log(addressId)
 
         if (!addressId) {
             return this.handleStatus(this.orderService.defaultAddress().pipe(map((account: any) => {
