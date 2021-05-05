@@ -27,13 +27,22 @@
 </ion-header>
 
 <ion-content fullscreen>
-  <img src="{{ cartItem.product.image }}" alt="">
-  <p style="text-align: center;">{{ cartItem.product.name }}</p>
-  <div style="display: flex; justify-content: center; align-items: center;">
-    <ion-icon name="remove-circle" (click)="decrementQuantity()" size="large"></ion-icon>
-    <h2>{{ quantity }}</h2>
-    <ion-icon name="add-circle" (click)="incrementQuantity()" size="large"></ion-icon>
-  </div>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-img height="300" src="{{ cartItem.product.image }}" alt=""></ion-img>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <!-- <div class="ion-text-center"> -->
+      <ion-button color="primary" (click)="decrementQuantity()">
+        <ion-icon name="remove-circle-outline"></ion-icon>
+      </ion-button>
+      <h2 class="ion-margin">{{ quantity }}</h2>
+      <ion-button color="primary" (click)="incrementQuantity()">
+        <ion-icon name="add-circle-outline"></ion-icon>
+      </ion-button>
+      <!-- </div> -->
+    </ion-row>
+  </ion-grid>
 </ion-content>
 
 <ion-footer>
