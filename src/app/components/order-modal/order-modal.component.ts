@@ -1,13 +1,13 @@
 import { Component, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { ProductRepository } from '../../repositories/product/product.repository';
-import { OrderRepository } from '../../repositories/order/order.repository'
+import { OrderRepository } from '../../repositories/order/order.repository';
 import { Address } from '../../shared/order/address.model';
 // import { Page, isIOS } from 'tns-core-modules/ui/page/page';
 // import { setNumber, getNumber, remove } from 'tns-core-modules/application-settings/application-settings';
 import { forkJoin } from 'rxjs';
 import { ActivityService } from '../../shared/activity/activity.service';
-import {Router} from "@angular/router";
-import {ModalController} from "@ionic/angular";
+import {Router} from '@angular/router';
+import {ModalController} from '@ionic/angular';
 // import { Toasty } from 'nativescript-toasty';
 // import { PickerComponent } from '../picker/picker.component';
 // import { TextField } from 'tns-core-modules/ui/text-field/text-field';
@@ -29,7 +29,7 @@ export class OrderModalComponent {
 
   index = 0;
   selectedAddress: Address | any = null;
-  selectedString: string = 'Selecteer optie';
+  selectedString = 'Selecteer optie';
 
   selectedProvince = 'Drenthe';
   // iqKeyboard: IQKeyboardManager;
@@ -72,18 +72,19 @@ export class OrderModalComponent {
         //   this.changeForIndex(index);
         // }
       }
-    })
+    });
   }
 
   close() {
     this.closed.emit();
   }
+
   dismiss() {
     this.modalController.dismiss();
   }
 
   order() {
-    console.log(JSON.stringify(this.selectedAddress))
+    console.log(JSON.stringify(this.selectedAddress));
 
     // console.log(JSON.stringify(JSON.parse(this.selectedAddress)) + ' Hallo adresjes')
     if (!this.selectedAddress) {
@@ -110,16 +111,14 @@ export class OrderModalComponent {
           return;
         }
 
-        console.log(this.selectedAddress.address_id)
+        console.log(this.selectedAddress.address_id);
         const addressRequests = [
           this.orderRepository.selectPaymentAddress(parseInt(this.selectedAddress)),
           this.orderRepository.selectShippingAddress(parseInt(this.selectedAddress))
         ];
 
         forkJoin(addressRequests).subscribe((success: Array<boolean>) => {
-          const succeeded = success.every((e) => {
-            return e;
-          });
+          const succeeded = success.every((e) => e);
           if (!succeeded) {
             // TODO: Handle error.
             this.activityService.done();
@@ -129,7 +128,7 @@ export class OrderModalComponent {
           this.setComment();
         }, (error) => {
           this.activityService.done();
-          this.logError(error)
+          this.logError(error);
         });
       });
     });
@@ -166,7 +165,7 @@ export class OrderModalComponent {
 
         const addressRequests = [
           this.orderRepository.selectPaymentAddress(null),
-          this.orderRepository.addShippingAddress(firstName, lastName, company, street, "", postalCode, city, zoneId)
+          this.orderRepository.addShippingAddress(firstName, lastName, company, street, '', postalCode, city, zoneId)
         ];
 
         forkJoin(addressRequests).subscribe((success: Array<boolean>) => {
@@ -289,7 +288,7 @@ export class OrderModalComponent {
     const pickerItem = this.pickerItems[this.index];
     if (pickerItem.address_1) {
       this.selectedAddress = pickerItem;
-      this.selectedString = pickerItem.company + ", " + pickerItem.address_1 + ", " + pickerItem.city;
+      this.selectedString = pickerItem.company + ', ' + pickerItem.address_1 + ', ' + pickerItem.city;
 
       // Persist the selected address.
       // const addressId = Number(this.selectedAddress.address_id);
@@ -323,10 +322,7 @@ export class OrderModalComponent {
         this.adress.street === (null || undefined),
         this.adress.postalCode === (null || undefined),
         this.adress.city === (null || undefined),
-      ].some( field => {
-
-        return field;
-      })
+      ].some( field => field);
     };
 
 
@@ -350,7 +346,7 @@ export class OrderModalComponent {
 
   // We need to perform this mutation because the picker can't deal with objects.
   get pickerStrings(): Array<string> {
-    return this.pickerItems.map((obj) => {
+    return this.pickerItems.map((obj) =>
 
       // address_id: number;
       // firstname: string;
@@ -361,8 +357,8 @@ export class OrderModalComponent {
       // postcode: string;
       // city: string;
 
-      return (typeof obj === "string")?obj:obj.company + ", " + obj.address_1 + ", " + obj.city;
-    });
+       (typeof obj === 'string')?obj:obj.company + ', ' + obj.address_1 + ', ' + obj.city
+    );
   }
 
   get provincePickerStrings(): Array<string> {

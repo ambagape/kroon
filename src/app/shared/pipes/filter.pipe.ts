@@ -4,7 +4,6 @@ import { CartItem } from '../product/cartitem.model';
 import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 
 @Pipe({
-    
     name: 'filter'
 })
 export class FilterPipe implements PipeTransform {
@@ -14,9 +13,9 @@ export class FilterPipe implements PipeTransform {
             return source;
         }
 
-        const result: ObservableArray<CartItem> = new ObservableArray<CartItem>(),
+        const result: ObservableArray<CartItem> = new ObservableArray<CartItem>();
             // filterReg: RegExp = new RegExp(filterText, "i");
-            filterReg: RegExp = new RegExp(`\\b${filterText}\\b`, "i");
+            const filterReg = new RegExp(`\\b${filterText}\\b`, 'i');
 
         source.forEach((item) => {
             if (filterReg.test(item.product.name)) {

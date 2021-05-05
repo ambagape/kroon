@@ -1,9 +1,9 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Product} from "../../shared/product/product.model";
-import {ProductResponseStatus} from "../../repositories/product/productresponse.model";
-import {CartItem} from "../../shared/product/cartitem.model";
-import {ProductRepository} from "../../repositories/product/product.repository";
-import {ModalController} from "@ionic/angular";
+import {Product} from '../../shared/product/product.model';
+import {ProductResponseStatus} from '../../repositories/product/productresponse.model';
+import {CartItem} from '../../shared/product/cartitem.model';
+import {ProductRepository} from '../../repositories/product/product.repository';
+import {ModalController} from '@ionic/angular';
 
 @Component({
   selector: 'app-product-modal',
@@ -14,9 +14,8 @@ export class ProductModalComponent implements OnInit {
 
   @Input() cartItem: CartItem;
 
-
+  quantity = 0;
   private currentNumber = 1;
-  private quantity = 0;
 
   // constructor(
   //   private productRepository: ProductRepository,
@@ -45,10 +44,6 @@ export class ProductModalComponent implements OnInit {
   //
   // }
 
-
-
-
-
   constructor(
     private productRepository: ProductRepository,
       private modalController: ModalController
@@ -56,43 +51,42 @@ export class ProductModalComponent implements OnInit {
   ) {
   }
 
-  ngOnInit () {
+  ngOnInit = () => {
     this.quantity = this.productRepository.getItemQuantity(this.cartItem);
-  }
+  };
 
   // close() {
   //   this.closed.emit();
   // }
 
-  dismiss() {
+  dismiss = () => {
     this.modalController.dismiss({
-      'dismissed': true,
+      dismissed: true,
     });
-  }
+  };
 
-  incrementQuantity() {
+  incrementQuantity = () => {
     this.quantity++;
     this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
     // this.quantity = quantity;
-  }
+  };
 
-  decrementQuantity() {
+  decrementQuantity = () => {
     this.quantity--;
     this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
-  }
+  };
 
-  public addItemToCart() {
-    if(this.quantity > 0) {
-      // console.log(this.quantity)
+  public addItemToCart = () => {
+    if (this.quantity > 0) {
       this.productRepository.addItemToCart(this.cartItem, this.quantity);
           this.modalController.dismiss({
-            'dismissed': true,
-            'data': this.cartItem
+            dismissed: true,
+            data: this.cartItem
           });
 
       // this.closed.emit();
     }
-  }
+  };
 
   // public updateQuantity(quantity: number) {
   //

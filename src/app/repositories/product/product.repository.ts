@@ -1,41 +1,24 @@
-// import { File, Folder, knownFolders } from 'tns-core-modules/file-system';
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable @typescript-eslint/member-ordering */
 import { Observable, forkJoin, of } from 'rxjs';
-import {Plugins, FilesystemDirectory, FilesystemEncoding, FileReadResult} from '@capacitor/core';
-const { Filesystem } = Plugins;
-
 import { ProductResponse, ProductResponseStatus } from './productresponse.model';
 import { catchError, map } from 'rxjs/operators';
-
 import { ActivityService } from '../../shared/activity/activity.service';
 import { CartItem } from '../../shared/product/cartitem.model';
 import {Injectable, OnInit} from '@angular/core';
 import { Product } from '../../shared/product/product.model';
 import { ProductService } from '../../shared/product/product.service';
 import { Storage } from '@ionic/storage-angular';
-import {Router} from "@angular/router";
-
-
 @Injectable()
-export class ProductRepository implements OnInit{
+export class ProductRepository{
 
   private _cartItems: CartItem[] = [];
 
   constructor(
     private productService: ProductService,
     private activityService: ActivityService,
-    private storage: Storage,
-    private router: Router
-  ) {
-     // this.storage.create();
+    private storage: Storage  ) {
       this.readCartFromDisk();
-
-
-  }
-
-  async ngOnInit() {
-
-
-
   }
 
   productForEan(ean: string): Observable<ProductResponse> {
@@ -66,14 +49,14 @@ export class ProductRepository implements OnInit{
         }
       }),
       catchError((response) => {
-        console.log("Something went wrong while getting the product." + response.message)
+        console.log('Something went wrong while getting the product.' + response.message);
         return of({
           status: ProductResponseStatus.Offline,
           product: null,
           ean
         });
       })
-    )
+    );
   }
 
   // MARK - Cart methods
@@ -88,9 +71,9 @@ export class ProductRepository implements OnInit{
    */
   private findItemInCart(id: number): CartItem {
 
-    console.log(JSON.stringify(this._cartItems))
+    console.log(JSON.stringify(this._cartItems));
     const filtered = this.cartItems.filter((cartItem) => {
-      console.log('Filter', cartItem)
+      console.log('Filter', cartItem);
       return cartItem.product && id === cartItem.product.id;
     });
     if (filtered.length) {
@@ -110,9 +93,7 @@ export class ProductRepository implements OnInit{
 
 
   isItemInCartByEan(ean: string): boolean {
-    const filtered = this.cartItems.filter((cartItem) => {
-      return ean == cartItem.ean;
-    });
+    const filtered = this.cartItems.filter((cartItem) => ean === cartItem.ean);
     if (filtered.length) {
       return !!filtered[0];
     }
@@ -120,10 +101,7 @@ export class ProductRepository implements OnInit{
   }
 
   indexOfItemInCartByEan(ean: string): number {
-    const filtered = this.cartItems.filter((cartItem) => {
-
-      return ean == cartItem.ean;
-    });
+    const filtered = this.cartItems.filter((cartItem) => ean === cartItem.ean);
     if (filtered.length) {
       const ix = this._cartItems.indexOf(filtered[0]);
       return ix === -1 ? null : ix;
@@ -144,17 +122,17 @@ export class ProductRepository implements OnInit{
 
         const i = this.indexOfItemInCartByEan(item.ean);
         const old = this._cartItems[i];
-        this._cartItems[i] =  { ...old, quantity: quantity };
+        this._cartItems[i] =  { ...old, quantity };
 
       } else {
 
-        this._cartItems.push({ ...item, quantity: quantity });
+        this._cartItems.push({ ...item, quantity });
 
       }
     } else {
       // If the product doesn't exist or is offline and isn't in the cart yet, add it.
       if (!this.isItemInCartByEan(item.ean)) {
-        this._cartItems.push({ ...item, quantity: quantity });
+        this._cartItems.push({ ...item, quantity });
       } else {
         // If the product is in the cart, add quantity to it even if we're currently offline.
         const i = this.indexOfItemInCartByEan(item.ean);
@@ -162,7 +140,7 @@ export class ProductRepository implements OnInit{
 
           const old = this._cartItems[i];
 
-          this._cartItems[i] =  { ...old, quantity: quantity };
+          this._cartItems[i] =  { ...old, quantity };
         }
       }
     }
@@ -176,10 +154,12 @@ export class ProductRepository implements OnInit{
 
     const i = this.indexOfItemInCartByEan(item.ean);
 
+    console.log(i);
+
     if (i !== null) {
       this._cartItems.splice(i, 1);
       this.writeCartToDisk();
-
+      window.location.reload();
     }
   }
 
@@ -190,9 +170,9 @@ export class ProductRepository implements OnInit{
 
   getItemQuantity(item: CartItem): number {
     const i = this.indexOfItemInCartByEan(item.ean);
-    let foundItem = this._cartItems[i];
+    const foundItem = this._cartItems[i];
     if (foundItem && foundItem.quantity) {
-      console.log(foundItem.quantity)
+      console.log(foundItem.quantity);
       return foundItem.quantity;
     }
     return 1;
@@ -208,7 +188,7 @@ export class ProductRepository implements OnInit{
         const old = this._cartItems[i];
 
         if (old.quantity != quantity) {
-          this._cartItems[i] = { ...old, quantity: quantity };
+          this._cartItems[i] = { ...old, quantity };
           this.writeCartToDisk();
         }
       }
@@ -220,10 +200,7 @@ export class ProductRepository implements OnInit{
    */
   get hasOfflineProducts(): boolean {
 
-    const filtered = this._cartItems.filter((e) => {
-
-      return e.offline;
-    });
+    const filtered = this._cartItems.filter((e) => e.offline);
 
     if (filtered.length) {
 
@@ -235,10 +212,7 @@ export class ProductRepository implements OnInit{
 
   get hasUnexistingProducts(): boolean {
 
-    const filtered = this._cartItems.filter((e) => {
-
-      return !e.exists;
-    });
+    const filtered = this._cartItems.filter((e) => !e.exists);
 
     if (filtered.length) {
       return filtered[0] != undefined;
@@ -290,7 +264,7 @@ export class ProductRepository implements OnInit{
             this._cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
           }
         }
-      })
+      });
 
       this.activityService.done();
       this.writeCartToDisk();

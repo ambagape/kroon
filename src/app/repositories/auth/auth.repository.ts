@@ -18,50 +18,38 @@ export class AuthRepository {
 
     }
 
-    logIn(email: string, password: string): Observable<boolean> {
-        return this.authService.logIn(email, password).pipe(
+    logIn = (email: string, password: string): Observable<boolean> => this.authService.logIn(email, password).pipe(
             map((response: any) => {
-              response = JSON.parse(response.data)
-                console.log('hier')
-              console.log(JSON.stringify(response.data) + 'login')
+              response = JSON.parse(response.data);
+                console.log('hier');
+              console.log(JSON.stringify(response.data) + 'login');
 
                 if (response && response.success === true) {
-                  console.log(response.data.token + ' foo')
+                  console.log(response.data.token + ' foo');
 
                   this.nativeStorage.setItem('token', response.data.token);
-                  console.log(response.data.token)
+                  console.log(response.data.token);
                   this.nativeStorage.setItem('email', email);
 
-
-                  // this.nativeStorage.getItem('token').then(token => {
-                  //   console.log(token + ' Token')
-                  // })
-
-                  // Storage.set({ key: 'token', value: response.data.token });
-                    // Storage.set({ key: 'email', value: email});
-                    // console.log(Storage.get({key: 'token' }).then(res => { console.log(res + ' Hallo') }));
-                    return of(true);
+                  return of(true);
                 } else {
-                    return of(false);
+                  return of(false);
                 }
             }),
             catchError((response) => {
-                console.log("Something went wrong while logging in.", response)
+                console.log('Something went wrong while logging in.', response);
                 return of(null);
             })
-        )
-    }
+        );
 
-    logOut() {
+    logOut = () => {
       this.nativeStorage.remove('token');
-        // Storage.remove({ key: 'token' });
-    }
+    };
 
     // Moet nog worden aangepast
     async isLoggedIn(): Promise<boolean> {
       return (await this.nativeStorage.getItem('token')).value !== ('' || null);
 
     }
-
 
 }
