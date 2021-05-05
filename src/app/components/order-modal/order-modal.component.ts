@@ -1,11 +1,12 @@
 import { Component, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { ProductRepository } from '../../repositories/product/product.repository';
-import { OrderRepository } from '../../repositories/order/order.repository';
+import { OrderRepository } from '../../repositories/order/order.repository'
 import { Address } from '../../shared/order/address.model';
 // import { Page, isIOS } from 'tns-core-modules/ui/page/page';
 // import { setNumber, getNumber, remove } from 'tns-core-modules/application-settings/application-settings';
 import { forkJoin } from 'rxjs';
 import { ActivityService } from '../../shared/activity/activity.service';
+import {Router} from "@angular/router";
 // import { Toasty } from 'nativescript-toasty';
 // import { PickerComponent } from '../picker/picker.component';
 // import { TextField } from 'tns-core-modules/ui/text-field/text-field';
@@ -47,7 +48,8 @@ export class OrderModalComponent {
     private orderRepository: OrderRepository,
     private productRepository: ProductRepository,
     private cdRef: ChangeDetectorRef,
-    private activityService: ActivityService
+    private activityService: ActivityService,
+    private router: Router
   ) {
 
     // if (isIOS) {
@@ -59,8 +61,7 @@ export class OrderModalComponent {
     this.orderRepository.addresses().subscribe((res) => {
       if (res) {
         this._pickerItems = res;
-
-        console.log(this.pickerItems)
+        // console.log(this.selectedAddress + ' Dit ios goed og nie' )
 
         // Selects the previously selected delivery address.
         // const deliveryId = getNumber('delivery-address-id', null);
@@ -77,6 +78,9 @@ export class OrderModalComponent {
   }
 
   order() {
+    console.log(JSON.stringify(this.selectedAddress))
+
+    // console.log(JSON.stringify(JSON.parse(this.selectedAddress)) + ' Hallo adresjes')
     if (!this.selectedAddress) {
       if (this.canSubmitForm) {
         this.submitForm();
@@ -84,7 +88,7 @@ export class OrderModalComponent {
       return;
     }
 
-    console.log('Dit is: ' + this.selectedAddress.address_1)
+
     this.activityService.busy();
 
     this.orderRepository.emptyCart().subscribe((emptySuccess) => {
@@ -101,18 +105,16 @@ export class OrderModalComponent {
           return;
         }
 
-        // console.log(typeof JSON.parse(this.selectedAddress))
+        console.log(this.selectedAddress.address_id)
         const addressRequests = [
-          this.orderRepository.selectPaymentAddress(this.selectedAddress.address_id),
-          this.orderRepository.selectShippingAddress(this.selectedAddress.address_id)
+          this.orderRepository.selectPaymentAddress(parseInt(this.selectedAddress)),
+          this.orderRepository.selectShippingAddress(parseInt(this.selectedAddress))
         ];
 
-        console.log('Hallo?')
         forkJoin(addressRequests).subscribe((success: Array<boolean>) => {
           const succeeded = success.every((e) => {
             return e;
           });
-          console.log(succeeded)
           if (!succeeded) {
             // TODO: Handle error.
             this.activityService.done();
@@ -157,8 +159,6 @@ export class OrderModalComponent {
           return;
         }
 
-        console.log(this.selectedAddress)
-
         const addressRequests = [
           this.orderRepository.selectPaymentAddress(null),
           this.orderRepository.addShippingAddress(firstName, lastName, company, street, "", postalCode, city, zoneId)
@@ -170,6 +170,9 @@ export class OrderModalComponent {
             return;
           }
           this.setComment();
+              window.location.reload();
+              this.router.navigate(['cart']);
+
         }, (err) => {
           this.activityService.done();
           this.logError(err);
@@ -186,7 +189,7 @@ export class OrderModalComponent {
 
   private setComment() {
 
-    const comment = 'Is een testje';
+    const comment = 'Test';
 
     this.orderRepository.doHandleComment(comment).subscribe((commentSuccess) => {
       if (!commentSuccess) {
