@@ -1,4 +1,4 @@
-<ion-toolbar>
+<!-- <ion-toolbar>
   <ion-title>Bestelling plaatsen</ion-title>
   <ion-buttons slot="end">
     <ion-icon name="close-outline" style="zoom: 2.0;" (click)="dismiss()"></ion-icon>
@@ -13,5 +13,36 @@
     <ion-icon name="add-circle" (click)="incrementQuantity()" size="large"></ion-icon>
   </div>
 </ion-content>
-<ion-button (click)="addItemToCart()">Bestellen</ion-button>
+<ion-button (click)="addItemToCart()">Bestellen</ion-button> -->
+
+
+
+<ion-header translucent>
+  <ion-toolbar color="primary">
+    <ion-title>Bestelling plaatsen</ion-title>
+    <ion-buttons slot="end" class="ion-margin-end">
+      <ion-icon name="close-outline" style="zoom: 2.0;" (click)="dismiss()"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <img src="{{ cartItem.product.image }}" alt="">
+  <p style="text-align: center;">{{ cartItem.product.name }}</p>
+  <div style="display: flex; justify-content: center; align-items: center;">
+    <ion-icon name="remove-circle" (click)="decrementQuantity()" size="large"></ion-icon>
+    <h2>{{ quantity }}</h2>
+    <ion-icon name="add-circle" (click)="incrementQuantity()" size="large"></ion-icon>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-button icon-start expand="full" slot="start" color="dark" (click)="addItemToCart()" style="width: 100%">
+      <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
+      Toevoegen
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
+
 
