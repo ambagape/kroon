@@ -326,6 +326,7 @@ export class ProductRepository implements OnInit{
     // })
 
     this.storage.set('cartItems', this._cartItems);
+    window.location.reload();
   }
 
   async readCartFromDisk() {

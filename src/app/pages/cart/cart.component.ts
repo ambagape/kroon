@@ -84,6 +84,7 @@ export class CartComponent implements OnDestroy,  OnInit {
   }
 
 async ngOnInit() {
+    await this.storage.create();
     console.log('Dit is na de storage');
 
 
@@ -177,6 +178,18 @@ async ngOnInit() {
   logOut() {
     this.authRepository.logOut();
     this.router.navigate(['login']);
+  }
+
+  async delete(i) {
+    // console.log('Delete')
+    // const index = this._cartItems.indexOf(i);
+    // console.log(i)
+    // if (index > -1) {
+    //   this._cartItems.splice(index, 1);
+      this.productRepository.removeItemFromCart(i);
+    // }
+    // window.location.reload();
+
   }
 
   // public onSubmit(args) {
