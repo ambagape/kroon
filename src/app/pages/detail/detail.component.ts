@@ -36,6 +36,7 @@ export class DetailComponent implements OnInit {
 
   back() {
     this.router.navigateByUrl('/cart');
+    window.location.reload();
   }
 
   incrementQuantity() {
