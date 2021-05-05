@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {CartItem} from "../../shared/product/cartitem.model";
-import {Location} from "@angular/common";
-import {ProductRepository} from "../../repositories/product/product.repository";
+import {ActivatedRoute, Router} from '@angular/router';
+import {CartItem} from '../../shared/product/cartitem.model';
+import {Location} from '@angular/common';
+import {ProductRepository} from '../../repositories/product/product.repository';
 
 @Component({
   selector: 'app-detail',
@@ -11,8 +11,8 @@ import {ProductRepository} from "../../repositories/product/product.repository";
 })
 export class DetailComponent implements OnInit {
 
-  private cartItem: CartItem;
-  private quantity;
+  cartItem: CartItem = null;
+  quantity;
 
   constructor(private route: ActivatedRoute, private router: Router, private productRepository: ProductRepository) {
 
@@ -21,11 +21,11 @@ export class DetailComponent implements OnInit {
   ngOnInit() {
 
     this.route.queryParams.subscribe(params => {
-      this.cartItem = JSON.parse(params['cartItem']);
+      this.cartItem = JSON.parse(params.cartItem);
       // console.log()
       // console.log(params['cartItem'])
       // this.refresh = params["refresh"];
-      console.log(JSON.stringify(JSON.parse(params['cartItem']).product.attribute_groups))
+      console.log(JSON.stringify(JSON.parse(params.cartItem).product.attribute_groups));
 
       // this.currency = JSON.parse(params["currency"]);
     });

@@ -1,37 +1,59 @@
 <ion-header translucent>
   <ion-toolbar>
-
     <ion-buttons slot="start" class="ion-margin-start" (click)="logOut()">
       <ion-back-button (click)="back()"></ion-back-button>
     </ion-buttons>
-    <ion-buttons>
-      <ion-img src="assets/kroonlogo.png" class="ion-margin-end" slot="start" style="width: 30%"></ion-img>
-    </ion-buttons>
+    <ion-img src="assets/kroonlogo.png" class="ion-margin-start" slot="end" style="width: 30%"></ion-img>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-img src="{{ cartItem.product.image }}"></ion-img>
-  <ion-content>
-    <div style="display: flex; justify-content: center; align-items: center;">
-      <ion-icon name="remove-circle" (click)="decrementQuantity()" size="large"></ion-icon>
-      <h2>{{ quantity }}</h2>
-      <ion-icon name="add-circle" (click)="incrementQuantity()" size="large"></ion-icon>
-    </div>
-    <p style="text-align: center;">{{ cartItem.product.name }}</p>
-    <p>{{ cartItem.product.description }}</p>
 
-    <p>{{ cartItem.product.meta_title}}</p>
-<!--    <table  >-->
-<!--      <tr >-->
-<!--        <th>{{ i }}</th>-->
-<!--      </tr>-->
-<!--    </table>-->
-    <ion-list *ngFor="let item of cartItem.product.attribute_groups; let i = index">
-      <ion-item *ngFor="let attribute of item.attribute">
-        <p >{{ attribute.name}}</p>
-      </ion-item>
-    </ion-list>
+<ion-content fullscreen>
 
-  </ion-content>
+
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-img height="300" src="{{ cartItem.product.image }}" alt=""></ion-img>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <!-- <div class="ion-text-center"> -->
+      <ion-button color="primary" (click)="decrementQuantity()">
+        <ion-icon name="remove-circle-outline"></ion-icon>
+      </ion-button>
+      <h2 class="ion-margin">{{ quantity }}</h2>
+      <ion-button color="primary" (click)="incrementQuantity()">
+        <ion-icon name="add-circle-outline"></ion-icon>
+      </ion-button>
+      <!-- </div> -->
+    </ion-row>
+  </ion-grid>
+
+
+  <p class="extra-bold ion-margin-end ion-margin-start">
+    {{ cartItem && cartItem.product && (cartItem.product.meta_title || cartItem.product.name) }}</p>
+
+  <p class="ion-margin-end ion-margin-start">
+    {{ cartItem && cartItem.product && (cartItem.product.meta_description || cartItem.product.description) }}</p>
+
+  <ion-list *ngFor="let attributeGroup of cartItem.product.attribute_groups">
+    <ion-item-divider>
+      <ion-label>
+        {{attributeGroup.name}}
+      </ion-label>
+    </ion-item-divider>
+
+    <ion-item *ngFor="let attribute of attributeGroup.attribute">
+      <ion-label slot="start">{{attribute.name}}</ion-label>
+      <ion-label class="ion-text-wrap">{{attribute.text}}</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
+
+<!-- <ion-footer>
+  <ion-toolbar>
+    <ion-button icon-start expand="full" slot="start" color="dark" (click)="addItemToCart()" style="width: 100%">
+      <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
+      Toevoegen
+    </ion-button>
+  </ion-toolbar>
+</ion-footer> -->

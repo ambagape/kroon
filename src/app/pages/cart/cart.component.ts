@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 // import { Page, isAndroid, isIOS, Observable } from 'tns-core-modules/ui/page/page';
 // import { connectionType, startMonitoring, stopMonitoring } from "tns-core-modules/connectivity";
 
@@ -12,12 +12,8 @@ import {ModalController, NavController} from '@ionic/angular';
 import {OrderModalComponent} from '../../components/order-modal/order-modal.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 // import '@capacitor-community/http';
-import { Plugins } from '@capacitor/core';
 import {ProductModalComponent} from '../../components/product-modal/product-modal.component';
-import {HTTP} from "@ionic-native/http/ngx";
-import {HttpHeaders} from "@angular/common/http";
-import {from} from "rxjs";
-import {NativeStorage} from "@ionic-native/native-storage/ngx";
+import {HTTP} from '@ionic-native/http/ngx';
 // import { RouterExtensions } from 'nativescript-angular/router';
 // import { SearchBar } from "tns-core-modules/ui/search-bar";
 // import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
@@ -83,12 +79,12 @@ export class CartComponent implements OnDestroy,  OnInit {
   }
 
   onSearchChange(args) {
-    const filtered = this._cartItems.filter(item => item.product.name.includes(args.target.value))
+    const filtered = this._cartItems.filter(item => item.product.name.includes(args.target.value));
     this._cartItems = filtered;
   }
 
-async ngOnInit () {
-    console.log('Dit is na de storage')
+async ngOnInit() {
+    console.log('Dit is na de storage');
 
 
 
@@ -98,11 +94,11 @@ async ngOnInit () {
       this._cartItems = res;
 
     }
-  })
+  });
 
 
 
-  console.log(this._cartItems + ' hallo')
+  console.log(this._cartItems + ' hallo');
 
    this.network.onConnect().subscribe(() => {
      if ((this.network.type === 'wifi' || this.network.type === 'mobile') && this.productRepository.hasOfflineProducts) {
@@ -250,8 +246,8 @@ async ngOnInit () {
   }
 
   show(id) {
-    console.log(id)
-    let navigationExtras: NavigationExtras = {
+    console.log(id);
+    const navigationExtras: NavigationExtras = {
       queryParams: {
         cartItem: JSON.stringify(this._cartItems[id]),
 
