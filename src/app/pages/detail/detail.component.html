@@ -1,30 +1,37 @@
-<ion-header>
+<ion-header translucent>
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
+
+    <ion-buttons slot="start" class="ion-margin-start" (click)="logOut()">
+      <ion-back-button (click)="back()"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons>
+      <ion-img src="assets/kroonlogo.png" class="ion-margin-end" slot="start" style="width: 30%"></ion-img>
     </ion-buttons>
   </ion-toolbar>
-            <ion-buttons slot="end">eee
 </ion-header>
-<!--<ion-view>-->
-<!--  <ion-header>-->
-<!--    <ion-toolbar>-->
-<!--      <ion-buttons slot="start">-->
-<!--        <ion-back-button></ion-back-button>-->
-<!--      </ion-buttons>-->
 
-<!--    </ion-toolbar>-->
-<!--  </ion-header>-->
-<!--&lt;!&ndash;  <ion-toolbar>&ndash;&gt;-->
+<ion-content>
+  <ion-img src="{{ cartItem.product.image }}"></ion-img>
+  <ion-content>
+    <div style="display: flex; justify-content: center; align-items: center;">
+      <ion-icon name="remove-circle" (click)="decrementQuantity()" size="large"></ion-icon>
+      <h2>{{ quantity }}</h2>
+      <ion-icon name="add-circle" (click)="incrementQuantity()" size="large"></ion-icon>
+    </div>
+    <p style="text-align: center;">{{ cartItem.product.name }}</p>
+    <p>{{ cartItem.product.description }}</p>
 
+    <p>{{ cartItem.product.meta_title}}</p>
+<!--    <table  >-->
+<!--      <tr >-->
+<!--        <th>{{ i }}</th>-->
+<!--      </tr>-->
+<!--    </table>-->
+    <ion-list *ngFor="let item of cartItem.product.attribute_groups; let i = index">
+      <ion-item *ngFor="let attribute of item.attribute">
+        <p >{{ attribute.name}}</p>
+      </ion-item>
+    </ion-list>
 
-<!--&lt;!&ndash;    <ion-icon name="arrow-back" size="large"></ion-icon>&ndash;&gt;-->
-<!--&lt;!&ndash;  </ion-toolbar>&ndash;&gt;-->
-<!--  <ion-toolbar color="primary">-->
-<!--    <ion-buttons slot="primary">-->
-<!--&lt;!&ndash;      <img src="assets/androidsearch.png" width="30px" height="30px" (click)="showSearch = !showSearch">&ndash;&gt;-->
-<!--    </ion-buttons>-->
-<!--    <ion-title>Product informatie</ion-title>-->
-<!--  </ion-toolbar>-->
-<!--</ion-view>-->
-
+  </ion-content>
+</ion-content>

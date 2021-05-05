@@ -2,17 +2,26 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 // import { Constants } from '../constants';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {from, Observable} from 'rxjs';
 // import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import {HTTP, HTTPResponse} from '@ionic-native/http/ngx';
+import {HTTP, HTTPResponse} from "@ionic-native/http/ngx";
+
 
 
 @Injectable()
 export class OrderService {
 
     constructor(
-        private http: HttpClient
+        private http: HTTP
     ) {
+      this.http.setHeader('*', String("Content-Type"), String("application/json"));
+      this.http.setHeader('*', String("Accept"), String("application/json"));
+      // this.nativeStorage.getItem('token').then(token => {
+      //   console.log(token + ' het')
+      //   // this.http.setHeader('*', 'Authorization', `Bearer ${token}`);
+      // }).catch(err => console.log(JSON.stringify(err) + ' Dit is eenm erropr'));
+      this.http.setHeader('*', 'Authorization', 'Bearer eb4ec0e140659545eda6d8ee5dc8dd0f33abf4a0')
+      this.http.setDataSerializer('json');
 
     }
 
@@ -26,62 +35,63 @@ export class OrderService {
     /**
      * Creates the request to retrieve the delivery addresses.
      */
-    addresses(): Observable<string> {
-        return this.http.get<string>(`https://app.kroon.nl/api/shipping/addresses`, { headers: this.headers });
+    addresses(): Observable<HTTPResponse> {
+        return from(this.http.get(`https://app.kroon.nl/api/shipping/addresses`, {}, {}));
     }
 
     /**
      * Creates the request to retrieve the delivery addresses.
      */
-    paymentAddresses(): Observable<string> {
-        return this.http.get<string>(`https://app.kroon.nl/api/payment/addresses`, { headers: this.headers });
+    paymentAddresses(): Observable<HTTPResponse> {
+        return from(this.http.get(`https://app.kroon.nl/api/payment/addresses`, {}, {}));
     }
 
     /**
      * Creates the request to retrieve the delivery addresses.
      */
-    defaultAddress(): Observable<string> {
-        return this.http.get<string>(`https://app.kroon.nl/api/account`, { headers: this.headers });
+    defaultAddress(): Observable<HTTPResponse> {
+        return from(this.http.get(`https://app.kroon.nl/api/account`, {}, {}));
     }
 
     /**
      * Sends to the backend that we'll use the address with this id as the shipping address
      */
-    selectShippingAddress(addressId: number): Observable<string> {
-        return this.http.post<string>(`https://app.kroon.nl/api/shipping/existing-address`, {
+    selectShippingAddress(addressId: number): Observable<HTTPResponse> {
+      console.log('AdresID' + addressId)
+        return from(this.http.post(`https://app.kroon.nl/api/shipping/existing-address`, {
             address_id: addressId
-        }, { headers: this.headers });
+        }, {}));
     }
 
 
-    selectShippingMethod(comment: string): Observable<string> {
+    selectShippingMethod(comment: string): Observable<HTTPResponse> {
 
         const body = {
             'shipping_method': 'free.free',
             "comment": comment
         };
 
-        return this.http.post<string>(`https://app.kroon.nl/api/shipping/method`, body, { headers: this.headers });
+        return from(this.http.post(`https://app.kroon.nl/api/shipping/method`, body, {}));
     }
 
 
     /**
      * Sends to the backend that we'll use the address with this id as the payment address
      */
-    selectPaymentAddress(addressId: number): Observable<string> {
+    selectPaymentAddress(addressId: number): Observable<HTTPResponse> {
 
         // console.log({
         //     address_id: addressId
         // });
-        return this.http.post<string>(`https://app.kroon.nl/api/payment/existing-address`, {
+        return from(this.http.post(`https://app.kroon.nl/api/payment/existing-address`, {
             address_id: addressId
-        }, { headers: this.headers });
+        }, { }));
     }
 
     /**
      * Creates a new shipping address with the given data.
      */
-    addShippingAddress(firstName: string, lastName: string, company: string, firstAddress: string, secondAddress: string, postalCode: string, city: string, zoneId: number): Observable<string> {
+    addShippingAddress(firstName: string, lastName: string, company: string, firstAddress: string, secondAddress: string, postalCode: string, city: string, zoneId: number): Observable<HTTPResponse> {
         const body = {
             firstname: firstName,
             lastname: lastName,
@@ -95,7 +105,7 @@ export class OrderService {
         };
 
 
-        return this.http.post<string>(`https://app.kroon.nl/api/shipping/address`, body, { headers: this.headers });
+        return from(this.http.post(`https://app.kroon.nl/api/shipping/address`, body, { }));
     }
 
     // getPaymentMethods(): Observable<string> {
@@ -113,7 +123,7 @@ export class OrderService {
     // }
 
 
-    handleComment(comment: string): Observable<string> {
+    handleComment(comment: string): Observable<HTTPResponse> {
 
         const body = {
             'payment_method': 'cod',
@@ -122,26 +132,26 @@ export class OrderService {
             "comment": comment
         };
 
-        return this.http.post<string>(`https://app.kroon.nl/api/handle/comment`, body, { headers: this.headers });
+        return from(this.http.post(`https://app.kroon.nl/api/handle/comment`, body, { }));
     }
 
-    confirmOrder(): Observable<string> {
-        return this.http.post<string>(`https://app.kroon.nl/api/order/simpleconfirmation`, {}, { headers: this.headers });
+    confirmOrder(): Observable<HTTPResponse> {
+        return from(this.http.post(`https://app.kroon.nl/api/order/simpleconfirmation`, {}, { }));
     }
 
-    placeOrder(): Observable<string> {
-        return this.http.put<string>(`https://app.kroon.nl/api/order/save`, {}, { headers: this.headers });
+    placeOrder(): Observable<HTTPResponse> {
+        return from(this.http.put(`https://app.kroon.nl/api/order/save`, {}, {  }));
     }
 
-    emptyCart(): Observable<string> {
-        return this.http.delete<string>(`https://app.kroon.nl/api/cart/empty`, { headers: this.headers });
+    emptyCart(): Observable<HTTPResponse> {
+        return from(this.http.delete(`https://app.kroon.nl/api/cart/empty`, {}, {}));
     }
 
-    addItemsToCart(items: Array<{}>): Observable<string> {
+    addItemsToCart(items: Array<{}>): Observable<HTTPResponse> {
 
-        return this.http.post<string>(`https://app.kroon.nl/api/cart/bulk`, {
+        return from(this.http.post(`https://app.kroon.nl/api/cart/bulk`, {
             items
-        }, { headers: this.headers });
+        }, { }));
     }
 
     doSentUnknown(message: {
@@ -152,9 +162,9 @@ export class OrderService {
         attachments: Array<{
             path: string,
         }>
-    }): Observable<string> {
+    }): Observable<HTTPResponse> {
 
-        return this.http.post<string>(`https://app.kroon.nl/api/order/unknown`, message, { headers: this.headers });
+        return from(this.http.post(`https://app.kroon.nl/api/order/unknown`, message, { }));
     }
 
 }

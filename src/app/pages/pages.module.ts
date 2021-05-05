@@ -7,6 +7,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { CartComponent } from "./cart/cart.component";
 import {IonicModule} from "@ionic/angular";
+import {ComponentModule} from "../components/component.module";
 // import { ScanPageComponent } from "./scanner/scanner.component";
 // import { DetailPageComponent } from "./detail/detail.component";
 
@@ -18,6 +19,7 @@ import {IonicModule} from "@ionic/angular";
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
+    ComponentModule
     // ComponentsModule,
   ],
     declarations: [

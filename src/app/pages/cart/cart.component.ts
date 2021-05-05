@@ -61,6 +61,7 @@ export class CartComponent implements OnDestroy,  OnInit {
     public navCtrl: NavController
 
   ) {
+    // window.location.reload( );
 
     // this.storage.get('cartItems').then(res => {
     //   this._cartItems = res;
@@ -241,12 +242,15 @@ async ngOnInit () {
   async presentOrderModal() {
     const modal = await this.modalController.create({
       component: OrderModalComponent,
-      cssClass: 'my-custom-class'
+      componentProps: {
+        cartItems: this.cartItems
+      }
     });
     return await modal.present();
   }
 
   show(id) {
+    console.log(id)
     let navigationExtras: NavigationExtras = {
       queryParams: {
         cartItem: JSON.stringify(this._cartItems[id]),

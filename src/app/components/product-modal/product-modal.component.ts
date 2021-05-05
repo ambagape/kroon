@@ -14,6 +14,7 @@ export class ProductModalComponent implements OnInit {
 
   @Input() cartItem: CartItem;
 
+
   private currentNumber = 1;
   private quantity = 0;
 
