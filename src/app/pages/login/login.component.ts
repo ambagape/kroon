@@ -62,7 +62,7 @@ export class LoginComponent {
     headers.append('Authorization', 'Bearer bb007ff2755e935ee6fcc29eeab29ada62df7458')
     await this.http.get(`https://app.kroon.nl/api/product/ean/314689`, {}, { headers }).then(res => console.log(JSON.stringify(res.data) + ' hey'))
 
-    const isLoggedIn = await this.authRepository.isLoggedIn();
+    const isLoggedIn = await this.authRepository.isLoggedIn;
     console.log('IS ingelogd:' + isLoggedIn)
 
     if (isLoggedIn) {
@@ -85,7 +85,7 @@ export class LoginComponent {
     const email = this.email;
     const password = this.password;
 
-    const isLoggedIn = await this.authRepository.isLoggedIn();
+    const isLoggedIn = await this.authRepository.isLoggedIn;
     console.log('IS ingelogd:' + isLoggedIn)
 
 
@@ -93,6 +93,7 @@ export class LoginComponent {
     if (email && password) {
       // this.activityService.busy();
       await this.authRepository.logIn(email, password).subscribe((res) => {
+        console.log(typeof res)
         // this.activityService.done();
         if (res) {
           this.router.navigate(['cart']);

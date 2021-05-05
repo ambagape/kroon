@@ -47,10 +47,12 @@ export class ProductService {
       //   console.log(token + ' het')
       //   // this.http.setHeader('*', 'Authorization', `Bearer ${token}`);
       // }).catch(err => console.log(JSON.stringify(err) + ' Dit is eenm erropr'));
+
       this.http.setHeader('*', 'Authorization', 'Bearer eb4ec0e140659545eda6d8ee5dc8dd0f33abf4a0')
       this.http.setDataSerializer('json');
       // console.log(`https://app.kroon.nl/api/product/ean/${ean}`);
       // this.http.get(`https://app.kroon.nl/api/product/ean/${ean}`, {}, { headers: this.headers }).then(res => console.log(JSON.stringify(res.data)));
+
         return from(this.http.get(`https://app.kroon.nl/api/product/ean/${ean}`, {},       {}));
     }
 

@@ -21,6 +21,7 @@ export class AuthRepository {
     logIn(email: string, password: string): Observable<boolean> {
         return this.authService.logIn(email, password).pipe(
             map((response: any) => {
+              response = JSON.parse(response.data)
                 console.log('hier')
               console.log(JSON.stringify(response.data) + 'login')
 
@@ -28,6 +29,7 @@ export class AuthRepository {
                   console.log(response.data.token + ' foo')
 
                   this.nativeStorage.setItem('token', response.data.token);
+                  console.log(response.data.token)
                   this.nativeStorage.setItem('email', email);
 
 
@@ -56,14 +58,9 @@ export class AuthRepository {
     }
 
     // Moet nog worden aangepast
-    isLoggedIn(): boolean {
-       const token = this.nativeStorage.getItem('token');
+    async isLoggedIn(): Promise<boolean> {
+      return (await this.nativeStorage.getItem('token')).value !== ('' || null);
 
-       if(token) {
-        return true;
-       } else {
-         return false;
-       }
     }
 
 
