@@ -47,9 +47,16 @@ export class AuthRepository {
     };
 
     // Moet nog worden aangepast
-    async isLoggedIn(): Promise<boolean> {
-      return (await this.nativeStorage.getItem('token')).value !== ('' || null);
-
+    async isLoggedIn() {
+      return this.nativeStorage.getItem('token').then(token => {
+        if(token) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      // return (await this.nativeStorage.getItem('token')).value !== ('' || null);
+      // return aw
     }
 
 }
