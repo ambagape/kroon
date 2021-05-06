@@ -51,7 +51,7 @@ export class ProductModalComponent implements OnInit {
   ) {
   }
 
-  ngOnInit = () => {
+  ngOnInit() {
     this.quantity = this.productRepository.getItemQuantity(this.cartItem);
   };
 
@@ -59,24 +59,24 @@ export class ProductModalComponent implements OnInit {
   //   this.closed.emit();
   // }
 
-  dismiss = () => {
+  dismiss() {
     this.modalController.dismiss({
       dismissed: true,
     });
   };
 
-  incrementQuantity = () => {
+  incrementQuantity() {
     this.quantity++;
     this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
     // this.quantity = quantity;
   };
 
-  decrementQuantity = () => {
+  decrementQuantity() {
     this.quantity--;
     this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
   };
 
-  public addItemToCart = () => {
+  public addItemToCart() {
     if (this.quantity > 0) {
       this.productRepository.addItemToCart(this.cartItem, this.quantity);
           this.modalController.dismiss({

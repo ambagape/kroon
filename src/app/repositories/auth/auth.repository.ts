@@ -42,7 +42,7 @@ export class AuthRepository {
             })
         );
 
-    logOut = () => {
+    logOut() {
       this.nativeStorage.remove('token');
     };
 

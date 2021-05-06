@@ -46,12 +46,16 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <ion-button icon-start expand="full" slot="start" color="dark" (click)="presentOrderModal()" style="width: 80%">
+    <ion-button icon-start expand="full" class="ion-activatable ripple-parent" slot="start" color="dark"
+      (click)="presentOrderModal()" style="width: 80%">
       <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
       Bestellen
+      <ion-ripple-effect></ion-ripple-effect>
     </ion-button>
-    <ion-button icon-start expand="full" slot="end" (click)="openBarCodeScanner()" style="width: 20%">
+    <ion-button icon-start expand="full" class="ion-activatable ripple-parent" slot="start" color="primary"
+      (click)="openBarCodeScanner()" style="width: 20%">
       <ion-icon name="barcode-outline"></ion-icon>
+      <ion-ripple-effect></ion-ripple-effect>
     </ion-button>
   </ion-toolbar>
 </ion-footer>

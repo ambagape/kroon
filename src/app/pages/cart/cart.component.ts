@@ -68,7 +68,7 @@ async ngOnInit() {
 
   }
 
-  ngOnDestroy = () => {
+  ngOnDestroy() {
     // stopMonitoring();
   };
 
@@ -97,11 +97,11 @@ async ngOnInit() {
       });
   }
 
-  orderModalClosed = () => {
+  orderModalClosed() {
     this.showOrderModal = false;
   };
 
-  logOut = () => {
+  logOut() {
     this.authRepository.logOut();
     this.router.navigate(['login']);
   };

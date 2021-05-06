@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable radix */
+/* eslint-disable no-underscore-dangle */
 import { Component, Output, EventEmitter, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { ProductRepository } from '../../repositories/product/product.repository';
 import { OrderRepository } from '../../repositories/order/order.repository';
@@ -43,6 +46,8 @@ export class OrderModalComponent {
     city: undefined,
     zoneId: undefined,
   };
+
+  private _pickerItems: Array<Address>;
 
   constructor(
     // private page: Page,
@@ -111,9 +116,11 @@ export class OrderModalComponent {
           return;
         }
 
-        console.log(this.selectedAddress.address_id);
+
         const addressRequests = [
-          this.orderRepository.selectPaymentAddress(parseInt(this.selectedAddress)),
+          this.orderRepository.selectPaymentAddress(
+            parseInt(this.selectedAddress, 2)
+          ),
           this.orderRepository.selectShippingAddress(parseInt(this.selectedAddress))
         ];
 
@@ -132,6 +139,46 @@ export class OrderModalComponent {
         });
       });
     });
+  }
+
+  addressSelected(index: number) {
+    this.changeForIndex(index);
+  }
+
+  provinceSelected(index: number) {
+    this.selectedProvince = this.provincePickerStrings[index];
+  }
+
+  /**
+   * Performs all the necessary changes when the address picker index is changed.
+   */
+  changeForIndex(index) {
+    this.index = index;
+    const pickerItem = this.pickerItems[this.index];
+    if (pickerItem.address_1) {
+      this.selectedAddress = pickerItem;
+      this.selectedString = pickerItem.company + ', ' + pickerItem.address_1 + ', ' + pickerItem.city;
+
+      // Persist the selected address.
+      // const addressId = Number(this.selectedAddress.address_id);
+      // if (addressId) {
+      //   setNumber('delivery-address-id', addressId);
+      // }
+    } else {
+      this.selectedString = pickerItem;
+      this.selectedAddress = null;
+      // Remove the selected address.
+      // remove('delivery-address-id');
+    }
+    // Uncomment this line to enable expanding a form to add a new delivery address.
+    // this.expanded = this.index === 1;
+    this.cdRef.detectChanges();
+  }
+
+  zoneIdLookup(province: string): number {
+    const i = this.provincePickerStrings.indexOf(province);
+    const lookup = [2329, 2330, 2331, 2332, 2333, 2334, 2335, 2336, 2337, 2338, 2339, 2340];
+    return lookup[i];
   }
 
   /**
@@ -247,68 +294,6 @@ export class OrderModalComponent {
     // }).show();
   }
 
-  zoneIdLookup(province: string): number {
-    const i = this.provincePickerStrings.indexOf(province);
-    const lookup = [2329, 2330, 2331, 2332, 2333, 2334, 2335, 2336, 2337, 2338, 2339, 2340];
-    return lookup[i];
-  }
-
-
-  // MARK - Picker methods and callbacks
-
-  // showAddressPicker() {
-  //   this.addressPicker.togglePicker();
-  // }
-  //
-  // showProvincePicker() {
-  //   this.provincePicker.togglePicker();
-  // }
-  //
-  // closeAddressPicker() {
-  //   this.addressPicker.togglePicker();
-  // }
-  //
-  // closeProvincePicker() {
-  //   this.provincePicker.togglePicker();
-  // }
-
-  addressSelected(index: number) {
-    this.changeForIndex(index);
-  }
-
-  provinceSelected(index: number) {
-    this.selectedProvince = this.provincePickerStrings[index];
-  }
-
-  /**
-   * Performs all the necessary changes when the address picker index is changed.
-   */
-  changeForIndex(index) {
-    this.index = index;
-    const pickerItem = this.pickerItems[this.index];
-    if (pickerItem.address_1) {
-      this.selectedAddress = pickerItem;
-      this.selectedString = pickerItem.company + ', ' + pickerItem.address_1 + ', ' + pickerItem.city;
-
-      // Persist the selected address.
-      // const addressId = Number(this.selectedAddress.address_id);
-      // if (addressId) {
-      //   setNumber('delivery-address-id', addressId);
-      // }
-    } else {
-      this.selectedString = pickerItem;
-      this.selectedAddress = null;
-      // Remove the selected address.
-      // remove('delivery-address-id');
-    }
-    // Uncomment this line to enable expanding a form to add a new delivery address.
-    // this.expanded = this.index === 1;
-    this.cdRef.detectChanges();
-  }
-
-
-  // MARK - Accessors for view
-
   get canSubmitForm(): boolean {
 
     let not_completed = true;
@@ -332,8 +317,6 @@ export class OrderModalComponent {
   get buttonActive(): boolean {
     return (this.selectedAddress != null || this.canSubmitForm) && !this.activityService.isBusy;
   }
-
-  private _pickerItems: Array<Address>;
 
   get pickerItems(): Array<any> {
     const array = Array<any>();
