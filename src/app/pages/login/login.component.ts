@@ -11,7 +11,8 @@ import { AuthRepository } from '../../repositories/auth/auth.repository';
 // import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
 import {HTTP} from '@ionic-native/http/ngx';
-import {ActivityService} from "../../shared/activity/activity.service";
+import { ActivityService } from 'src/app/shared/activity/activity.service';
+// import {ActivityService} from "../../shared/activity/activity.service";
 
 @Component({
   selector: 'app-login',
