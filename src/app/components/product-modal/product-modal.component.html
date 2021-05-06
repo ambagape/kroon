@@ -12,7 +12,7 @@
     <ion-row class="ion-justify-content-center">
       <ion-img height="200" cache=true src="{{ cartItem.product.image }}" alt=""></ion-img>
     </ion-row>
-    <ion-row class="ion-justify-content-center">
+    <ion-row class="ion-justify-content-center ion-margin">
       <!-- <div class="ion-text-center"> -->
       <ion-button color="primary" (click)="decrementQuantity()">
         <ion-icon name="remove-circle-outline"></ion-icon>
@@ -22,6 +22,14 @@
         <ion-icon name="add-circle-outline"></ion-icon>
       </ion-button>
       <!-- </div> -->
+    </ion-row>
+    <ion-row class="ion-margin">
+      <ion-label class="extra-bold">
+        {{ cartItem && cartItem.product && (cartItem.product.meta_title || cartItem.product.name) }}</ion-label>
+    </ion-row>
+    <ion-row class="ion-margin">
+      <ion-label >
+        {{ cartItem && cartItem.product && (cartItem.product.meta_description || cartItem.product.description) }}</ion-label>
     </ion-row>
   </ion-grid>
 </ion-content>

@@ -24,12 +24,14 @@ export class AppComponent implements OnInit {
  async ngOnInit() {
      await this.storage.create();
 
-    const isLoggedIn = await this.authRepository.isLoggedIn();
-    if (isLoggedIn) {
-      this.router.navigate(['cart']);
-    } else {
-      this.router.navigate(['login'],  { replaceUrl: true });
-    }
+    await this.authRepository.isLoggedIn().then(loggedIn => {
+      if (loggedIn) {
+        this.router.navigate(['cart']);
+      } else {
+        this.router.navigate(['login'],  { replaceUrl: true });
+      }
+    });
+
   }
 
   // MARK - Accessors for view

@@ -119,7 +119,7 @@ export class OrderModalComponent {
 
         const addressRequests = [
           this.orderRepository.selectPaymentAddress(
-            parseInt(this.selectedAddress, 2)
+            parseInt(this.selectedAddress)
           ),
           this.orderRepository.selectShippingAddress(parseInt(this.selectedAddress))
         ];
@@ -132,6 +132,8 @@ export class OrderModalComponent {
             return;
           }
 
+          this.productRepository.emptyCart();
+          window.location.reload();
           this.setComment();
         }, (error) => {
           this.activityService.done();
