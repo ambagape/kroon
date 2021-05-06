@@ -35,7 +35,6 @@ export class CartComponent implements OnInit {
     private activityService: ActivityService,
     public modalController: ModalController,
     public barcodeScanner: BarcodeScanner,
-    private http: HTTP,
     private storage: Storage,
     private network: Network,
     public navCtrl: NavController
@@ -44,17 +43,7 @@ export class CartComponent implements OnInit {
   }
 
   onSearchChange(args: { target: { value: string } }) {
-
     this.filterText = args.target.value;
-    // console.log(args.target.value);
-    console.log(this.filterText);
-
-    // const filtered = this._cartItems.filter(item => item.product.name.includes(args.target.value));
-
-    // console.log(filtered);
-
-
-    // this._cartItems = filtered;
   }
 
 async ngOnInit() {
@@ -71,14 +60,19 @@ async ngOnInit() {
        this.productRepository.updateOfflineProducts();
      }
    });
+
+   this.activityService.done();
   }
 
-  async openBarCodeScanner() {
-    await this.barcodeScanner.scan().then(async res => {
+  openBarCodeScanner() {
+    this.activityService.busy();
+
+    this.barcodeScanner.scan().then(async res => {
+
       this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
-        await this.activityService.busy();
+
+        this.activityService.busy();
         const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, res.text);
-        await this.activityService.done();
 
         const modal = await this.modalController.create({
           component: ProductModalComponent,
@@ -86,6 +80,8 @@ async ngOnInit() {
             cartItem
           }
         });
+
+        // this.activityService.done();
 
         return await modal.present();
       });
@@ -102,18 +98,12 @@ async ngOnInit() {
     this.router.navigate(['login']);
   };
 
-  delete = (i: CartItem) => {
-      this.productRepository.removeItemFromCart(i);
+  delete = (item: CartItem) => {
+      this.productRepository.removeItemFromCart(item);
   };
 
-  // public onSubmit(args) {
-  //   let searchBar = <SearchBar>args.object;
-  //   this.filterText = searchBar.text;
-  // }
-  //
   public onInputClear(args: any) {
 
-    console.log('fdsadfsafsafs');
     this.filterText = '';
   }
 

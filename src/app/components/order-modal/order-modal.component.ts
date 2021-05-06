@@ -59,23 +59,9 @@ export class OrderModalComponent {
     private modalController: ModalController
   ) {
 
-    // if (isIOS) {
-    //   this.iqKeyboard = IQKeyboardManager.sharedManager();
-    //   this.iqKeyboard.overrideKeyboardAppearance = true;
-    //   this.iqKeyboard.keyboardAppearance = UIKeyboardAppearance.Dark;
-    //   this.iqKeyboard.shouldResignOnTouchOutside = true;
-    // }
     this.orderRepository.addresses().subscribe((res) => {
       if (res) {
         this._pickerItems = res;
-        // console.log(this.selectedAddress + ' Dit ios goed og nie' )
-
-        // Selects the previously selected delivery address.
-        // const deliveryId = getNumber('delivery-address-id', null);
-        // if (deliveryId) {
-        //   const index = this.pickerItems.findIndex((e) => e.address_id && e.address_id == deliveryId);
-        //   this.changeForIndex(index);
-        // }
       }
     });
   }
@@ -89,9 +75,6 @@ export class OrderModalComponent {
   }
 
   order() {
-    console.log(JSON.stringify(this.selectedAddress));
-
-    // console.log(JSON.stringify(JSON.parse(this.selectedAddress)) + ' Hallo adresjes')
     if (!this.selectedAddress) {
       if (this.canSubmitForm) {
         this.submitForm();

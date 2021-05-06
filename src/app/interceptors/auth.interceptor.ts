@@ -27,7 +27,6 @@ export class AuthInterceptor implements HttpInterceptor {
     // })
 
     this.nativeStorage.getItem('token').then(token => {
-      console.log('Token halen uit NativeStorage' + typeof token);
       if (token) {
         request = request.clone({
           setHeaders: {

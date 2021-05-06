@@ -77,7 +77,6 @@ export class LoginComponent implements OnInit{
     if (email && password) {
       this.activityService.busy();
       await this.authRepository.logIn(email, password).subscribe((res) => {
-        console.log(typeof res);
         this.activityService.done();
         if (res) {
           this.router.navigate(['cart']);

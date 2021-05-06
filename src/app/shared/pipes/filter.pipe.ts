@@ -10,8 +10,8 @@ export class FilterPipe implements PipeTransform {
 
     transform(source: Array<CartItem>, filterText: string): Array<CartItem> {
 
-      console.log(source);
-      console.log(filterText);
+      // console.log(source);
+      // console.log(filterText);
 
         if (!filterText) {
             return source;

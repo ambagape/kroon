@@ -71,11 +71,7 @@ export class ProductRepository{
    */
   private findItemInCart(id: number): CartItem {
 
-    console.log(JSON.stringify(this._cartItems));
-    const filtered = this.cartItems.filter((cartItem) => {
-      console.log('Filter', cartItem);
-      return cartItem.product && id === cartItem.product.id;
-    });
+    const filtered = this.cartItems.filter((cartItem) => cartItem.product && id === cartItem.product.id);
     if (filtered.length) {
       return filtered[0];
     }
@@ -151,16 +147,14 @@ export class ProductRepository{
   }
 
   removeItemFromCart(item: CartItem) {
-
     const i = this.indexOfItemInCartByEan(item.ean);
-
-    console.log(i);
 
     if (i !== null) {
       this._cartItems.splice(i, 1);
       this.writeCartToDisk();
       window.location.reload();
     }
+
   }
 
   emptyCart() {
@@ -172,7 +166,7 @@ export class ProductRepository{
     const i = this.indexOfItemInCartByEan(item.ean);
     const foundItem = this._cartItems[i];
     if (foundItem && foundItem.quantity) {
-      console.log(foundItem.quantity);
+
       return foundItem.quantity;
     }
     return 1;
@@ -187,7 +181,7 @@ export class ProductRepository{
 
         const old = this._cartItems[i];
 
-        if (old.quantity != quantity) {
+        if (old.quantity !== quantity) {
           this._cartItems[i] = { ...old, quantity };
           this.writeCartToDisk();
         }
@@ -204,7 +198,7 @@ export class ProductRepository{
 
     if (filtered.length) {
 
-      return filtered[0] != undefined;
+      return filtered[0] !== undefined;
     }
 
     return false;
@@ -215,7 +209,7 @@ export class ProductRepository{
     const filtered = this._cartItems.filter((e) => !e.exists);
 
     if (filtered.length) {
-      return filtered[0] != undefined;
+      return filtered[0] !== undefined;
     }
 
     return false;
@@ -272,35 +266,8 @@ export class ProductRepository{
     });
   }
 
-  // private async get cartFile(): Promise<FileReadResult> {
-
-    //  return Filesystem.readFile({
-    //   path: 'cartItems/cart-items.json',
-    //   directory: FilesystemDirectory.Documents,
-    //   encoding: FilesystemEncoding.UTF8
-    // });
-    // const documents: FilesystemDirectory = knownFolders.documents();
-    // const folder: Folder = documents.getFolder('cartItems');
-    //
-    //
-    //
-    //
-    // return folder.getFile('cart-items.json');
-
-  //   await this.storage.get('')
-  // }
-  //
   private writeCartToDisk() {
-    // const file = this.cartFile;
-    // file.writeFile()
-    // file.writeText(JSON.stringify(this._cartItems.map(ci => ci))).then((d) => {
-    //   console.log('Successfully wrote cart to disk.');
-    // }).catch((err) => {
-    //   console.log('Error writing cart to disk:', err);
-    // })
-
     this.storage.set('cartItems', this._cartItems);
-    // window.location.reload();
   }
 
   async readCartFromDisk() {
@@ -311,30 +278,6 @@ export class ProductRepository{
       }
 
     });
-   // .then(response => {
-   //   console.log(JSON.stringify(response) + 'hallo jeroen')
-   //
-   //   // if(response) {
-   //      console.log(JSON.stringify(response) + ' dit is van de storage')
-   //      this._cartItems = response;
-   //
-   //      console.log('Succesfully readed')
-   //    // } else {
-   //    //   return;
-   //    // }
-   //  }).catch(error => {
-   //    console.log('Something went wrong' + error.message)
-   // });
-    // const file = this.cartFile;
-    // file.readText()
-    //   .then((res) => {
-    //     if (res) {
-    //       this._cartItems = JSON.parse(res);
-    //       console.log('Successfully read cart from disk.');
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log('Error while reading cart items from disk:', err);
-    //   })
+
   }
 }

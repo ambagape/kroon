@@ -7,56 +7,46 @@ import { Plugins } from '@capacitor/core';
 
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 
-
 @Injectable()
 export class AuthRepository {
+  constructor(
+    private authService: AuthService,
+    private nativeStorage: NativeStorage
+  ) {}
 
-    constructor(
-        private authService: AuthService,
-        private nativeStorage: NativeStorage
-    ) {
+  logIn = (email: string, password: string): Observable<boolean> =>
+    this.authService.logIn(email, password).pipe(
+      map((response: any) => {
+        response = JSON.parse(response.data);
+        if (response && response.success === true) {
+          this.nativeStorage.setItem('token', response.data.token);
+          this.nativeStorage.setItem('email', email);
 
-    }
-
-    logIn = (email: string, password: string): Observable<boolean> => this.authService.logIn(email, password).pipe(
-            map((response: any) => {
-              response = JSON.parse(response.data);
-                console.log('hier');
-              console.log(JSON.stringify(response.data) + 'login');
-
-                if (response && response.success === true) {
-                  console.log(response.data.token + ' foo');
-
-                  this.nativeStorage.setItem('token', response.data.token);
-                  console.log(response.data.token);
-                  this.nativeStorage.setItem('email', email);
-
-                  return of(true);
-                } else {
-                  return of(false);
-                }
-            }),
-            catchError((response) => {
-                console.log('Something went wrong while logging in.', response);
-                return of(null);
-            })
-        );
-
-    logOut() {
-      this.nativeStorage.remove('token');
-    };
-
-    // Moet nog worden aangepast
-    async isLoggedIn() {
-      return this.nativeStorage.getItem('token').then(token => {
-        if(token) {
-          return true;
+          return of(true);
         } else {
-          return false;
+          return of(false);
         }
-      });
-      // return (await this.nativeStorage.getItem('token')).value !== ('' || null);
-      // return aw
-    }
+      }),
+      catchError((response) => {
+        console.log('Something went wrong while logging in.', response);
+        return of(null);
+      })
+    );
 
+  logOut() {
+    this.nativeStorage.remove('token');
+  }
+
+  // Moet nog worden aangepast
+  async isLoggedIn() {
+    return this.nativeStorage.getItem('token').then((token) => {
+      if (token) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    // return (await this.nativeStorage.getItem('token')).value !== ('' || null);
+    // return aw
+  }
 }

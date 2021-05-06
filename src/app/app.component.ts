@@ -34,8 +34,6 @@ export class AppComponent implements OnInit {
 
   }
 
-  // MARK - Accessors for view
-
   get showSpinner(): boolean {
     return this.activityService.isBusy;
   }

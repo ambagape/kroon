@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Injectable } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -28,12 +29,12 @@ export class OrderRepository {
               response = JSON.parse(response.data);
 
                 if (response) {
-                    if (response.success != 1) {
-                      console.log('Gaat fout');
+                    if (response.success !== 1) {
+
                         return null;
                     }
                     if (response.data && response.data.addresses) {
-                      console.log('Geli');
+
                         this._addresses = response.data.addresses;
                         return response.data.addresses;
                     }
@@ -53,26 +54,17 @@ export class OrderRepository {
 
 
     selectPaymentAddress(addressId: number): Observable<boolean> {
-      console.log(addressId);
+      // console.log(addressId);
 
         if (!addressId) {
             return this.handleStatus(this.orderService.defaultAddress().pipe(map((account: any) => {
-              console.log(JSON.stringify(account.data));
+              // console.log(JSON.stringify(account.data));
 
               account = JSON.parse(account.data);
-                // console.log('account');
-                // console.log(account.data.address_id);
-                // console.log('account');
-                console.log(this.handleStatus(this.orderService.selectPaymentAddress(account.data.address_id), 'settng the payment address'));
-                // console.log('account');
 
                 return this.handleStatus(this.orderService.selectPaymentAddress(account.data.address_id), 'settng the payment address');
             })), 'settng the payment address');
         } else {
-
-            console.log('addressId');
-            console.log(addressId);
-            console.log('addressId');
 
             return this.handleStatus(this.orderService.selectPaymentAddress(addressId), 'selecting the payment address');
         }
@@ -133,7 +125,7 @@ export class OrderRepository {
             map((response: any) => {
               response = JSON.parse(response.data);
                 if (response) {
-                    return response.success == 1;
+                    return response.success === 1;
                 }
                 return false;
             }),

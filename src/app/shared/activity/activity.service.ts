@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class ActivityService {
 
-  private _isBusy = false;
+  private _isBusy = true;
 
   constructor() { }
 
