@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from "@angular/common/http";
-import { Observable, throwError } from "rxjs";
-import { catchError } from "rxjs/operators";
-import {Router} from "@angular/router";
+import { Injectable } from '@angular/core';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import {Router} from '@angular/router';
 // import {NativeStorage} from "@ionic-native/native-storage/ngx";
 // import { RouterExtensions } from "nativescript-angular/router";
 // import { getString, remove } from 'tns-core-modules/application-settings/application-settings';
@@ -10,7 +10,7 @@ import {Router} from "@angular/router";
 //
 // const { Storage } = Plugins;
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
-import {getTokenAtPosition} from "@angular/compiler-cli/src/ngtsc/util/src/typescript";
+import {getTokenAtPosition} from '@angular/compiler-cli/src/ngtsc/util/src/typescript';
 
 
 @Injectable()
@@ -27,7 +27,7 @@ export class AuthInterceptor implements HttpInterceptor {
     // })
 
     this.nativeStorage.getItem('token').then(token => {
-      console.log('Token halen uit NativeStorage' + typeof token)
+      console.log('Token halen uit NativeStorage' + typeof token);
       if (token) {
         request = request.clone({
           setHeaders: {

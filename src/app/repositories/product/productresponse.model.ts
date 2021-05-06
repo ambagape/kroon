@@ -1,4 +1,4 @@
-import { Product } from "../../shared/product/product.model";
+import { Product } from '../../shared/product/product.model';
 
 export class ProductResponse {
   status: ProductResponseStatus;

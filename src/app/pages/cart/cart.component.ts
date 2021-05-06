@@ -17,7 +17,7 @@ import { Network } from '@ionic-native/network/ngx';
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
 })
-export class CartComponent implements OnDestroy,  OnInit {
+export class CartComponent implements OnInit {
 
   showOrderModal = false;
   showSearch = false;
@@ -51,14 +51,12 @@ export class CartComponent implements OnDestroy,  OnInit {
 
 async ngOnInit() {
     await this.storage.create();
-    console.log('Dit is na de storage');
 
-  this.storage.get('cartItems').then(res => {
-    if(res) {
-      this._cartItems = res;
-
-    }
-  });
+    this.storage.get('cartItems').then(res => {
+      if(res) {
+        this._cartItems = res;
+      }
+    });
 
    this.network.onConnect().subscribe(() => {
      if ((this.network.type === 'wifi' || this.network.type === 'mobile') && this.productRepository.hasOfflineProducts) {
@@ -68,13 +66,9 @@ async ngOnInit() {
 
   }
 
-  ngOnDestroy() {
-    // stopMonitoring();
-  };
-
   async openBarCodeScanner() {
     await this.barcodeScanner.scan().then(async res => {
-      await this.productRepository.productForEan(res.text).subscribe( async (productResponse) => {
+      this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
         await this.activityService.busy();
         const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, res.text);
         await this.activityService.done();
@@ -86,10 +80,6 @@ async ngOnInit() {
             cartItem
           }
         });
-
-        // modal.onDidDismiss().then((cartItem: any) => {
-        //
-        // });
 
         return await modal.present();
       });
@@ -137,13 +127,12 @@ async ngOnInit() {
   }
 
   show(id) {
-    console.log(id);
     const navigationExtras: NavigationExtras = {
       queryParams: {
         cartItem: JSON.stringify(this._cartItems[id]),
-
       }
     };
+
     this.navCtrl.navigateForward(['detail'], navigationExtras);
   }
 }

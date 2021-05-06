@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {from, Observable} from 'rxjs';
 // import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
-import {HTTP, HTTPResponse} from "@ionic-native/http/ngx";
+import {HTTP, HTTPResponse} from '@ionic-native/http/ngx';
 
 
 
@@ -14,13 +14,13 @@ export class OrderService {
     constructor(
         private http: HTTP
     ) {
-      this.http.setHeader('*', String("Content-Type"), String("application/json"));
-      this.http.setHeader('*', String("Accept"), String("application/json"));
+      this.http.setHeader('*', String('Content-Type'), String('application/json'));
+      this.http.setHeader('*', String('Accept'), String('application/json'));
       // this.nativeStorage.getItem('token').then(token => {
       //   console.log(token + ' het')
       //   // this.http.setHeader('*', 'Authorization', `Bearer ${token}`);
       // }).catch(err => console.log(JSON.stringify(err) + ' Dit is eenm erropr'));
-      this.http.setHeader('*', 'Authorization', 'Bearer eb4ec0e140659545eda6d8ee5dc8dd0f33abf4a0')
+      this.http.setHeader('*', 'Authorization', 'Bearer eb4ec0e140659545eda6d8ee5dc8dd0f33abf4a0');
       this.http.setDataSerializer('json');
 
     }
@@ -57,7 +57,7 @@ export class OrderService {
      * Sends to the backend that we'll use the address with this id as the shipping address
      */
     selectShippingAddress(addressId: number): Observable<HTTPResponse> {
-      console.log('AdresID' + addressId)
+      console.log('AdresID' + addressId);
         return from(this.http.post(`https://app.kroon.nl/api/shipping/existing-address`, {
             address_id: addressId
         }, {}));
@@ -67,8 +67,8 @@ export class OrderService {
     selectShippingMethod(comment: string): Observable<HTTPResponse> {
 
         const body = {
-            'shipping_method': 'free.free',
-            "comment": comment
+            shipping_method: 'free.free',
+            comment
         };
 
         return from(this.http.post(`https://app.kroon.nl/api/shipping/method`, body, {}));
@@ -126,10 +126,10 @@ export class OrderService {
     handleComment(comment: string): Observable<HTTPResponse> {
 
         const body = {
-            'payment_method': 'cod',
-            'shipping_method': 'free.free',
-            'agree': true,
-            "comment": comment
+            payment_method: 'cod',
+            shipping_method: 'free.free',
+            agree: true,
+            comment
         };
 
         return from(this.http.post(`https://app.kroon.nl/api/handle/comment`, body, { }));
@@ -155,13 +155,13 @@ export class OrderService {
     }
 
     doSentUnknown(message: {
-        subject: string,
-        body: string,
-        to: Array<string>,
-        bcc: Array<string>,
+        subject: string;
+        body: string;
+        to: Array<string>;
+        bcc: Array<string>;
         attachments: Array<{
-            path: string,
-        }>
+            path: string;
+        }>;
     }): Observable<HTTPResponse> {
 
         return from(this.http.post(`https://app.kroon.nl/api/order/unknown`, message, { }));

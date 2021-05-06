@@ -1,9 +1,9 @@
-import { NgModule } from "@angular/core";
-import {IonicModule} from "@ionic/angular";
-import {CommonModule} from "@angular/common";
-import {ProductModalComponent} from "./product-modal/product-modal.component";
-import {OrderModalComponent} from "./order-modal/order-modal.component";
-import {FormsModule} from "@angular/forms";
+import { NgModule } from '@angular/core';
+import {IonicModule} from '@ionic/angular';
+import {CommonModule} from '@angular/common';
+import {ProductModalComponent} from './product-modal/product-modal.component';
+import {OrderModalComponent} from './order-modal/order-modal.component';
+import {FormsModule} from '@angular/forms';
 
 @NgModule({
   imports: [

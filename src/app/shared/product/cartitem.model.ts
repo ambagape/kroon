@@ -1,9 +1,9 @@
-import { Product } from "./product.model";
-import { ProductResponseStatus } from "../../repositories/product/productresponse.model";
+import { Product } from './product.model';
+import { ProductResponseStatus } from '../../repositories/product/productresponse.model';
 
 export class CartItem {
     offline: boolean;
-    exists: boolean = true;
+    exists = true;
     product: Product;
     quantity: number;
     ean: string;
@@ -14,7 +14,7 @@ export class CartItem {
                 return {
                     offline: false,
                     exists: true,
-                    product: product,
+                    product,
                     quantity: 1,
                     ean
                 };

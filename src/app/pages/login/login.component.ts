@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/auth/auth.service';
 import { AuthRepository } from '../../repositories/auth/auth.repository';
@@ -10,11 +10,8 @@ import { AuthRepository } from '../../repositories/auth/auth.repository';
 // import * as appversion from "nativescript-appversion";
 // import {Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { ToastController } from '@ionic/angular';
-import {HttpHeaders} from "@angular/common/http";
-import {HTTP} from "@ionic-native/http/ngx";
-
-
-
+import {HTTP} from '@ionic-native/http/ngx';
+import {ActivityService} from "../../shared/activity/activity.service";
 
 @Component({
   selector: 'app-login',
@@ -25,7 +22,7 @@ import {HTTP} from "@ionic-native/http/ngx";
   // moduleId: module.id,
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   // private form: FormGroup;
   //
   // public response;
@@ -40,8 +37,8 @@ export class LoginComponent {
     private router: Router,
     private authRepository: AuthRepository,
     public toastController: ToastController,
-    private http: HTTP
-    // private activityService: ActivityService
+    private http: HTTP,
+    private activityService: ActivityService
   ) {
 
     // this.page.actionBarHidden = true;
@@ -52,21 +49,12 @@ export class LoginComponent {
     // });
   }
 
-  // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
   async ngOnInit() {
 
-
-    const headers = new HttpHeaders();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Accept', 'application/json');
-    headers.append('Authorization', 'Bearer bb007ff2755e935ee6fcc29eeab29ada62df7458')
-    await this.http.get(`https://app.kroon.nl/api/product/ean/314689`, {}, { headers }).then(res => console.log(JSON.stringify(res.data) + ' hey'))
-
     const isLoggedIn = await this.authRepository.isLoggedIn;
-    console.log('IS ingelogd:' + isLoggedIn)
 
     if (isLoggedIn) {
-      console.log('Is ingelogd' + isLoggedIn)
+      console.log('Is ingelogd' + isLoggedIn);
       await this.router.navigate(['cart']);
     } else {
       await this.router.navigate(['login']);
@@ -85,22 +73,14 @@ export class LoginComponent {
     const email = this.email;
     const password = this.password;
 
-    const isLoggedIn = await this.authRepository.isLoggedIn;
-    console.log('IS ingelogd:' + isLoggedIn)
-
-
-    console.log(email, password);
     if (email && password) {
-      // this.activityService.busy();
+      this.activityService.busy();
       await this.authRepository.logIn(email, password).subscribe((res) => {
-        console.log(typeof res)
-        // this.activityService.done();
+        console.log(typeof res);
+        this.activityService.done();
         if (res) {
           this.router.navigate(['cart']);
         } else {
-          console.log('-----')
-          console.log('-------')
-          console.log('error');
           this.toast('Check je gegevens');
         }
       });
@@ -108,8 +88,6 @@ export class LoginComponent {
       this.toast('Vul je inloggegevens in');
     }
   }
-
-
 
   // forgotPassword() {
   //   utilsModule.openUrl('https://www.kroon.nl/index.php?route=account/forgotten');

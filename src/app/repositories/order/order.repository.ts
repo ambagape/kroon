@@ -29,11 +29,11 @@ export class OrderRepository {
 
                 if (response) {
                     if (response.success != 1) {
-                      console.log('Gaat fout')
+                      console.log('Gaat fout');
                         return null;
                     }
                     if (response.data && response.data.addresses) {
-                      console.log('Geli')
+                      console.log('Geli');
                         this._addresses = response.data.addresses;
                         return response.data.addresses;
                     }
@@ -41,10 +41,10 @@ export class OrderRepository {
                 }
             }),
             catchError((err) => {
-                console.log("Something went wrong while getting the delivery addresses:", err);
+                console.log('Something went wrong while getting the delivery addresses:', err);
                 return of(null);
             })
-        )
+        );
     }
 
     selectShippingAddress(addressId: number): Observable<boolean> {
@@ -53,11 +53,11 @@ export class OrderRepository {
 
 
     selectPaymentAddress(addressId: number): Observable<boolean> {
-      console.log(addressId)
+      console.log(addressId);
 
         if (!addressId) {
             return this.handleStatus(this.orderService.defaultAddress().pipe(map((account: any) => {
-              console.log(JSON.stringify(account.data))
+              console.log(JSON.stringify(account.data));
 
               account = JSON.parse(account.data);
                 // console.log('account');
@@ -118,13 +118,10 @@ export class OrderRepository {
         if (this.productRepository.cartItems.length == 0 || this.productRepository.hasOfflineProducts) {
             return of(false);
         }
-        const items = this.productRepository.cartItems.map((cartItem) => {
-
-            return {
+        const items = this.productRepository.cartItems.map((cartItem) => ({
                 product_id: cartItem.product.product_id,
                 quantity: cartItem.quantity
-            }
-        });
+            }));
         return this.handleStatus(this.orderService.addItemsToCart(items), 'adding items to the cart');
     }
 
@@ -144,7 +141,7 @@ export class OrderRepository {
             //     console.log(`Something went wrong while ${requestDescription}:`, err);
             //     return of(false);
             // })
-        )
+        );
     }
 
 

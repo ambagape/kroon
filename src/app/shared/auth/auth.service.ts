@@ -10,14 +10,13 @@ const { Storage } = Plugins;
 
 import { Injectable } from '@angular/core';
 import {from, Observable} from 'rxjs';
-import {HTTP, HTTPResponse} from "@ionic-native/http/ngx";
+import {HTTP, HTTPResponse} from '@ionic-native/http/ngx';
 
 
 @Injectable()
 export class AuthService {
 
     constructor(
-      // private http: HttpClient
       private http: HTTP
     ) {
 
@@ -43,11 +42,10 @@ export class AuthService {
             email,
             password
         };
-        this.http.setHeader('*', String("Content-Type"), String("application/json"));
-        this.http.setHeader('*', String("Accept"), String("application/json"));
+        this.http.setHeader('*', String('Content-Type'), String('application/json'));
+        this.http.setHeader('*', String('Accept'), String('application/json'));
         this.http.setDataSerializer('json');
 
-        // Storage.get({key: 'token'}).then(res => console.log(res.value + ' dit ois eekldsfnlkng'))
         return from(this.http.post(`https://app.kroon.nl/api/login`, body, {}));
     }
 

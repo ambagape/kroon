@@ -1,4 +1,4 @@
-import { AttributeGroup } from "./attribute.model";
+import { AttributeGroup } from './attribute.model';
 
 export class Product {
     id: number;
