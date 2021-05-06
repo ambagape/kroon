@@ -1,45 +1,39 @@
 <ion-header translucent>
-  <ion-toolbar color="light">
-    <ion-title>Logo van Kroon</ion-title>
-  </ion-toolbar>
   <ion-toolbar>
-    <ion-title>Bestelling plaatsen</ion-title>
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" class="ion-margin-start">
       <ion-icon name="close-outline" style="zoom: 2.0;" (click)="dismiss()"></ion-icon>
     </ion-buttons>
+    <ion-img cache=true src="assets/logo_transparent.png" class="ion-margin-start" slot="start" style="width: 30%">
+    </ion-img>
+  </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-title class="ion-margin-start" slot="start">Bestelling plaatsen</ion-title>
   </ion-toolbar>
 </ion-header>
+
 <ion-content fullscreen>
-  <div style="display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 60vh;
-  width: 90%;
-  margin: 0 auto;">
+  <ion-list>
+    <ion-item style="margin-bottom: 20px;">
+      <ion-label position="stacked">Afleveradres</ion-label>
+      <ion-select okText="Gereed" cancelText="Annuleren" [(ngModel)]="selectedAddress">
+        <ion-select-option *ngFor="let item of pickerItems; let i = index" value="{{ item.address_id }}">
+          {{ item.address_1 }}</ion-select-option>
+        <!--          <ion-select-option *ngFor="let item of _pickerItems; let i = index"  value="{{ item }}">{{ item.address_2 }}</ion-select-option>-->
+      </ion-select>
+    </ion-item>
+    <ion-item style="margin-bottom: 20px;">
+      <ion-label position="stacked">Ordernummer / bonnummer (optioneel)</ion-label>
+      <ion-input [ngModel]=""></ion-input>
+    </ion-item>
 
-    <ion-list  >
-<!--      <p>{{ item.address_1 }}</p>-->
-    </ion-list>
-    <ion-list>
 
-
-      <ion-item style="margin-bottom: 20px;">
-        <ion-label position="stacked">Afleveradres</ion-label>
-          <ion-select okText="Gereed" cancelText="Annuleren" [(ngModel)]="selectedAddress" >
-          <ion-select-option *ngFor="let item of pickerItems; let i = index"  value="{{ item.address_id }}">{{ item.address_1 }}</ion-select-option>
-<!--          <ion-select-option *ngFor="let item of _pickerItems; let i = index"  value="{{ item }}">{{ item.address_2 }}</ion-select-option>-->
-        </ion-select>
-      </ion-item>
-      <ion-item style="margin-bottom: 20px;">
-        <ion-label position="stacked">Ordernummer / bonnummer (optioneel)</ion-label>
-        <ion-input [ngModel]=""></ion-input>
-      </ion-item>
-      <ion-button icon-start expand="full" color="dark" (click)="order()" >
-        <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
-        Afronden
-      </ion-button>
-
-    </ion-list>
-  </div>
+  </ion-list>
 </ion-content>
+<ion-footer>
+  <ion-toolbar>
+    <ion-button icon-start expand="full" color="dark" (click)="order()">
+      <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
+      Afronden
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
