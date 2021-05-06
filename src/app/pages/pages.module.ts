@@ -9,6 +9,7 @@ import { CartComponent } from './cart/cart.component';
 import {IonicModule} from '@ionic/angular';
 import {ComponentModule} from '../components/component.module';
 import { DetailComponent } from './detail/detail.component';
+import { FilterPipe } from '../shared/pipes/filter.pipe';
 // import { ScanPageComponent } from "./scanner/scanner.component";
 // import { DetailPageComponent } from "./detail/detail.component";
 
@@ -28,7 +29,8 @@ import { DetailComponent } from './detail/detail.component';
         LoginComponent,
         CartComponent,
         // ScanPageComponent,
-        DetailComponent
+        DetailComponent,
+        FilterPipe
     ],
 
 })

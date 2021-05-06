@@ -27,7 +27,6 @@ export class CartComponent implements OnInit {
   public filterText = '';
   public search: string = null;
   private _cartItems: CartItem[] = [];
-  private _scannedCartItem: CartItem;
 
   constructor(
     private router: Router,
@@ -44,9 +43,18 @@ export class CartComponent implements OnInit {
   ) {
   }
 
-  onSearchChange(args) {
-    const filtered = this._cartItems.filter(item => item.product.name.includes(args.target.value));
-    this._cartItems = filtered;
+  onSearchChange(args: { target: { value: string } }) {
+
+    this.filterText = args.target.value;
+    // console.log(args.target.value);
+    console.log(this.filterText);
+
+    // const filtered = this._cartItems.filter(item => item.product.name.includes(args.target.value));
+
+    // console.log(filtered);
+
+
+    // this._cartItems = filtered;
   }
 
 async ngOnInit() {
@@ -63,7 +71,6 @@ async ngOnInit() {
        this.productRepository.updateOfflineProducts();
      }
    });
-
   }
 
   async openBarCodeScanner() {
@@ -72,7 +79,6 @@ async ngOnInit() {
         await this.activityService.busy();
         const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, res.text);
         await this.activityService.done();
-
 
         const modal = await this.modalController.create({
           component: ProductModalComponent,
@@ -105,11 +111,11 @@ async ngOnInit() {
   //   this.filterText = searchBar.text;
   // }
   //
-  // public onClear(args) {
-  //   let searchBar = <SearchBar>args.object;
-  //   searchBar.text = this.filterText = '';
-  //   searchBar.hint = "Zoeken in winkelwagen";
-  // }
+  public onInputClear(args: any) {
+
+    console.log('fdsadfsafsafs');
+    this.filterText = '';
+  }
 
   get cartItems(): CartItem[] {
 
@@ -126,10 +132,10 @@ async ngOnInit() {
     return await modal.present();
   }
 
-  show(id) {
+  show(item: CartItem) {
     const navigationExtras: NavigationExtras = {
       queryParams: {
-        cartItem: JSON.stringify(this._cartItems[id]),
+        cartItem: JSON.stringify(item),
       }
     };
 
