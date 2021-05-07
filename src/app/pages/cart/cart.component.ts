@@ -99,6 +99,11 @@ async ngOnInit() {
   };
 
   delete = (item: CartItem) => {
+    const index = this._cartItems.indexOf(item);
+
+    if (index > -1) {
+      this._cartItems.splice(index, 1)
+    }
       this.productRepository.removeItemFromCart(item);
   };
 

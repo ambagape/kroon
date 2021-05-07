@@ -15,6 +15,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import {IonicStorageModule} from '@ionic/storage-angular';
 import { Network } from '@ionic-native/network/ngx';
+import { Camera } from '@ionic-native/camera/ngx';
+
 
 @NgModule({
   declarations: [
@@ -41,6 +43,7 @@ import { Network } from '@ionic-native/network/ngx';
     BarcodeScanner,
     NativeStorage,
     Network,
+    Camera
 
   ],
   bootstrap: [AppComponent],

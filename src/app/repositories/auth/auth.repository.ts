@@ -20,7 +20,7 @@ export class AuthRepository {
         response = JSON.parse(response.data);
         if (response && response.success === true) {
           this.nativeStorage.setItem('token', response.data.token);
-          this.nativeStorage.setItem('email', email);
+          this.nativeStorage.setItem('email', email).then(console.log);
 
           return of(true);
         } else {

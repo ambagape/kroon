@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {from, Observable} from 'rxjs';
 import {HTTP, HTTPResponse} from '@ionic-native/http/ngx';
@@ -7,15 +7,19 @@ import { NativeStorage} from '@ionic-native/native-storage/ngx';
 
 @Injectable()
 export class ProductService {
+  bearer: string;
 
     constructor(
         private http: HTTP,
         private nativeStorage: NativeStorage
     ) {
-
+      this.nativeStorage.getItem('token').then(token => {
+        this.bearer = token;
+      })
     }
 
-    // private get headers(): void {
+
+  // private get headers(): void {
       // const headers = new HttpHeaders();
       // headers.append('Content-Type', 'application/json');
       // headers.append('Accept', 'application/json');
@@ -48,7 +52,7 @@ export class ProductService {
       //   // this.http.setHeader('*', 'Authorization', `Bearer ${token}`);
       // }).catch(err => console.log(JSON.stringify(err) + ' Dit is eenm erropr'));
 
-      this.http.setHeader('*', 'Authorization', 'Bearer eb4ec0e140659545eda6d8ee5dc8dd0f33abf4a0');
+      this.http.setHeader('*', 'Authorization', 'Bearer ' + this.bearer);
       this.http.setDataSerializer('json');
       // console.log(`https://app.kroon.nl/api/product/ean/${ean}`);
       // this.http.get(`https://app.kroon.nl/api/product/ean/${ean}`, {}, { headers: this.headers }).then(res => console.log(JSON.stringify(res.data)));

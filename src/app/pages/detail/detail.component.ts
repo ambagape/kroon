@@ -26,7 +26,7 @@ export class DetailComponent implements OnInit {
   }
 
   back() {
-    this.router.navigate(['cart']);
+    window.location.href = '/cart';
   }
 
   incrementQuantity() {
