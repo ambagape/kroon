@@ -107,18 +107,26 @@ export class OrderModalComponent {
           this.orderRepository.selectShippingAddress(parseInt(this.selectedAddress))
         ];
 
+        console.log('--------------')
+        console.log('Hier komt hij');
+        console.log('--------------')
+
         forkJoin(addressRequests).subscribe((success: Array<boolean>) => {
           const succeeded = success.every((e) => e);
           if (!succeeded) {
             // TODO: Handle error.
+            console.log('Er gaat wat fout')
             this.activityService.done();
             return;
           }
+
+          console.log('Gelukt!' + JSON.stringify(success))
 
           this.productRepository.emptyCart();
           window.location.reload();
           this.setComment();
         }, (error) => {
+          console.log('Hier gaat het fout' + error.message)
           this.activityService.done();
           this.logError(error);
         });
@@ -210,14 +218,17 @@ export class OrderModalComponent {
               this.router.navigate(['cart']);
 
         }, (err) => {
+          console.log('Fout 1');
           this.activityService.done();
           this.logError(err);
         });
       }, (err) => {
+        console.log('Fout 2');
         this.activityService.done();
         this.logError(err);
       });
     }, (err) => {
+      console.log('Fout 3');
       this.activityService.done();
       this.logError(err);
     });
@@ -229,12 +240,15 @@ export class OrderModalComponent {
 
     this.orderRepository.doHandleComment(comment).subscribe((commentSuccess) => {
       if (!commentSuccess) {
+        console.log('Geem success');
         // TODO: Handle error.
         this.activityService.done();
         return;
       }
+      console.log('Hier komt hij weer wel')
       this.confirmAndPlaceOrder();
     }, (err) => {
+      console.log('Fout 4')
       this.activityService.done();
       this.logError(err);
     });
@@ -244,6 +258,7 @@ export class OrderModalComponent {
     this.orderRepository.confirmOrder().subscribe((confirmSuccess) => {
       if (!confirmSuccess) {
         // TODO: Handle error.
+        console.log('Hier kan het ook fout gaan')
         this.activityService.done();
         return;
       }
@@ -251,11 +266,13 @@ export class OrderModalComponent {
       this.orderRepository.placeOrder().subscribe((orderSuccess) => {
         this.activityService.done();
         if (!orderSuccess) {
+          console.log('Er ging wat fout' + orderSuccess)
           // TODO: Handle error.
           return;
         }
         this.productRepository.emptyCart();
         this.close();
+        console.log('HEt gaat goed');
         // new Toasty({
         //   text: "Bestelling geslaagd!",
         //   ios: {
@@ -264,16 +281,19 @@ export class OrderModalComponent {
         // }).show();
         this.activityService.done();
       }, (err) => {
+        console.log('Fout 5')
         this.activityService.done();
         this.logError(err);
       });
     }, (err) => {
+      console.log('Fout 6')
       this.activityService.done();
       this.logError(err);
     });
   }
 
   private logError(error) {
+    console.log(error);
     // new Toasty({
     //   text: error,
     // }).show();

@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { ActivityService } from './shared/activity/activity.service';
 import { AuthRepository } from '../app/repositories/auth/auth.repository';
 import { Storage } from '@ionic/storage-angular';
+import {NativeStorage} from "@ionic-native/native-storage/ngx";
+import {HTTP} from "@ionic-native/http/ngx";
 
 @Component({
   // moduleId: module.id,
@@ -16,7 +18,9 @@ export class AppComponent implements OnInit {
     private authRepository: AuthRepository,
     private router: Router,
     private activityService: ActivityService,
-    private storage: Storage
+    private storage: Storage,
+    private nativeStorage: NativeStorage,
+    private http: HTTP
   ) {
 
   }
@@ -24,13 +28,18 @@ export class AppComponent implements OnInit {
  async ngOnInit() {
      await this.storage.create();
 
-    await this.authRepository.isLoggedIn().then(loggedIn => {
-      if (loggedIn) {
-        this.router.navigate(['cart']);
-      } else {
-        this.router.navigate(['login'],  { replaceUrl: true });
-      }
-    });
+   const isLoggedIn = await this.authRepository.isLoggedIn();
+   console.log('----------' + isLoggedIn + '-----------');
+
+   if (isLoggedIn) {
+     await this.nativeStorage.getItem('token').then(token => {
+       this.http.setHeader('*', String('Authorization'), String('Bearer ' + token));
+     })
+     // console.log('Is ingelogd' + isLoggedIn);
+     await this.router.navigate(['cart']);
+   } else {
+     await this.router.navigate(['login']);
+   }
 
   }
 

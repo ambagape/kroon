@@ -12,6 +12,7 @@ import {ProductModalComponent} from '../../components/product-modal/product-moda
 import {HTTP} from '@ionic-native/http/ngx';
 import { Storage } from '@ionic/storage-angular';
 import { Network } from '@ionic-native/network/ngx';
+import {NativeStorage} from "@ionic-native/native-storage/ngx";
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -37,7 +38,8 @@ export class CartComponent implements OnInit {
     public barcodeScanner: BarcodeScanner,
     private storage: Storage,
     private network: Network,
-    public navCtrl: NavController
+    public navCtrl: NavController,
+    private nativeStorage: NativeStorage
 
   ) {
   }
@@ -93,9 +95,9 @@ async ngOnInit() {
     this.showOrderModal = false;
   };
 
-  logOut() {
-    this.authRepository.logOut();
-    this.router.navigate(['login']);
+  async logOut() {
+    await this.authRepository.logOut();
+    await this.router.navigate(['login']);
   };
 
   delete = (item: CartItem) => {

@@ -20,7 +20,7 @@ export class OrderService {
       //   console.log(token + ' het')
       //   // this.http.setHeader('*', 'Authorization', `Bearer ${token}`);
       // }).catch(err => console.log(JSON.stringify(err) + ' Dit is eenm erropr'));
-      this.http.setHeader('*', 'Authorization', 'Bearer eb4ec0e140659545eda6d8ee5dc8dd0f33abf4a0');
+      // this.http.setHeader('*', 'Authorization', 'Bearer eb4ec0e140659545eda6d8ee5dc8dd0f33abf4a0');
       this.http.setDataSerializer('json');
 
     }
@@ -148,6 +148,8 @@ export class OrderService {
     }
 
     addItemsToCart(items: Array<{}>): Observable<HTTPResponse> {
+      console.log(JSON.stringify(items) + 'Dit zijn de items die er nu in je winkelwagen staan.')
+      console.log('HET HOORT hier langs te gaan');
 
         return from(this.http.post(`https://app.kroon.nl/api/cart/bulk`, {
             items

@@ -26,6 +26,7 @@ export class OrderRepository {
         }
         return this.orderService.addresses().pipe(
             map((response: any) => {
+              console.log(JSON.stringify(response.data) + ' Is de response');
               response = JSON.parse(response.data);
 
                 if (response) {
@@ -42,7 +43,7 @@ export class OrderRepository {
                 }
             }),
             catchError((err) => {
-                console.log('Something went wrong while getting the delivery addresses:', err);
+                console.log('Something went wrong while getting the delivery addresses:', err.message);
                 return of(null);
             })
         );
@@ -114,6 +115,8 @@ export class OrderRepository {
                 product_id: cartItem.product.product_id,
                 quantity: cartItem.quantity
             }));
+
+        console.log(JSON.stringify(items))
         return this.handleStatus(this.orderService.addItemsToCart(items), 'adding items to the cart');
     }
 
