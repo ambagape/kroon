@@ -57,7 +57,7 @@ export class OrderService {
      * Sends to the backend that we'll use the address with this id as the shipping address
      */
     selectShippingAddress(addressId: number): Observable<HTTPResponse> {
-      // console.log('AdresID' + addressId);
+      console.log('AdresID' + addressId);
         return from(this.http.post(`https://app.kroon.nl/api/shipping/existing-address`, {
             address_id: addressId
         }, {}));

@@ -62,6 +62,7 @@ export class OrderModalComponent {
     this.orderRepository.addresses().subscribe((res) => {
       if (res) {
         this._pickerItems = res;
+        console.log(JSON.stringify(res))
       }
     });
   }
@@ -123,10 +124,13 @@ export class OrderModalComponent {
           console.log('Gelukt!' + JSON.stringify(success))
 
           this.productRepository.emptyCart();
-          window.location.reload();
+          console.log('De hele flow is klaar')
+
           this.setComment();
         }, (error) => {
-          console.log('Hier gaat het fout' + error.message)
+          console.log()
+          console.log('Hier gaat het fout' + JSON.stringify(error));
+          console.log(error.message)
           this.activityService.done();
           this.logError(error);
         });
@@ -214,8 +218,8 @@ export class OrderModalComponent {
             return;
           }
           this.setComment();
-              window.location.reload();
-              this.router.navigate(['cart']);
+          window.location.href = '/cart';
+              // this.router.navigate(['cart']);
 
         }, (err) => {
           console.log('Fout 1');
@@ -239,6 +243,7 @@ export class OrderModalComponent {
     const comment = 'Test';
 
     this.orderRepository.doHandleComment(comment).subscribe((commentSuccess) => {
+      console.log(commentSuccess + ' Dit is de success')
       if (!commentSuccess) {
         console.log('Geem success');
         // TODO: Handle error.
@@ -247,6 +252,7 @@ export class OrderModalComponent {
       }
       console.log('Hier komt hij weer wel')
       this.confirmAndPlaceOrder();
+      window.location.href = '/cart';
     }, (err) => {
       console.log('Fout 4')
       this.activityService.done();
@@ -270,7 +276,6 @@ export class OrderModalComponent {
           // TODO: Handle error.
           return;
         }
-        this.productRepository.emptyCart();
         this.close();
         console.log('HEt gaat goed');
         // new Toasty({
