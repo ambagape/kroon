@@ -12,7 +12,7 @@ import {ProductModalComponent} from '../../components/product-modal/product-moda
 import {HTTP} from '@ionic-native/http/ngx';
 import { Storage } from '@ionic/storage-angular';
 import { Network } from '@ionic-native/network/ngx';
-import {NativeStorage} from "@ionic-native/native-storage/ngx";
+import {NativeStorage} from '@ionic-native/native-storage/ngx';
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -104,7 +104,7 @@ async ngOnInit() {
     const index = this._cartItems.indexOf(item);
 
     if (index > -1) {
-      this._cartItems.splice(index, 1)
+      this._cartItems.splice(index, 1);
     }
       this.productRepository.removeItemFromCart(item);
   };

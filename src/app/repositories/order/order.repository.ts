@@ -2,8 +2,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Product } from '../../shared/product/product.model';
-import { CartItem } from '../../shared/product/cartitem.model';
 import { Address } from '../../shared/order/address.model';
 import { OrderService } from '../../shared/order/order.service';
 import { ProductRepository } from '../product/product.repository';
@@ -21,7 +19,9 @@ export class OrderRepository {
     }
 
     addresses(): Observable<Array<Address>> {
+      // eslint-disable-next-line no-underscore-dangle
         if (this._addresses) {
+          // eslint-disable-next-line no-underscore-dangle
             return of(this._addresses);
         }
         return this.orderService.addresses().pipe(
@@ -35,6 +35,7 @@ export class OrderRepository {
                     }
                     if (response.data && response.data.addresses) {
 
+                      // eslint-disable-next-line no-underscore-dangle
                         this._addresses = response.data.addresses;
                         return response.data.addresses;
                     }
@@ -104,10 +105,12 @@ export class OrderRepository {
     }
 
     addItemsToCart(): Observable<boolean> {
+      // eslint-disable-next-line eqeqeq
         if (this.productRepository.cartItems.length == 0 || this.productRepository.hasOfflineProducts) {
             return of(false);
         }
         const items = this.productRepository.cartItems.map((cartItem) => ({
+          // eslint-disable-next-line @typescript-eslint/naming-convention
                 product_id: cartItem.product.product_id,
                 quantity: cartItem.quantity
             }));

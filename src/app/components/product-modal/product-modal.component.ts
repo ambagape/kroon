@@ -4,12 +4,13 @@ import {ProductResponseStatus} from '../../repositories/product/productresponse.
 import {CartItem} from '../../shared/product/cartitem.model';
 import {ProductRepository} from '../../repositories/product/product.repository';
 import {ModalController} from '@ionic/angular';
-import {ActivityService} from "../../shared/activity/activity.service";
-import {OrderService} from "../../shared/order/order.service";
+import {ActivityService} from '../../shared/activity/activity.service';
+import {OrderService} from '../../shared/order/order.service';
 import { Plugins, CameraResultType } from '@capacitor/core';
-import {Router} from "@angular/router";
-import {NativeStorage} from "@ionic-native/native-storage/ngx";
+import {Router} from '@angular/router';
+import {NativeStorage} from '@ionic-native/native-storage/ngx';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const { Camera } = Plugins;
 
 @Component({
@@ -42,7 +43,7 @@ export class ProductModalComponent implements OnInit {
   async ngOnInit() {
     await this.nativeStorage.getItem('email').then(email => {
       this.email = email;
-    }).catch(console.log)
+    }).catch(console.log);
     this.quantity = this.productRepository.getItemQuantity(this.cartItem);
   };
 
@@ -113,11 +114,12 @@ export class ProductModalComponent implements OnInit {
 
     const description = '';
 
+    // eslint-disable-next-line eqeqeq,max-len
     const body = `${ this.email } meldt: Het product met deze code staat niet in de app. ${description != '' ? `<br><br>${description}` : ''}`;
 
       return this.orderService.doSentUnknown({
         subject: `Onbekend product ( door: ${this.email} )`,
-        body: body,
+        body,
         to: ['webshop@kroon.nl'],
         bcc: [ this.email ],
         attachments: [{

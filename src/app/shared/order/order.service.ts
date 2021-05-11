@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import {from, Observable} from 'rxjs';
 import {HTTP, HTTPResponse} from '@ionic-native/http/ngx';
 
-
-
 @Injectable()
 export class OrderService {
 
@@ -42,6 +40,7 @@ export class OrderService {
      */
     selectShippingAddress(addressId: number): Observable<HTTPResponse> {
         return from(this.http.post(`https://app.kroon.nl/api/shipping/existing-address`, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
             address_id: addressId
         }, {}));
     }
@@ -50,6 +49,7 @@ export class OrderService {
     selectShippingMethod(comment: string): Observable<HTTPResponse> {
 
         const body = {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
             shipping_method: 'free.free',
             comment
         };
@@ -63,6 +63,7 @@ export class OrderService {
      */
     selectPaymentAddress(addressId: number): Observable<HTTPResponse> {
         return from(this.http.post(`https://app.kroon.nl/api/payment/existing-address`, {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
             address_id: addressId
         }, { }));
     }
@@ -70,16 +71,21 @@ export class OrderService {
     /**
      * Creates a new shipping address with the given data.
      */
+    // eslint-disable-next-line max-len
     addShippingAddress(firstName: string, lastName: string, company: string, firstAddress: string, secondAddress: string, postalCode: string, city: string, zoneId: number): Observable<HTTPResponse> {
         const body = {
             firstname: firstName,
             lastname: lastName,
             company,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
             address_1: firstAddress,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
             address_2: secondAddress,
             postcode: postalCode,
             city,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
             zone_id: zoneId,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
             country_id: 150
         };
 
@@ -105,7 +111,9 @@ export class OrderService {
     handleComment(comment: string): Observable<HTTPResponse> {
 
         const body = {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
             payment_method: 'cod',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
             shipping_method: 'free.free',
             agree: true,
             comment
@@ -126,7 +134,7 @@ export class OrderService {
         return from(this.http.delete(`https://app.kroon.nl/api/cart/empty`, {}, {}));
     }
 
-    addItemsToCart(items: Array<{}>): Observable<HTTPResponse> {
+    addItemsToCart(items: Array<any>): Observable<HTTPResponse> {
         return from(this.http.post(`https://app.kroon.nl/api/cart/bulk`, {
             items
         }, { }));

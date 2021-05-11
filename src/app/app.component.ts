@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { ActivityService } from './shared/activity/activity.service';
 import { AuthRepository } from '../app/repositories/auth/auth.repository';
 import { Storage } from '@ionic/storage-angular';
-import {NativeStorage} from "@ionic-native/native-storage/ngx";
-import {HTTP} from "@ionic-native/http/ngx";
+import {NativeStorage} from '@ionic-native/native-storage/ngx';
+import {HTTP} from '@ionic-native/http/ngx';
 
 @Component({
   // moduleId: module.id,

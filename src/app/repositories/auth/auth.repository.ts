@@ -3,7 +3,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from '../../shared/auth/auth.service';
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
-import {HTTP} from "@ionic-native/http/ngx";
+import {HTTP} from '@ionic-native/http/ngx';
 
 @Injectable()
 export class AuthRepository {
@@ -20,7 +20,7 @@ export class AuthRepository {
         if (response && response.success === true) {
 
           this.nativeStorage.setItem('token', response.data.token).then(() => {
-            this.http.setHeader('*', String('Authorization'), String('Bearer ' + response.data.token))
+            this.http.setHeader('*', String('Authorization'), String('Bearer ' + response.data.token));
           });
           this.nativeStorage.setItem('email', email);
 
@@ -41,8 +41,6 @@ export class AuthRepository {
 
   // Moet nog worden aangepast
   async isLoggedIn() {
-    return this.nativeStorage.getItem('token').then((token) => {
-      return !!token;
-    });
+    return this.nativeStorage.getItem('token').then((token) => !!token);
   }
 }

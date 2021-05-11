@@ -10,8 +10,8 @@ import {IonicModule} from '@ionic/angular';
 import {ComponentModule} from '../components/component.module';
 import { DetailComponent } from './detail/detail.component';
 import { FilterPipe } from '../shared/pipes/filter.pipe';
-import {HTTP_INTERCEPTORS} from "@angular/common/http";
-import {AuthInterceptor} from "../interceptors/auth.interceptor";
+import {HTTP_INTERCEPTORS} from '@angular/common/http';
+import {AuthInterceptor} from '../interceptors/auth.interceptor';
 // import { ScanPageComponent } from "./scanner/scanner.component";
 // import { DetailPageComponent } from "./detail/detail.component";
 

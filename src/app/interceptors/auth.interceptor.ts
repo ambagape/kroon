@@ -1,9 +1,9 @@
 import { HttpInterceptor, HttpRequest } from '@angular/common/http/';
 import {HttpEvent, HttpHandler} from '@angular/common/http';
 // import { AuthProvider } from "../providers/auth/auth";
-import {Injectable} from "@angular/core";
-import {Storage} from "@ionic/storage-angular";
-import {Observable} from "rxjs";
+import {Injectable} from '@angular/core';
+import {Storage} from '@ionic/storage-angular';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

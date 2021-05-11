@@ -1,13 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-// import '@capacitor-community/http';
-const { Http } = Plugins;
-import { Plugins } from '@capacitor/core';
-
-const { Storage } = Plugins;
-
-// import { Constants } from '../constants';
-
-
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {from, Observable} from 'rxjs';
 import {HTTP, HTTPResponse} from '@ionic-native/http/ngx';

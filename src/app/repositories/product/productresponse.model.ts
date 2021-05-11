@@ -7,7 +7,10 @@ export class ProductResponse {
 }
 
 export enum ProductResponseStatus {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Error = 'error',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Success = 'success',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Offline = 'offline'
 }
