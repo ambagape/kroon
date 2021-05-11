@@ -1,9 +1,5 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-// import { Constants } from '../constants';
 import { Injectable } from '@angular/core';
 import {from, Observable} from 'rxjs';
-// import { ObservableArray } from 'tns-core-modules/data/observable-array/observable-array';
 import {HTTP, HTTPResponse} from '@ionic-native/http/ngx';
 
 
@@ -16,20 +12,8 @@ export class OrderService {
     ) {
       this.http.setHeader('*', String('Content-Type'), String('application/json'));
       this.http.setHeader('*', String('Accept'), String('application/json'));
-      // this.nativeStorage.getItem('token').then(token => {
-      //   console.log(token + ' het')
-      //   // this.http.setHeader('*', 'Authorization', `Bearer ${token}`);
-      // }).catch(err => console.log(JSON.stringify(err) + ' Dit is eenm erropr'));
-      // this.http.setHeader('*', 'Authorization', 'Bearer eb4ec0e140659545eda6d8ee5dc8dd0f33abf4a0');
       this.http.setDataSerializer('json');
 
-    }
-
-    private get headers(): HttpHeaders {
-        const headers = new HttpHeaders();
-        headers.append('Content-Type', 'application/json');
-        headers.append('Accept', 'application/json');
-        return headers;
     }
 
     /**
@@ -57,7 +41,6 @@ export class OrderService {
      * Sends to the backend that we'll use the address with this id as the shipping address
      */
     selectShippingAddress(addressId: number): Observable<HTTPResponse> {
-      console.log('AdresID' + addressId);
         return from(this.http.post(`https://app.kroon.nl/api/shipping/existing-address`, {
             address_id: addressId
         }, {}));
@@ -79,10 +62,6 @@ export class OrderService {
      * Sends to the backend that we'll use the address with this id as the payment address
      */
     selectPaymentAddress(addressId: number): Observable<HTTPResponse> {
-
-        // console.log({
-        //     address_id: addressId
-        // });
         return from(this.http.post(`https://app.kroon.nl/api/payment/existing-address`, {
             address_id: addressId
         }, { }));
@@ -148,9 +127,6 @@ export class OrderService {
     }
 
     addItemsToCart(items: Array<{}>): Observable<HTTPResponse> {
-      console.log(JSON.stringify(items) + 'Dit zijn de items die er nu in je winkelwagen staan.')
-      console.log('HET HOORT hier langs te gaan');
-
         return from(this.http.post(`https://app.kroon.nl/api/cart/bulk`, {
             items
         }, { }));

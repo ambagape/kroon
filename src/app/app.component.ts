@@ -29,13 +29,12 @@ export class AppComponent implements OnInit {
      await this.storage.create();
 
    const isLoggedIn = await this.authRepository.isLoggedIn();
-   console.log('----------' + isLoggedIn + '-----------');
 
    if (isLoggedIn) {
      await this.nativeStorage.getItem('token').then(token => {
        this.http.setHeader('*', String('Authorization'), String('Bearer ' + token));
-     })
-     // console.log('Is ingelogd' + isLoggedIn);
+     });
+
      await this.router.navigate(['cart']);
    } else {
      await this.router.navigate(['login']);

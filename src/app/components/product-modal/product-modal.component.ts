@@ -66,12 +66,9 @@ export class ProductModalComponent implements OnInit {
 
   async ngOnInit() {
     await this.nativeStorage.getItem('email').then(email => {
-      console.log(email);
       this.email = email;
     }).catch(console.log)
     this.quantity = this.productRepository.getItemQuantity(this.cartItem);
-    console.log(this.cartItem)
-
   };
 
   // close() {
@@ -149,7 +146,7 @@ export class ProductModalComponent implements OnInit {
     // passed to the Filesystem API to read the raw data of the image,
     // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
     const imageUrl = image.base64String;
-    console.log(imageUrl)
+
     // Can be set to the src of an image now
     this.base64 = imageUrl;
     this.imageAsset = 'data:image/png;base64,'+ imageUrl;
@@ -157,7 +154,6 @@ export class ProductModalComponent implements OnInit {
 
   send() {
     if (!this.imageAsset) {
-      // console.log(!this.imageAsset);
       return;
     }
 
@@ -202,7 +198,6 @@ export class ProductModalComponent implements OnInit {
           path: `${this.base64}`,
         }]
       }).subscribe((response: any) => {
-        console.log(JSON.stringify(response))
           if (response) {
             // new Toasty({
             //   text: "Bericht verstuurd!!",

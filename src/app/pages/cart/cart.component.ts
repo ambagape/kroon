@@ -44,7 +44,7 @@ export class CartComponent implements OnInit {
   ) {
   }
 
-  onSearchChange(args: { target: { value: string } }) {
+  onSearchChange(args) {
     this.filterText = args.target.value;
   }
 

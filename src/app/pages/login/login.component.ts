@@ -53,10 +53,8 @@ export class LoginComponent implements OnInit{
   async ngOnInit() {
 
     const isLoggedIn = await this.authRepository.isLoggedIn();
-    console.log('----------' + isLoggedIn + '-----------');
 
     if (isLoggedIn) {
-      // console.log('Is ingelogd' + isLoggedIn);
       await this.router.navigate(['cart']);
     } else {
       await this.router.navigate(['login']);
@@ -80,8 +78,6 @@ export class LoginComponent implements OnInit{
       await this.authRepository.logIn(email, password).subscribe((res) => {
         this.activityService.done();
         if (res) {
-          console.log(JSON.stringify(res))
-          // this.http.setHeader('*')
           this.router.navigate(['cart']);
         } else {
           this.toast('Check je gegevens');
@@ -91,17 +87,4 @@ export class LoginComponent implements OnInit{
       this.toast('Vul je inloggegevens in');
     }
   }
-
-  // forgotPassword() {
-  //   utilsModule.openUrl('https://www.kroon.nl/index.php?route=account/forgotten');
-  // }
-
-  // helpTapped() {
-  //   utilsModule.openUrl('https://www.kroon.nl/scanapp');
-  // }
-
-  // focusPassword() {
-  //   (<TextField>this.page.getViewById('password')).focus();
-  // }
-
 }

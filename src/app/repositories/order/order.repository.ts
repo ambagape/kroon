@@ -26,7 +26,6 @@ export class OrderRepository {
         }
         return this.orderService.addresses().pipe(
             map((response: any) => {
-              console.log(JSON.stringify(response.data) + ' Is de response');
               response = JSON.parse(response.data);
 
                 if (response) {
@@ -55,12 +54,9 @@ export class OrderRepository {
 
 
     selectPaymentAddress(addressId: number): Observable<boolean> {
-      // console.log(addressId);
 
         if (!addressId) {
             return this.handleStatus(this.orderService.defaultAddress().pipe(map((account: any) => {
-              // console.log(JSON.stringify(account.data));
-
               account = JSON.parse(account.data);
 
                 return this.handleStatus(this.orderService.selectPaymentAddress(account.data.address_id), 'settng the payment address');
@@ -116,7 +112,6 @@ export class OrderRepository {
                 quantity: cartItem.quantity
             }));
 
-        console.log(JSON.stringify(items))
         return this.handleStatus(this.orderService.addItemsToCart(items), 'adding items to the cart');
     }
 

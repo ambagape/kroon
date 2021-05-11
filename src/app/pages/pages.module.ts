@@ -24,13 +24,10 @@ import {AuthInterceptor} from "../interceptors/auth.interceptor";
     ReactiveFormsModule,
     IonicModule,
     ComponentModule
-    // ComponentsModule,
   ],
     declarations: [
-        // HomePageComponent,
         LoginComponent,
         CartComponent,
-        // ScanPageComponent,
         DetailComponent,
         FilterPipe
     ],

@@ -2,9 +2,6 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { AuthService } from '../../shared/auth/auth.service';
-// import { setString, getString, remove } from 'tns-core-modules/application-settings/application-settings';
-import { Plugins } from '@capacitor/core';
-
 import { NativeStorage } from '@ionic-native/native-storage/ngx';
 import {HTTP} from "@ionic-native/http/ngx";
 
@@ -22,13 +19,10 @@ export class AuthRepository {
         response = JSON.parse(response.data);
         if (response && response.success === true) {
 
-          console.log(response.data.token)
           this.nativeStorage.setItem('token', response.data.token).then(() => {
             this.http.setHeader('*', String('Authorization'), String('Bearer ' + response.data.token))
           });
-          this.nativeStorage.setItem('email', email).then(console.log);
-
-
+          this.nativeStorage.setItem('email', email);
 
           return of(true);
         } else {
@@ -50,7 +44,5 @@ export class AuthRepository {
     return this.nativeStorage.getItem('token').then((token) => {
       return !!token;
     });
-    // return (await this.nativeStorage.getItem('token')).value !== ('' || null);
-    // return aw
   }
 }

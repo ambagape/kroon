@@ -25,9 +25,6 @@ export class OrderModalComponent {
 
   @Output() closed = new EventEmitter();
 
-  // @ViewChild('addressPicker', null) addressPicker: PickerComponent;
-  // @ViewChild('provincePicker', null) provincePicker: PickerComponent;
-
   expanded = false;
 
   index = 0;
@@ -35,7 +32,6 @@ export class OrderModalComponent {
   selectedString = 'Selecteer optie';
 
   selectedProvince = 'Drenthe';
-  // iqKeyboard: IQKeyboardManager;
 
   adress = {
     firstName: undefined,
@@ -62,7 +58,6 @@ export class OrderModalComponent {
     this.orderRepository.addresses().subscribe((res) => {
       if (res) {
         this._pickerItems = res;
-        console.log(JSON.stringify(res))
       }
     });
   }
@@ -108,29 +103,18 @@ export class OrderModalComponent {
           this.orderRepository.selectShippingAddress(parseInt(this.selectedAddress))
         ];
 
-        console.log('--------------')
-        console.log('Hier komt hij');
-        console.log('--------------')
-
         forkJoin(addressRequests).subscribe((success: Array<boolean>) => {
           const succeeded = success.every((e) => e);
           if (!succeeded) {
             // TODO: Handle error.
-            console.log('Er gaat wat fout')
             this.activityService.done();
             return;
           }
 
-          console.log('Gelukt!' + JSON.stringify(success))
-
           this.productRepository.emptyCart();
-          console.log('De hele flow is klaar')
 
           this.setComment();
         }, (error) => {
-          console.log()
-          console.log('Hier gaat het fout' + JSON.stringify(error));
-          console.log(error.message)
           this.activityService.done();
           this.logError(error);
         });
@@ -222,17 +206,14 @@ export class OrderModalComponent {
               // this.router.navigate(['cart']);
 
         }, (err) => {
-          console.log('Fout 1');
           this.activityService.done();
           this.logError(err);
         });
       }, (err) => {
-        console.log('Fout 2');
         this.activityService.done();
         this.logError(err);
       });
     }, (err) => {
-      console.log('Fout 3');
       this.activityService.done();
       this.logError(err);
     });
@@ -243,18 +224,14 @@ export class OrderModalComponent {
     const comment = 'Test';
 
     this.orderRepository.doHandleComment(comment).subscribe((commentSuccess) => {
-      console.log(commentSuccess + ' Dit is de success')
       if (!commentSuccess) {
-        console.log('Geem success');
         // TODO: Handle error.
         this.activityService.done();
         return;
       }
-      console.log('Hier komt hij weer wel')
       this.confirmAndPlaceOrder();
       window.location.href = '/cart';
     }, (err) => {
-      console.log('Fout 4')
       this.activityService.done();
       this.logError(err);
     });
@@ -264,7 +241,6 @@ export class OrderModalComponent {
     this.orderRepository.confirmOrder().subscribe((confirmSuccess) => {
       if (!confirmSuccess) {
         // TODO: Handle error.
-        console.log('Hier kan het ook fout gaan')
         this.activityService.done();
         return;
       }
@@ -272,12 +248,10 @@ export class OrderModalComponent {
       this.orderRepository.placeOrder().subscribe((orderSuccess) => {
         this.activityService.done();
         if (!orderSuccess) {
-          console.log('Er ging wat fout' + orderSuccess)
           // TODO: Handle error.
           return;
         }
         this.close();
-        console.log('HEt gaat goed');
         // new Toasty({
         //   text: "Bestelling geslaagd!",
         //   ios: {
@@ -286,12 +260,10 @@ export class OrderModalComponent {
         // }).show();
         this.activityService.done();
       }, (err) => {
-        console.log('Fout 5')
         this.activityService.done();
         this.logError(err);
       });
     }, (err) => {
-      console.log('Fout 6')
       this.activityService.done();
       this.logError(err);
     });

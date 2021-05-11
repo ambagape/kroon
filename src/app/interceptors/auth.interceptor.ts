@@ -4,7 +4,6 @@ import {HttpEvent, HttpHandler} from '@angular/common/http';
 import {Injectable} from "@angular/core";
 import {Storage} from "@ionic/storage-angular";
 import {Observable} from "rxjs";
-// import {Storage} from "@ionic/storage/ngc";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -13,7 +12,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   constructor(public _storage: Storage) {
     _storage.get('token').then((val) => {
-      console.log('De value' + val)
       this.val = val;
     });
   }
