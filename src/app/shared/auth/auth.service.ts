@@ -1,21 +1,14 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-// import '@capacitor-community/http';
-// import { Plugins } from '@capacitor/core';
-// const { Http } = Plugins;
-
-
-// import { Constants } from '../constants';
-
-
+import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {from, Observable} from 'rxjs';
+import {HTTP, HTTPResponse} from '@ionic-native/http/ngx';
 
 
 @Injectable()
 export class AuthService {
 
     constructor(
-        private http: HttpClient
+      private http: HTTP
     ) {
 
     }
@@ -35,13 +28,16 @@ export class AuthService {
     /**
      * Creates the request to log in with the given email and password.
      */
-    logIn(email: string, password: string): Observable<string> {
+    logIn(email: string, password: string): Observable<HTTPResponse> {
         const body = {
             email,
             password
         };
-        console.log('hier')
-        return this.http.post<string>(`https://app.kroon.nl/api/login`, body, { headers: this.headers });
+        this.http.setHeader('*', String('Content-Type'), String('application/json'));
+        this.http.setHeader('*', String('Accept'), String('application/json'));
+        this.http.setDataSerializer('json');
+
+        return from(this.http.post(`https://app.kroon.nl/api/login`, body, {}));
     }
 
 }

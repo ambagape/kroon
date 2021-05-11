@@ -1,0 +1,58 @@
+<ion-header translucent>
+  <ion-toolbar>
+    <ion-buttons slot="start" class="ion-margin-start">
+      <ion-back-button (click)="back()"></ion-back-button>
+    </ion-buttons>
+    <ion-img  src="assets/logo_transparent.png" class="ion-margin-start" slot="end" style="width: 30%"></ion-img>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content fullscreen>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-img height="200" cache=true src="{{ cartItem.product.image }}" alt=""></ion-img>
+    </ion-row>
+    <ion-row class="ion-justify-content-center ion-margin">
+      <!-- <div class="ion-text-center"> -->
+      <ion-button color="primary" (click)="decrementQuantity()">
+        <ion-icon name="remove-circle-outline"></ion-icon>
+      </ion-button>
+      <h2 class="ion-margin">{{ quantity }}</h2>
+      <ion-button color="primary" (click)="incrementQuantity()">
+        <ion-icon name="add-circle-outline"></ion-icon>
+      </ion-button>
+      <!-- </div> -->
+    </ion-row>
+    <ion-row class="ion-margin">
+      <ion-label class="extra-bold">
+        {{ cartItem && cartItem.product && (cartItem.product.meta_title || cartItem.product.name) }}</ion-label>
+    </ion-row>
+    <ion-row class="ion-margin">
+      <ion-label >
+        {{ cartItem && cartItem.product && (cartItem.product.meta_description || cartItem.product.description) }}</ion-label>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-list *ngFor="let attributeGroup of cartItem.product.attribute_groups">
+    <ion-item-divider>
+      <ion-label>
+        {{attributeGroup.name}}
+      </ion-label>
+    </ion-item-divider>
+
+    <ion-item *ngFor="let attribute of attributeGroup.attribute">
+      <ion-label slot="start">{{attribute.name}}</ion-label>
+      <ion-label class="ion-text-wrap">{{attribute.text}}</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<!-- <ion-footer>
+  <ion-toolbar>
+    <ion-button icon-start expand="full" slot="start" color="dark" (click)="addItemToCart()" style="width: 100%">
+      <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
+      Toevoegen
+    </ion-button>
+  </ion-toolbar>
+</ion-footer> -->

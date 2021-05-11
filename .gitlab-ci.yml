@@ -1,0 +1,8 @@
+include:
+  - project: 'automation/fastlane'
+    ref: 0.0.20
+    file: 'ionic-gitlab-ci-template.yml'
+
+variables:
+  FL_NOTIFICARE: "false"
+

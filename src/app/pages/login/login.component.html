@@ -1,29 +1,50 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button></ion-back-button>
-    </ion-buttons>
-    <ion-title>Inloggen</ion-title>
-  </ion-toolbar>
-</ion-header>
+<!--<ion-header>-->
+<!--  <ion-toolbar>-->
+<!--    <ion-buttons slot="start">-->
+<!--      <ion-back-button></ion-back-button>-->
+<!--    </ion-buttons>-->
+<!--    <ion-title>Inloggen</ion-title>-->
+<!--  </ion-toolbar>-->
+<!--</ion-header>-->
+
+<!--<ion-content>-->
+<!--  <form>-->
+<!--    <ion-item lines="full">-->
+<!--      <ion-label position="floating">E-mail</ion-label>-->
+<!--      <ion-input type="text" [(ngModel)]="email" [ngModelOptions]="{standalone: true}"></ion-input>-->
+<!--    </ion-item>-->
+
+<!--    <ion-item lines="full">-->
+<!--      <ion-label position="floating">Wachtwoord</ion-label>-->
+<!--      <ion-input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"></ion-input>-->
+<!--    </ion-item>-->
+
+<!--    <ion-row>-->
+<!--      <ion-col>-->
+<!--        <ion-button type="submit" color="danger" expand="block" (click)="login()">Log in</ion-button>-->
+<!--        <a class="small-text">Wachtwoord vergeten</a>-->
+<!--      </ion-col>-->
+<!--    </ion-row>-->
+<!--  </form>-->
+<!--</ion-content>-->
 
 <ion-content>
-  <form>
-    <ion-item lines="full">
-      <ion-label position="floating">E-mail</ion-label>
-      <ion-input type="text" [(ngModel)]="email" [ngModelOptions]="{standalone: true}"></ion-input>
-    </ion-item>
+  <div class="content">
+    <ion-img cache=true src="assets/kroonlogo.png" style="width: 90% !important;"></ion-img>
+    <div class="login-container">
+      <ion-item class="ion-margin-bottom">
+        <ion-label color="dark" position="floating">E-mailadres</ion-label>
+        <ion-input  type="email"  [(ngModel)]="email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="floating" color="dark">Wachtwoord</ion-label>
+        <ion-input  type="password" [(ngModel)]="password"></ion-input>
+      </ion-item>
+    </div>
 
-    <ion-item lines="full">
-      <ion-label position="floating">Wachtwoord</ion-label>
-      <ion-input type="password" [(ngModel)]="password" [ngModelOptions]="{standalone: true}"></ion-input>
-    </ion-item>
-
-    <ion-row>
-      <ion-col>
-        <ion-button type="submit" color="danger" expand="block" (click)="login()">Log in</ion-button>
-        <a class="small-text">Wachtwoord vergeten</a>
-      </ion-col>
-    </ion-row>
-  </form>
+    <ion-button color="dark" class="action-button" (click)="login()">Inloggen</ion-button>
+    <ion-button color="medium"  fill="clear" class="action-button" style="text-decoration: underline;" onclick="window.open('https://www.kroon.nl/index.php?route=account/forgotten', '_system', 'location=yes'); return false;">Wachtwoord vergeten</ion-button>
+    <ion-icon name="help-circle-sharp" onclick="window.open('https://www.kroon.nl/scanapp', '_system', 'location=yes'); return false;"  style="zoom:2.0;"></ion-icon>
+  </div>
 </ion-content>
+
