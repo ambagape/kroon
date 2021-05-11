@@ -27,31 +27,6 @@ export class ProductModalComponent implements OnInit {
   base64: string;
   email: string;
 
-  // constructor(
-  //   private productRepository: ProductRepository,
-  //
-  // ) {
-  // }
-  //
-  // ngOnInit() {
-  // }
-  //
-
-  //
-  // dismiss() {
-  //   // using the injected ModalController this page
-  //   // can "dismiss" itself and optionally pass back data
-
-  // }
-  //
-  // addItemToCart() {
-  //   if(this.quantity > 0) {
-  //     // this.productRepository.addItemToCart(this.cartItem, this.quantity);
-
-  //   }
-  //
-  // }
-
   constructor(
     private productRepository: ProductRepository,
       private modalController: ModalController,
@@ -79,6 +54,7 @@ export class ProductModalComponent implements OnInit {
     this.modalController.dismiss({
       dismissed: true,
     });
+    this.activityService.done();
   };
 
   incrementQuantity() {
@@ -104,37 +80,6 @@ export class ProductModalComponent implements OnInit {
     }
   };
 
-  // public updateQuantity(quantity: number) {
-  //
-  // }
-
-  // takePicture() {
-  //   if (camera.isAvailable()) {
-  //     camera.takePicture({
-  //       width: 500,
-  //       height: 500,
-  //       keepAspectRatio: true,
-  //       saveToGallery: true,
-  //     })
-  //       .then((imageAsset: ImageAsset) => {
-  //         this._newImage = imageAsset;
-  //         this.addModal = true;
-  //       })
-  //       .catch((error) => {
-  //         console.log('Error while taking a picture', error);
-  //       });
-  //   }
-  // }
-  //
-  //
-  // // MARK - Accessors for view
-  //
-  // _newImage: ImageAsset;
-  //
-  // get newImage(): ImageAsset {
-  //   return this._newImage;
-  // }
-
   async takePicture() {
     const image = await Camera.getPhoto({
       quality: 50,
@@ -158,17 +103,6 @@ export class ProductModalComponent implements OnInit {
     }
 
     this.composeEmail();
-
-    // email.available().then((res) => {
-    //   if (res) {
-    //     this.composeEmail();
-    //   } else {
-    //     this.showEmailUnavailableToast();
-    //   }
-    // }).catch((err) => {
-    //   console.log('Email available error', err);
-    //   this.showEmailUnavailableToast();
-    // });
   }
 
   private composeEmail() {
@@ -180,14 +114,6 @@ export class ProductModalComponent implements OnInit {
     const description = '';
 
     const body = `${ this.email } meldt: Het product met deze code staat niet in de app. ${description != '' ? `<br><br>${description}` : ''}`;
-    // const source = new imageSourceModule.ImageSource();
-    //
-    //
-    // source.fromAsset(this.imageAsset).then((imageSource) => {
-    //   const base = imageSource.toBase64String('png', 1);
-
-
-      // this.close();
 
       return this.orderService.doSentUnknown({
         subject: `Onbekend product ( door: ${this.email} )`,

@@ -1,13 +1,6 @@
 {
-  "appId": "io.ionic.starter",
-  "appName": "kroon-bestel-app-ionic",
-  "bundledWebRuntime": false,
-  "npmClient": "npm",
-  "webDir": "www",
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 0
-    }
-  },
-  "cordova": {}
+  "server": {
+    "url": "http://10.1.0.235:8100",
+    "cleartext": true
+  }
 }
