@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { ActivityService } from '../../shared/activity/activity.service';
 import { AuthRepository } from '../../repositories/auth/auth.repository';
 import { CartItem } from '../../shared/product/cartitem.model';
@@ -9,7 +9,6 @@ import {ModalController, NavController, ToastController} from '@ionic/angular';
 import {OrderModalComponent} from '../../components/order-modal/order-modal.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import {ProductModalComponent} from '../../components/product-modal/product-modal.component';
-import {HTTP} from '@ionic-native/http/ngx';
 import { Storage } from '@ionic/storage-angular';
 import { Network } from '@ionic-native/network/ngx';
 import {NativeStorage} from '@ionic-native/native-storage/ngx';
@@ -27,7 +26,7 @@ export class CartComponent implements OnInit {
   public noSearchResults: boolean;
   public filterText = '';
   public search: string = null;
-  public orderButtonDisabled: boolean = true;
+  public orderButtonDisabled = true;
 
   private _cartItems: CartItem[] = [];
 
@@ -50,7 +49,7 @@ export class CartComponent implements OnInit {
 
   ngOnInit() {
     if(this._cartItems) {
-      console.log('Hallo')
+      console.log('Hallo');
       this.orderButtonDisabled = true;
     }
   }
@@ -82,7 +81,7 @@ export class CartComponent implements OnInit {
 
     this.barcodeScanner.scan().then(async res => {
 
-      if (!res.cancelled) this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
+      if (!res.cancelled) {this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
 
         this.activityService.busy();
         const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, res.text);
@@ -111,15 +110,15 @@ export class CartComponent implements OnInit {
             this.productRepository.addItemToCart(data.data.data.cartItem, data.data.data.quantity);
             return true;
           } else {
-            this.toast('Bericht succesvol verzonden!')
+            this.toast('Bericht succesvol verzonden!');
           }
           return false;
         }).then( (e) => {
 
           this.storage.get('cartItems')
-          .then(res => {
-            if(res) {
-              this._cartItems = res;
+          .then( (result) => {
+            if(result) {
+              this._cartItems = result;
             }
           })
           .finally( () => {
@@ -132,7 +131,7 @@ export class CartComponent implements OnInit {
           });
 
         });
-      });
+      });}
       this.activityService.done();
     });
   }
@@ -148,7 +147,7 @@ export class CartComponent implements OnInit {
 
   delete = async (item: CartItem) => {
     const index = this._cartItems.indexOf(item);
-    console.log('De index' + index)
+    console.log('De index' + index);
 
     if (index > -1) {
       new Promise((resolve, reject) => {
@@ -160,13 +159,9 @@ export class CartComponent implements OnInit {
             this._cartItems = res;
 
           }
-        })
-      })
-
-
-
+        });
+      });
     }
-
   };
 
   public onInputClear(args: any) {
