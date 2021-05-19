@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { ActivityService } from '../../shared/activity/activity.service';
 import { AuthRepository } from '../../repositories/auth/auth.repository';
 import { CartItem } from '../../shared/product/cartitem.model';
@@ -9,7 +9,6 @@ import {ModalController, NavController, ToastController} from '@ionic/angular';
 import {OrderModalComponent} from '../../components/order-modal/order-modal.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import {ProductModalComponent} from '../../components/product-modal/product-modal.component';
-import {HTTP} from '@ionic-native/http/ngx';
 import { Storage } from '@ionic/storage-angular';
 import { Network } from '@ionic-native/network/ngx';
 import {NativeStorage} from '@ionic-native/native-storage/ngx';
@@ -19,7 +18,7 @@ import {conditionallyCreateMapObjectLiteral} from "@angular/compiler/src/render3
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
 })
-export class CartComponent implements OnInit, OnChanges{
+export class CartComponent implements OnInit {
 
   showOrderModal = false;
   showSearch = false;
@@ -49,15 +48,6 @@ export class CartComponent implements OnInit, OnChanges{
   ) {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    console.log('ChANGE!!');
-    console.log(this._cartItems);
-    if(this._cartItems.length > 0) {
-      this.orderButtonDisabled = false;
-    } else {
-      this.orderButtonDisabled = true;
-    }
-  }
 
   ngOnInit() {
     if(this._cartItems) {
@@ -79,10 +69,6 @@ export class CartComponent implements OnInit, OnChanges{
       }
 
     });
-
-
-
-
 
   this.network.onConnect().subscribe(() => {
      if ((this.network.type === 'wifi' || this.network.type === 'mobile') && this.productRepository.hasOfflineProducts) {
@@ -135,9 +121,9 @@ export class CartComponent implements OnInit, OnChanges{
         }).then( (e) => {
 
           this.storage.get('cartItems')
-          .then(res => {
-            if(res) {
-              this._cartItems = res;
+          .then( (result) => {
+            if(result) {
+              this._cartItems = result;
             }
           })
           .finally( () => {
@@ -179,11 +165,7 @@ export class CartComponent implements OnInit, OnChanges{
           }
         });
       });
-
-
-
     }
-
   };
 
   public onInputClear(args: any) {
