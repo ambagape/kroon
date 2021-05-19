@@ -42,17 +42,12 @@ export class CartComponent implements OnInit {
     public navCtrl: NavController,
     private nativeStorage: NativeStorage,
     public toastController: ToastController,
-
-
   ) {
   }
 
 
   ngOnInit() {
-    if(this._cartItems) {
-      console.log('Hallo');
-      this.orderButtonDisabled = true;
-    }
+
   }
 
   onSearchChange(args) {

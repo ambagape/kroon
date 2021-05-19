@@ -74,51 +74,56 @@ export class OrderModalComponent {
 
   order() {
     if (!this.selectedAddress) {
+
       if (this.canSubmitForm) {
         this.submitForm();
       }
       return;
     }
 
-
     this.activityService.busy();
 
     this.orderRepository.emptyCart().subscribe((emptySuccess) => {
-      if (!emptySuccess) {
-        // TODO: Handle error.
-        this.activityService.done();
-        return;
-      }
-
-      this.orderRepository.addItemsToCart().subscribe((addSuccess) => {
-        if (!addSuccess) {
+        if (!emptySuccess) {
           // TODO: Handle error.
+          this.logError('Fout met leegmaken van de winkelwagen - opencard (OC002)');
           this.activityService.done();
           return;
-        }
+        };
 
-
-        const addressRequests = [
-          this.orderRepository.selectPaymentAddress(
-            parseInt(this.selectedAddress)
-          ),
-          this.orderRepository.selectShippingAddress(parseInt(this.selectedAddress))
-        ];
-
-        forkJoin(addressRequests).subscribe((success: Array<boolean>) => {
-          const succeeded = success.every((e) => e);
-          if (!succeeded) {
+        this.orderRepository.addItemsToCart().subscribe((addSuccess) => {
+          if (!addSuccess) {
             // TODO: Handle error.
+            this.logError('Fout met wegschrijven - opencard (OC003)');
             this.activityService.done();
             return;
-          }
+          };
 
-          this.setComment();
-        }, (error) => {
-          this.activityService.done();
-          this.logError(error);
+          const addressRequests = [
+            this.orderRepository.selectPaymentAddress(
+              parseInt(this.selectedAddress)
+            ),
+            this.orderRepository.selectShippingAddress(
+              parseInt(this.selectedAddress)
+            )
+          ];
+
+          forkJoin(addressRequests).subscribe((success: Array<boolean>) => {
+
+            const succeeded = success.every((e) => e);
+            if (!succeeded) {
+              // TODO: Handle error.
+              this.logError('Fout met ophalen adres - opencard (OC004)');
+              this.activityService.done();
+              return;
+            }
+
+            this.setComment();
+          }, (err) => {
+            this.activityService.done();
+            this.logError('opencard (005)' + JSON.parse(err.error).error[0]);
+          });
         });
-      });
     });
   }
 
@@ -210,15 +215,15 @@ export class OrderModalComponent {
 
         }, (err) => {
           this.activityService.done();
-          this.logError(err);
+          this.logError('opencard (006)' + JSON.parse(err.error).error[0]);
         });
       }, (err) => {
         this.activityService.done();
-        this.logError(err);
+        this.logError('opencard (007)' + JSON.parse(err.error).error[0]);
       });
     }, (err) => {
       this.activityService.done();
-      this.logError(err);
+      this.logError('opencard (008)' + JSON.parse(err.error).error[0]);
     });
   }
 
@@ -229,19 +234,21 @@ export class OrderModalComponent {
     this.orderRepository.doHandleComment(comment).subscribe((commentSuccess) => {
       if (!commentSuccess) {
         // TODO: Handle error.
+        this.toast('Er is iets fout gegaan met comment' + !commentSuccess);
         this.activityService.done();
         return;
       }
       this.confirmAndPlaceOrder();
     }, (err) => {
       this.activityService.done();
-      this.logError(err);
+      this.logError('opencard (009)' + JSON.parse(err.error).error[0]);
     });
   }
 
   private confirmAndPlaceOrder() {
     this.orderRepository.confirmOrder().subscribe((confirmSuccess) => {
       if (!confirmSuccess) {
+        this.toast('Er is iets fout gegaan met confirmatie' + !confirmSuccess);
         // TODO: Handle error.
         this.activityService.done();
         return;
@@ -250,11 +257,12 @@ export class OrderModalComponent {
       this.orderRepository.placeOrder().subscribe((orderSuccess) => {
         this.activityService.done();
         if (!orderSuccess) {
+          this.toast('Er is iets fout gegaan met ordering' + !orderSuccess);
           // TODO: Handle error.
           return;
         }
-          this.productRepository.emptyCart();
 
+        this.productRepository.emptyCart();
 
         this.modalController.dismiss({
           dismissed: true,
@@ -271,19 +279,17 @@ export class OrderModalComponent {
         this.activityService.done();
       }, (err) => {
         this.activityService.done();
-        this.logError(err);
+        this.logError('opencard (010)' + JSON.parse(err.error).error[0]);
       });
     }, (err) => {
       this.activityService.done();
-      this.logError(err);
+      this.logError('opencard (011)' + JSON.parse(err.error).error[0]);
     });
   }
 
   private logError(error) {
-    console.log(error);
-    // new Toasty({
-    //   text: error,
-    // }).show();
+    // console.log(error);
+    this.toast('Error ' + (typeof error === 'object')?JSON.stringify(error):error);
   }
 
   get canSubmitForm(): boolean {
@@ -306,6 +312,7 @@ export class OrderModalComponent {
     return this.expanded && !not_completed;
   }
 
+  // eslint-disable-next-line @typescript-eslint/member-ordering
   async toast(msg: string) {
     const toast = await this.toastController.create({
       message: msg,

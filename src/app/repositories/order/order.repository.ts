@@ -124,9 +124,9 @@ export class OrderRepository {
     private handleStatus(request: Observable<any>, requestDescription: string = '<no request description supplied>'): Observable<boolean> {
         return request.pipe(
             map((response: any) => {
-              response = JSON.parse(response.data);
-                if (response) {
-                    return response.success === 1;
+                const data = JSON.parse(response.data);
+                if (data) {
+                  return data.success === 1;
                 }
                 return false;
             }),
