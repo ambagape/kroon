@@ -142,7 +142,9 @@ export class ProductRepository{
     }
     // Send request to write the cart to disk.
     this.writeCartToDisk();
-    window.location.reload();
+
+    // alert ("sdsdsdas");
+    // window.location.reload();
 
   }
 

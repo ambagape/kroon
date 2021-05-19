@@ -83,11 +83,32 @@ async ngOnInit() {
           }
         });
 
-        // this.activityService.done();
+        await modal.present();
 
-        return await modal.present();
+        await modal.onDidDismiss().then( (data) => {
+
+          if (data?.data?.data?.cartItem && data?.data?.data?.quantity){
+
+            this.productRepository.addItemToCart(data.data.data.cartItem, data.data.data.quantity);
+            return true;
+          }
+          return false;
+        }).then( (e) => {
+
+          alert(e); // => true als data vanscanner, false bij geen data. bij false niet scanner openen.
+
+          this.storage.get('cartItems')
+          .then(res => {
+            if(res) {
+              this._cartItems = res;
+            }
+          })
+          .finally( () => {
+            this.openBarCodeScanner();
+          });
+
+        });
       });
-
       });
   }
 

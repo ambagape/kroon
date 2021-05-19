@@ -30,8 +30,8 @@ export class ProductModalComponent implements OnInit {
 
   constructor(
     private productRepository: ProductRepository,
-      private modalController: ModalController,
-      private activityService: ActivityService,
+    private modalController: ModalController,
+    private activityService: ActivityService,
     private orderService: OrderService,
     private router: Router,
     private nativeStorage: NativeStorage
@@ -46,10 +46,6 @@ export class ProductModalComponent implements OnInit {
     }).catch(console.log);
     this.quantity = this.productRepository.getItemQuantity(this.cartItem);
   };
-
-  // close() {
-  //   this.closed.emit();
-  // }
 
   dismiss() {
     this.modalController.dismiss({
@@ -69,15 +65,17 @@ export class ProductModalComponent implements OnInit {
     this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
   };
 
-  public addItemToCart() {
-    if (this.quantity > 0) {
-      this.productRepository.addItemToCart(this.cartItem, this.quantity);
-          this.modalController.dismiss({
-            dismissed: true,
-            data: this.cartItem
-          });
+  addItemToCart() {
 
-      // this.closed.emit();
+    if (this.quantity > 0) {
+      this.modalController.dismiss({
+        dismissed: true,
+        data: {
+          cartItem: this.cartItem,
+          quantity: this.quantity
+        }
+      });
+
     }
   };
 
