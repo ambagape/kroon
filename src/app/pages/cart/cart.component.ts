@@ -13,6 +13,7 @@ import {HTTP} from '@ionic-native/http/ngx';
 import { Storage } from '@ionic/storage-angular';
 import { Network } from '@ionic-native/network/ngx';
 import {NativeStorage} from '@ionic-native/native-storage/ngx';
+import {conditionallyCreateMapObjectLiteral} from "@angular/compiler/src/render3/view/util";
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -27,7 +28,7 @@ export class CartComponent implements OnInit, OnChanges{
   public noSearchResults: boolean;
   public filterText = '';
   public search: string = null;
-  public orderButtonDisabled: boolean = true;
+  public orderButtonDisabled = true;
 
   private _cartItems: CartItem[] = [];
 
@@ -49,7 +50,7 @@ export class CartComponent implements OnInit, OnChanges{
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    console.log('ChANGE!!')
+    console.log('ChANGE!!');
     console.log(this._cartItems);
     if(this._cartItems.length > 0) {
       this.orderButtonDisabled = false;
@@ -60,7 +61,7 @@ export class CartComponent implements OnInit, OnChanges{
 
   ngOnInit() {
     if(this._cartItems) {
-      console.log('Hallo')
+      console.log('Hallo');
       this.orderButtonDisabled = true;
     }
   }
@@ -76,6 +77,7 @@ export class CartComponent implements OnInit, OnChanges{
       if(res) {
         this._cartItems = res;
       }
+
     });
 
 
@@ -91,12 +93,14 @@ export class CartComponent implements OnInit, OnChanges{
    this.activityService.done();
   }
 
+
+
   openBarCodeScanner() {
     this.activityService.busy();
 
     this.barcodeScanner.scan().then(async res => {
 
-      if (!res.cancelled) this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
+      if (!res.cancelled) {this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
 
         this.activityService.busy();
         const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, res.text);
@@ -125,7 +129,7 @@ export class CartComponent implements OnInit, OnChanges{
             this.productRepository.addItemToCart(data.data.data.cartItem, data.data.data.quantity);
             return true;
           } else {
-            this.toast('Bericht succesvol verzonden!')
+            this.toast('Bericht succesvol verzonden!');
           }
           return false;
         }).then( (e) => {
@@ -146,7 +150,7 @@ export class CartComponent implements OnInit, OnChanges{
           });
 
         });
-      });
+      });}
       this.activityService.done();
     });
   }
@@ -162,10 +166,9 @@ export class CartComponent implements OnInit, OnChanges{
 
   delete = async (item: CartItem) => {
     const index = this._cartItems.indexOf(item);
-    console.log('De index' + index)
 
     if (index > -1) {
-      new Promise((resolve, reject) => {
+      new Promise(() => {
         this._cartItems.splice(index, 1);
         this.productRepository.removeItemFromCart(item);
       }).finally(async () => {
@@ -174,8 +177,8 @@ export class CartComponent implements OnInit, OnChanges{
             this._cartItems = res;
 
           }
-        })
-      })
+        });
+      });
 
 
 
@@ -194,14 +197,30 @@ export class CartComponent implements OnInit, OnChanges{
   };
 
   async presentOrderModal() {
+
+
     const modal = await this.modalController.create({
-      component: OrderModalComponent,
-      componentProps: {
-        cartItems: this.cartItems
-      }
+        component: OrderModalComponent,
+        componentProps: {
+          cartItems: this.cartItems
+        },
     });
+
+    modal.onDidDismiss()
+      .then((data) => {
+        this.storage.get('cartItems').then(res => {
+          if(res) {
+            this.toast('Bestelling succesvol ontvangen')
+            this._cartItems = res;
+          }
+        });
+      });
+
     return await modal.present();
   }
+
+
+
 
   show(item: CartItem) {
     const navigationExtras: NavigationExtras = {

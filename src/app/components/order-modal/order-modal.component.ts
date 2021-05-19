@@ -113,8 +113,6 @@ export class OrderModalComponent {
             return;
           }
 
-          this.productRepository.emptyCart();
-
           this.setComment();
         }, (error) => {
           this.activityService.done();
@@ -164,6 +162,10 @@ export class OrderModalComponent {
     return lookup[i];
   }
 
+  get showSpinner(): boolean {
+    return this.activityService.isBusy;
+  }
+
   /**
    * Performs the request to add a new shipping address.
    */
@@ -204,7 +206,7 @@ export class OrderModalComponent {
             return;
           }
           this.setComment();
-              // this.router.navigate(['cart']);
+            // this.router.navigate(['cart']);
 
         }, (err) => {
           this.activityService.done();
@@ -251,10 +253,15 @@ export class OrderModalComponent {
           // TODO: Handle error.
           return;
         }
-        this.modalController.dismiss().then(() => {
-          this.toast('Bestelling succesvol geplaatst');
+          this.productRepository.emptyCart();
 
+
+        this.modalController.dismiss({
+          dismissed: true,
         });
+
+
+
         // new Toasty({
         //   text: "Bestelling geslaagd!",
         //   ios: {

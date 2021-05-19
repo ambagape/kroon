@@ -105,6 +105,8 @@ export class ProductModalComponent implements OnInit {
     this.composeEmail();
   }
 
+
+
   private composeEmail() {
 
 

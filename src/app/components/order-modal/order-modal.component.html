@@ -11,6 +11,12 @@
   </ion-toolbar>
 </ion-header>
 
+<div class="spin" *ngIf="showSpinner">
+  <ion-spinner></ion-spinner>
+</div>
+
+
+
 <ion-content fullscreen>
   <ion-list>
     <ion-item style="margin-bottom: 20px;">
@@ -31,9 +37,11 @@
 </ion-content>
 <ion-footer>
   <ion-toolbar>
-    <ion-button icon-start expand="full" color="dark" (click)="order()">
+    <ion-button icon-start expand="full" color="dark" (click)="order()" [disabled]="showSpinner">
       <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
       Afronden
     </ion-button>
   </ion-toolbar>
 </ion-footer>
+
+

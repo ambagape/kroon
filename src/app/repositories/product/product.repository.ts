@@ -153,7 +153,6 @@ export class ProductRepository{
 
     if (i !== null) {
       this._cartItems.splice(i, 1);
-      console.log('HALLO!!!')
       this.writeCartToDisk();
     }
 
@@ -184,7 +183,6 @@ export class ProductRepository{
         const old = this._cartItems[i];
 
         if (old.quantity !== quantity) {
-          console.log('quantity changed')
           this._cartItems[i] = { ...old, quantity };
           this.writeCartToDisk();
         }
