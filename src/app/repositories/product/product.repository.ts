@@ -153,7 +153,6 @@ export class ProductRepository{
 
     if (i !== null) {
       this._cartItems.splice(i, 1);
-      console.log('HALLO!!!')
       this.writeCartToDisk();
     }
 

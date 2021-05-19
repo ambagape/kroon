@@ -48,7 +48,7 @@
 <ion-footer>
   <ion-toolbar>
     <ion-button icon-start expand="full" class="ion-activatable ripple-parent" slot="start" color="dark"
-      (click)="presentOrderModal()" style="width: 80%" [disabled]="orderButtonDisabled">
+      (click)="presentOrderModal()" style="width: 80%" [disabled]="cartItems.length < 1">
       <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
       Bestellen
       <ion-ripple-effect></ion-ripple-effect>

@@ -18,7 +18,7 @@ import {NativeStorage} from '@ionic-native/native-storage/ngx';
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
 })
-export class CartComponent implements OnInit, OnChanges{
+export class CartComponent implements OnInit {
 
   showOrderModal = false;
   showSearch = false;
@@ -46,16 +46,6 @@ export class CartComponent implements OnInit, OnChanges{
   ) {
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    console.log('ChANGE!!')
-    console.log(this._cartItems);
-    if(this._cartItems.length > 0) {
-      this.orderButtonDisabled = false;
-    } else {
-      this.orderButtonDisabled = true;
-    }
-  }
-
   ngOnInit() {
     if(this._cartItems) {
       console.log('Hallo')
@@ -75,8 +65,6 @@ export class CartComponent implements OnInit, OnChanges{
         this._cartItems = res;
       }
     });
-
-
 
   this.network.onConnect().subscribe(() => {
      if ((this.network.type === 'wifi' || this.network.type === 'mobile') && this.productRepository.hasOfflineProducts) {
