@@ -12,7 +12,6 @@ import {ProductModalComponent} from '../../components/product-modal/product-moda
 import { Storage } from '@ionic/storage-angular';
 import { Network } from '@ionic-native/network/ngx';
 import {NativeStorage} from '@ionic-native/native-storage/ngx';
-import {conditionallyCreateMapObjectLiteral} from "@angular/compiler/src/render3/view/util";
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
@@ -79,8 +78,6 @@ export class CartComponent implements OnInit {
    this.activityService.done();
   }
 
-
-
   openBarCodeScanner() {
     this.activityService.busy();
 
@@ -99,16 +96,9 @@ export class CartComponent implements OnInit {
           }
         });
 
-        if(!res.cancelled) {
-          await modal.present();
-        }
-
-        if(res.cancelled) {
-          this.activityService.done();
-        }
+        await modal.present();
 
         await modal.onDidDismiss().then( (data) => {
-
 
           if (data?.data?.data?.cartItem && data?.data?.data?.quantity){
 
@@ -154,18 +144,10 @@ export class CartComponent implements OnInit {
     const index = this._cartItems.indexOf(item);
 
     if (index > -1) {
-      new Promise(() => {
-        this._cartItems.splice(index, 1);
-        this.productRepository.removeItemFromCart(item);
-      }).finally(async () => {
-        await this.storage.get('cartItems').then(res => {
-          if(res) {
-            this._cartItems = res;
-
-          }
-        });
-      });
+      this._cartItems.splice(index, 1);
     }
+
+    this.productRepository.removeItemFromCart(item);
   };
 
   public onInputClear(args: any) {
@@ -192,7 +174,7 @@ export class CartComponent implements OnInit {
       .then((data) => {
         this.storage.get('cartItems').then(res => {
           if(res) {
-            this.toast('Bestelling succesvol ontvangen')
+            this.toast('Bestelling succesvol ontvangen');
             this._cartItems = res;
           }
         });
