@@ -21,6 +21,7 @@ const { Camera } = Plugins;
 export class ProductModalComponent implements OnInit {
 
   @Input() cartItem: CartItem;
+  @Input() ean: any;
 
   quantity = 0;
   // private currentNumber = 1;
@@ -106,14 +107,13 @@ export class ProductModalComponent implements OnInit {
 
   private composeEmail() {
 
-    this.activityService.busy();
 
 
 
     const description = '';
 
     // eslint-disable-next-line eqeqeq,max-len
-    const body = `${ this.email } meldt: Het product met deze code staat niet in de app. ${description != '' ? `<br><br>${description}` : ''}`;
+    const body = `${ this.email } meldt: Het product met de code: ${this.ean}. Staat niet in de app. ${description != '' ? `<br><br>${description}` : ''}`;
 
       return this.orderService.doSentUnknown({
         subject: `Onbekend product ( door: ${this.email} )`,
