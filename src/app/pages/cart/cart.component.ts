@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnChanges, OnDestroy, OnInit, SimpleChanges} from '@angular/core';
 import { ActivityService } from '../../shared/activity/activity.service';
 import { AuthRepository } from '../../repositories/auth/auth.repository';
 import { CartItem } from '../../shared/product/cartitem.model';
@@ -18,7 +18,7 @@ import {NativeStorage} from '@ionic-native/native-storage/ngx';
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
 })
-export class CartComponent implements OnInit {
+export class CartComponent implements OnInit, OnChanges{
 
   showOrderModal = false;
   showSearch = false;
@@ -27,6 +27,8 @@ export class CartComponent implements OnInit {
   public noSearchResults: boolean;
   public filterText = '';
   public search: string = null;
+  public orderButtonDisabled: boolean = true;
+
   private _cartItems: CartItem[] = [];
 
   constructor(
@@ -44,20 +46,39 @@ export class CartComponent implements OnInit {
   ) {
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('ChANGE!!')
+    console.log(this._cartItems);
+    if(this._cartItems.length > 0) {
+      this.orderButtonDisabled = false;
+    } else {
+      this.orderButtonDisabled = true;
+    }
+  }
+
+  ngOnInit() {
+    if(this._cartItems) {
+      console.log('Hallo')
+      this.orderButtonDisabled = true;
+    }
+  }
+
   onSearchChange(args) {
     this.filterText = args.target.value;
   }
 
-async ngOnInit() {
+ async ionViewWillEnter() {
     await this.storage.create();
 
-    this.storage.get('cartItems').then(res => {
+    await this.storage.get('cartItems').then(res => {
       if(res) {
         this._cartItems = res;
       }
     });
 
-   this.network.onConnect().subscribe(() => {
+
+
+  this.network.onConnect().subscribe(() => {
      if ((this.network.type === 'wifi' || this.network.type === 'mobile') && this.productRepository.hasOfflineProducts) {
        this.productRepository.updateOfflineProducts();
      }
@@ -83,9 +104,16 @@ async ngOnInit() {
           }
         });
 
-        await modal.present();
+        if(!res.cancelled) {
+          await modal.present();
+        }
+
+        if(res.cancelled) {
+          this.activityService.done();
+        }
 
         await modal.onDidDismiss().then( (data) => {
+
 
           if (data?.data?.data?.cartItem && data?.data?.data?.quantity){
 
@@ -102,7 +130,12 @@ async ngOnInit() {
             }
           })
           .finally( () => {
-            if (e) this.openBarCodeScanner();
+            this.orderButtonDisabled = false;
+            if (e) {
+
+              this.openBarCodeScanner();
+            }
+
           });
 
         });
@@ -120,13 +153,27 @@ async ngOnInit() {
     await this.router.navigate(['login']);
   };
 
-  delete = (item: CartItem) => {
+  delete = async (item: CartItem) => {
     const index = this._cartItems.indexOf(item);
+    console.log('De index' + index)
 
     if (index > -1) {
-      this._cartItems.splice(index, 1);
+      new Promise((resolve, reject) => {
+        this._cartItems.splice(index, 1);
+        this.productRepository.removeItemFromCart(item);
+      }).finally(async () => {
+        await this.storage.get('cartItems').then(res => {
+          if(res) {
+            this._cartItems = res;
+
+          }
+        })
+      })
+
+
+
     }
-      this.productRepository.removeItemFromCart(item);
+
   };
 
   public onInputClear(args: any) {

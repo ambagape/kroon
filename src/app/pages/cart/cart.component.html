@@ -36,8 +36,8 @@
         <ion-button fill="outline" slot="end">{{ item.quantity }}</ion-button>
       </ion-item>
       <ion-item-options side="end">
-        <ion-item-option color="danger">
-          <ion-icon size="small" slot="icon-only" name="trash" (click)="delete(item)"></ion-icon>
+        <ion-item-option color="danger" (click)="delete(item)">
+          <ion-icon size="small" slot="icon-only" name="trash" ></ion-icon>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -48,7 +48,7 @@
 <ion-footer>
   <ion-toolbar>
     <ion-button icon-start expand="full" class="ion-activatable ripple-parent" slot="start" color="dark"
-      (click)="presentOrderModal()" style="width: 80%">
+      (click)="presentOrderModal()" style="width: 80%" [disabled]="orderButtonDisabled">
       <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
       Bestellen
       <ion-ripple-effect></ion-ripple-effect>
