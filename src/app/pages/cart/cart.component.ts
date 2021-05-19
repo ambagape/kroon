@@ -71,7 +71,7 @@ async ngOnInit() {
 
     this.barcodeScanner.scan().then(async res => {
 
-      this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
+      if (!res.cancelled) this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
 
         this.activityService.busy();
         const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, res.text);
@@ -95,8 +95,6 @@ async ngOnInit() {
           return false;
         }).then( (e) => {
 
-          alert(e); // => true als data vanscanner, false bij geen data. bij false niet scanner openen.
-
           this.storage.get('cartItems')
           .then(res => {
             if(res) {
@@ -104,12 +102,13 @@ async ngOnInit() {
             }
           })
           .finally( () => {
-            this.openBarCodeScanner();
+            if (e) this.openBarCodeScanner();
           });
 
         });
       });
-      });
+      this.activityService.done();
+    });
   }
 
   orderModalClosed() {
