@@ -5,7 +5,7 @@ import { AuthRepository } from '../../repositories/auth/auth.repository';
 import { CartItem } from '../../shared/product/cartitem.model';
 import { ProductRepository } from '../../repositories/product/product.repository';
 import {NavigationExtras, Router} from '@angular/router';
-import {ModalController, NavController} from '@ionic/angular';
+import {ModalController, NavController, ToastController} from '@ionic/angular';
 import {OrderModalComponent} from '../../components/order-modal/order-modal.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import {ProductModalComponent} from '../../components/product-modal/product-modal.component';
@@ -41,7 +41,9 @@ export class CartComponent implements OnInit {
     private storage: Storage,
     private network: Network,
     public navCtrl: NavController,
-    private nativeStorage: NativeStorage
+    private nativeStorage: NativeStorage,
+    public toastController: ToastController,
+
 
   ) {
   }
@@ -88,7 +90,8 @@ export class CartComponent implements OnInit {
         const modal = await this.modalController.create({
           component: ProductModalComponent,
           componentProps: {
-            cartItem
+            cartItem,
+            ean: res.text
           }
         });
 
@@ -107,6 +110,8 @@ export class CartComponent implements OnInit {
 
             this.productRepository.addItemToCart(data.data.data.cartItem, data.data.data.quantity);
             return true;
+          } else {
+            this.toast('Bericht succesvol verzonden!')
           }
           return false;
         }).then( (e) => {
@@ -192,5 +197,13 @@ export class CartComponent implements OnInit {
     };
 
     this.navCtrl.navigateForward(['detail'], navigationExtras);
+  }
+
+  async toast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000
+    });
+    await toast.present();
   }
 }

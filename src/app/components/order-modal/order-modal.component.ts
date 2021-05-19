@@ -10,7 +10,7 @@ import { Address } from '../../shared/order/address.model';
 import { forkJoin } from 'rxjs';
 import { ActivityService } from '../../shared/activity/activity.service';
 import {Router} from '@angular/router';
-import {ModalController} from '@ionic/angular';
+import {ModalController, ToastController} from '@ionic/angular';
 // import { Toasty } from 'nativescript-toasty';
 // import { PickerComponent } from '../picker/picker.component';
 // import { TextField } from 'tns-core-modules/ui/text-field/text-field';
@@ -32,6 +32,7 @@ export class OrderModalComponent {
   selectedString = 'Selecteer optie';
 
   selectedProvince = 'Drenthe';
+  ordernumber: string;
 
   adress = {
     firstName: undefined,
@@ -52,7 +53,8 @@ export class OrderModalComponent {
     private cdRef: ChangeDetectorRef,
     private activityService: ActivityService,
     private router: Router,
-    private modalController: ModalController
+    private modalController: ModalController,
+    private toastController: ToastController
   ) {
 
     this.orderRepository.addresses().subscribe((res) => {
@@ -202,7 +204,6 @@ export class OrderModalComponent {
             return;
           }
           this.setComment();
-          window.location.href = '/cart';
               // this.router.navigate(['cart']);
 
         }, (err) => {
@@ -230,7 +231,6 @@ export class OrderModalComponent {
         return;
       }
       this.confirmAndPlaceOrder();
-      window.location.href = '/cart';
     }, (err) => {
       this.activityService.done();
       this.logError(err);
@@ -251,7 +251,10 @@ export class OrderModalComponent {
           // TODO: Handle error.
           return;
         }
-        this.close();
+        this.modalController.dismiss().then(() => {
+          this.toast('Bestelling succesvol geplaatst');
+
+        });
         // new Toasty({
         //   text: "Bestelling geslaagd!",
         //   ios: {
@@ -296,13 +299,20 @@ export class OrderModalComponent {
     return this.expanded && !not_completed;
   }
 
+  async toast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000
+    });
+    await toast.present();
+  }
+
   get buttonActive(): boolean {
     return (this.selectedAddress != null || this.canSubmitForm) && !this.activityService.isBusy;
   }
 
   get pickerItems(): Array<any> {
     const array = Array<any>();
-    array[0] = 'Maak een keuze uit uw afleveradressen';
     // Uncomment this line to enable expanding a form to add a new delivery address.
     // array.push('Leg hier een afwijkend adres vast');
     array.push.apply(array, this._pickerItems);
