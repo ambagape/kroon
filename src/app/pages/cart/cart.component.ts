@@ -194,7 +194,7 @@ export class CartComponent implements OnInit {
   async toast(msg: string) {
     const toast = await this.toastController.create({
       message: msg,
-      duration: 2000
+      duration: 5000
     });
     await toast.present();
   }
