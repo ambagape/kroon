@@ -43,7 +43,7 @@
     </ion-row>
     <ion-row class="ion-justify-content-center ion-margin">
       <!-- <div class="ion-text-center"> -->
-      <ion-button color="primary" (click)="decrementQuantity()">
+      <ion-button [disabled]="quantity <= 1" color="primary" (click)="decrementQuantity()">
         <ion-icon name="remove-circle-outline"></ion-icon>
       </ion-button>
       <h2 class="ion-margin">{{ quantity }}</h2>
