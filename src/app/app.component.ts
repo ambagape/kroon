@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
     private authRepository: AuthRepository,
     private router: Router,
     private activityService: ActivityService,
-    private storage: Storage,
+    // private storage: Storage,
     private nativeStorage: NativeStorage,
     private http: HTTP
   ) {
@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
   }
 
  async ngOnInit() {
-     await this.storage.create();
+    //  await this.storage.create();
 
    const isLoggedIn = await this.authRepository.isLoggedIn();
 
