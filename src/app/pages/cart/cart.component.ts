@@ -76,7 +76,10 @@ export class CartComponent implements OnInit {
   openBarCodeScanner() {
     this.activityService.busy();
 
-    this.barcodeScanner.scan().then(async res => {
+    this.barcodeScanner.scan({
+      // eslint-disable-next-line max-len
+      prompt : 'Plaats een barcode binnen de rechthoek om deze te scannen. Druk op de terug-knop op uw apparaat als u alle producten gescand heeft', // Android
+    }).then(async res => {
 
       if (!res.cancelled) {this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
 
