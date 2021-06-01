@@ -22,8 +22,8 @@
       <ion-label>Afleveradres</ion-label>
     </ion-list-header>
     <ion-item>
-      <ion-label>Adres</ion-label>
-      <ion-select interface="alert"  [(ngModel)]="selectedAddress" okText="Gereed" cancelText="Annuleren" [compareWith]="compareWith">
+      <ion-label>Selecteer adres</ion-label>
+      <ion-select interface="alert"  interface="action-sheet" [(ngModel)]="selectedAddress" okText="Gereed" cancelText="Annuleren" [compareWith]="compareWith">
         <ion-select-option *ngFor="let item of pickerItems" [value]="item">
           {{item.company}}, {{item.address_1}}, {{item.city}}</ion-select-option>
       </ion-select>
