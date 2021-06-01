@@ -172,12 +172,14 @@ export class CartComponent implements OnInit {
 
     modal.onDidDismiss()
       .then((data) => {
-        this.storage.get('cartItems').then(res => {
-          if(res) {
-            this.toast('Bestelling succesvol ontvangen');
-            this._cartItems = res;
-          }
-        });
+        if(data?.data?.succeeded) {
+          this.storage.get('cartItems').then(res => {
+            if(res) {
+              this.toast('Bestelling succesvol ontvangen');
+              this._cartItems = res;
+            }
+          });
+        }
       });
 
     return await modal.present();

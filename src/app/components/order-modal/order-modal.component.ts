@@ -180,7 +180,7 @@ export class OrderModalComponent {
         this.productRepository.emptyCart();
 
         this.modalController.dismiss({
-          dismissed: true,
+          succeeded: true,
         });
 
         this.activityService.done();
