@@ -98,12 +98,14 @@ export class CartComponent implements OnInit {
 
         await modal.onDidDismiss().then( (data) => {
 
+          if(data?.data?.isSend) {
+            this.toast('Bericht succesvol verzonden!');
+
+          }
           if (data?.data?.data?.cartItem && data?.data?.data?.quantity){
 
             this.productRepository.addItemToCart(data.data.data.cartItem, data.data.data.quantity);
             return true;
-          } else {
-            this.toast('Bericht succesvol verzonden!');
           }
           return false;
         }).then( (e) => {

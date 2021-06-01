@@ -135,7 +135,9 @@ export class ProductModalComponent implements OnInit {
             // }).show();
 
             this.activityService.done();
-            this.modalController.dismiss();
+            this.modalController.dismiss({
+              isSend: true
+            });
           }
           // new Toasty({
           //   text: "Bericht versturen mislukt. Neem contact op!",
