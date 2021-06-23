@@ -193,14 +193,24 @@ export class ProductRepository{
   /**
    * Checks if the cart contains offline items.
    */
-  get hasOfflineProducts(): boolean {
+  get  hasOfflineProducts(): boolean {
 
-    const filtered = this._cartItems.filter((e) => e.offline);
+     this.storage.get('cartItems').then(response => {
+      if(response) {
+        this._cartItems = response;
+      }
+    }).then(() => {
+       const filtered = this._cartItems.filter((e) => e.offline);
+       console.log(JSON.stringify(filtered) + 'Gefilterd')
 
-    if (filtered.length) {
+       if (filtered.length) {
+         console.log(filtered[0] + 'Hallo')
+         return filtered[0] !== undefined;
+       }
+     })
 
-      return filtered[0] !== undefined;
-    }
+    console.log('Hier komt hij')
+
 
     return false;
   }
@@ -219,16 +229,21 @@ export class ProductRepository{
   /**
    * Updates the products that are offline by getting their data from the server.
    * TODO: Think of a way to handle multiple unexisting products being updated here. How do we handle that in terms of UI?
+    * Loop over all the items? And for each item, you do an API request. But on the other hand you will get an lot of requests.
    */
-  updateOfflineProducts() {
-
+  async updateOfflineProducts() {
+    await this.readCartFromDisk();
     const requests = [];
 
     this._cartItems.forEach((item) => {
+      console.log(JSON.stringify(item) + ' result loop')
+
+
 
       if (!item.offline || !item.ean) {
         return;
       }
+
       requests.push(this.productForEan(item.ean));
     });
 
@@ -237,9 +252,8 @@ export class ProductRepository{
     forkJoin(requests).subscribe((results: Array<ProductResponse>) => {
 
       results.forEach((productResponse) => {
-
+        console.log(productResponse + 'response')
         if (!productResponse) {
-
           return;
         }
 
@@ -249,6 +263,7 @@ export class ProductRepository{
 
           if (i !== null || undefined) {
             this._cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
+
           }
         } else if (productResponse.status === 'error') {
 
@@ -261,6 +276,8 @@ export class ProductRepository{
         }
       });
 
+      console.log('done')
+      window.location.reload();
       this.activityService.done();
       this.writeCartToDisk();
 
@@ -272,13 +289,11 @@ export class ProductRepository{
   }
 
   async readCartFromDisk() {
-
     await this.storage.get('cartItems').then(response => {
       if(response) {
         this._cartItems = response;
       }
 
     });
-
   }
 }

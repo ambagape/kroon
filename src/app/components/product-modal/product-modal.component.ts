@@ -23,7 +23,7 @@ export class ProductModalComponent implements OnInit {
   @Input() cartItem: CartItem;
   @Input() ean: any;
 
-  quantity = 0;
+  quantity = 1;
   // private currentNumber = 1;
   imageAsset: any = null;
   base64: string;
@@ -69,6 +69,7 @@ export class ProductModalComponent implements OnInit {
   addItemToCart() {
 
     if (this.quantity > 0) {
+      console.log(this.cartItem);
       this.modalController.dismiss({
         dismissed: true,
         data: {
@@ -76,6 +77,10 @@ export class ProductModalComponent implements OnInit {
           quantity: this.quantity
         }
       });
+
+      // console.log(foo)
+
+      console.log(this.cartItem, this.quantity);
 
     }
   };
