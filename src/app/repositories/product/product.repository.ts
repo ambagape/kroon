@@ -5,20 +5,20 @@ import { ProductResponse, ProductResponseStatus } from './productresponse.model'
 import { catchError, map } from 'rxjs/operators';
 import { ActivityService } from '../../shared/activity/activity.service';
 import { CartItem } from '../../shared/product/cartitem.model';
-import {Injectable, OnInit} from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Product } from '../../shared/product/product.model';
 import { ProductService } from '../../shared/product/product.service';
 import { Storage } from '@ionic/storage-angular';
 @Injectable()
-export class ProductRepository{
+export class ProductRepository {
 
   private _cartItems: CartItem[] = [];
 
   constructor(
     private productService: ProductService,
     private activityService: ActivityService,
-    private storage: Storage  ) {
-      this.readCartFromDisk();
+    private storage: Storage) {
+    this.readCartFromDisk();
   }
 
   productForEan(ean: string): Observable<ProductResponse> {
@@ -52,7 +52,19 @@ export class ProductRepository{
         console.log('Something went wrong while getting the product.' + response.message);
         return of({
           status: ProductResponseStatus.Offline,
-          product: null,
+          product: {
+            id: null,
+            product_id: null,
+            ean: ean,
+            name: "Offline product",
+            model: "Onbekend",
+            jan:"Onbekend",
+            description: null,
+            meta_title: null,
+            meta_description: null,
+            attribute_groups: null,
+            image: "assets/connection.png"
+          },
           ean
         });
       })
@@ -118,7 +130,7 @@ export class ProductRepository{
 
         const i = this.indexOfItemInCartByEan(item.ean);
         const old = this._cartItems[i];
-        this._cartItems[i] =  { ...old, quantity };
+        this._cartItems[i] = { ...old, quantity };
 
       } else {
 
@@ -136,7 +148,7 @@ export class ProductRepository{
 
           const old = this._cartItems[i];
 
-          this._cartItems[i] =  { ...old, quantity };
+          this._cartItems[i] = { ...old, quantity };
         }
       }
     }
@@ -193,21 +205,21 @@ export class ProductRepository{
   /**
    * Checks if the cart contains offline items.
    */
-  get  hasOfflineProducts(): boolean {
+  get hasOfflineProducts(): boolean {
 
-     this.storage.get('cartItems').then(response => {
-      if(response) {
+    this.storage.get('cartItems').then(response => {
+      if (response) {
         this._cartItems = response;
       }
     }).then(() => {
-       const filtered = this._cartItems.filter((e) => e.offline);
-       console.log(JSON.stringify(filtered) + 'Gefilterd')
+      const filtered = this._cartItems.filter((e) => e.offline);
+      console.log(JSON.stringify(filtered) + 'Gefilterd')
 
-       if (filtered.length) {
-         console.log(filtered[0] + 'Hallo')
-         return filtered[0] !== undefined;
-       }
-     })
+      if (filtered.length) {
+        console.log(filtered[0] + 'Hallo')
+        return filtered[0] !== undefined;
+      }
+    })
 
     console.log('Hier komt hij')
 
@@ -237,13 +249,9 @@ export class ProductRepository{
 
     this._cartItems.forEach((item) => {
       console.log(JSON.stringify(item) + ' result loop')
-
-
-
       if (!item.offline || !item.ean) {
         return;
       }
-
       requests.push(this.productForEan(item.ean));
     });
 
@@ -290,10 +298,9 @@ export class ProductRepository{
 
   async readCartFromDisk() {
     await this.storage.get('cartItems').then(response => {
-      if(response) {
+      if (response) {
         this._cartItems = response;
       }
-
     });
   }
 }
