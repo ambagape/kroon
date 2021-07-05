@@ -110,13 +110,13 @@ describe('ProductRepository', () => {
         ean: "4444"
       }   
     productRepository.addItemToCart(offlineProd, 3);
-    expect(productRepository.getItemQuantity(offlineProd)).toBe(3);     
+    expect(await productRepository.getItemQuantity(offlineProd)).toBe(3);     
 
   });
 
   it('should add online item to cart', async ()=>{
     productRepository.addItemToCart(cartItems[0], 2);
-    expect(productRepository.getItemQuantity(cartItems[0])).toBe(2);  
+    expect(await productRepository.getItemQuantity(cartItems[0])).toBe(2);  
   });
 
   it('should update offline item when netwwork is restored', async ()=>{

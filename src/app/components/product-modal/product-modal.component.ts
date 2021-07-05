@@ -45,7 +45,7 @@ export class ProductModalComponent implements OnInit {
     await this.nativeStorage.getItem('email').then(email => {
       this.email = email;
     }).catch(console.log);
-    this.quantity = this.productRepository.getItemQuantity(this.cartItem);
+    this.quantity = await this.productRepository.getItemQuantity(this.cartItem);
   };
 
   dismiss() {
