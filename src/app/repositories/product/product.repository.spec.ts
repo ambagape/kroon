@@ -18,7 +18,7 @@ describe('ProductRepository', () => {
 
   const cartItems: CartItem[] = [
     {ean:'3434',offline:false,exists:true,quantity:3,product:{id:3434,ean:'3434','model':'',product_id:3434,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]}},
-    {ean:'3435',offline:false,exists:true,quantity:3,product:{id:3434,ean:'3435','model':'',product_id:3434,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]}}
+    {ean:'3435',offline:false,exists:true,quantity:3,product:{id:3435,ean:'3435','model':'',product_id:3435,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]}}
   ];
   
   beforeEach(waitForAsync(() => {  
@@ -62,24 +62,7 @@ describe('ProductRepository', () => {
 
   it('should create', () => {
     expect(productRepository).toBeTruthy();
-  });
- 
-  it('should always get a dummy cartItem with mage when network is down',  async ()=>{
-    //productService.productForEan.and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[0].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
-    productRepository.productForEan(cartItems[0].ean)
-    .subscribe(product=> {
-        expect(product.ean).toBe(cartItems[0].ean);
-        expect(product.status).toBe(ProductResponseStatus.Offline);
-        expect(product.product.image).toBe("assets/connection.png");           
-    }); 
-    
-    const req = httpTestingController.expectOne("http://wwewe.com");    
-    // Connection timeout, DNS error, offline, etc
-    const mockError = new ErrorEvent('Network error', {
-        message: "Offline",
-    });
-    req.error(mockError);
-  });
+  }); 
 
   it('should always get an item when network is ok',  async ()=>{
     productService.productForEan.and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[0].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
@@ -109,14 +92,21 @@ describe('ProductRepository', () => {
         },
         ean: "4444"
       }   
-    productRepository.addItemToCart(offlineProd, 3);
+    await productRepository.addItemToCart(offlineProd, 3);
     expect(await productRepository.getItemQuantity(offlineProd)).toBe(3);     
 
   });
 
   it('should add online item to cart', async ()=>{
-    productRepository.addItemToCart(cartItems[0], 2);
+    await productRepository.addItemToCart(cartItems[0], 2);
     expect(await productRepository.getItemQuantity(cartItems[0])).toBe(2);  
+  });
+
+  it('should remove item', async ()=>{
+    await productRepository.addItemToCart(cartItems[0], 2);
+    await productRepository.addItemToCart(cartItems[1], 2);
+    await productRepository.removeItemFromCart(cartItems[0]);
+    expect((await productRepository.readCartFromDisk()).length).toEqual(1);    
   });
 
   it('should update offline item when netwwork is restored', async ()=>{
@@ -133,8 +123,8 @@ describe('ProductRepository', () => {
         product:null,
         ean: "3435"
       }]               
-    productRepository.addItemToCart(offlineProds[0], 2);
-    productRepository.addItemToCart(offlineProds[1], 2);
+    await productRepository.addItemToCart(offlineProds[0], 2);
+    await productRepository.addItemToCart(offlineProds[1], 2);
     productService.productForEan.withArgs(offlineProds[0].ean).and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[0].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
     productService.productForEan.withArgs(offlineProds[1].ean).and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[1].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
     const updatedCartItems = await productRepository.updateOfflineProducts();
@@ -163,12 +153,14 @@ describe('ProductRepository', () => {
         product:{id:3426,ean:'3426','model':'',product_id:3426,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]},
         ean: "3426"
       }]               
-    productRepository.addItemToCart(cartItems[0], 2);  
-    productRepository.addItemToCart(offlineProds[0], 2);
-    productRepository.addItemToCart(offlineProds[1], 2); 
-    productRepository.addItemToCart(cartItems[1], 2);  
-    productRepository.addItemToCart(offlineProds[2], 2);   
-    expect(productRepository.cartItems.length).toEqual(5);
+    await productRepository.addItemToCart(cartItems[0], 2);  
+    await  productRepository.addItemToCart(offlineProds[0], 2);
+    await  productRepository.addItemToCart(offlineProds[1], 2); 
+    await  productRepository.addItemToCart(cartItems[1], 2);  
+    await  productRepository.addItemToCart(offlineProds[2], 2);   
+    expect((await productRepository.readCartFromDisk()).length).toEqual(5);
   });  
+
+
   
 });

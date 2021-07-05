@@ -94,7 +94,7 @@ export class OrderModalComponent {
 
     this.activityService.busy();
 
-    this.orderRepository.emptyCart().subscribe((emptySuccess) => {
+    this.orderRepository.emptyCart().subscribe(async (emptySuccess) => {
         if (!emptySuccess) {
           // TODO: Handle error.
           this.logError('Fout met leegmaken van de winkelwagen - opencard (OC002)');
@@ -102,7 +102,7 @@ export class OrderModalComponent {
           return;
         };
 
-        this.orderRepository.addItemsToCart().subscribe((addSuccess) => {
+        (await this.orderRepository.addItemsToCart()).subscribe((addSuccess) => {
           if (!addSuccess) {
             // TODO: Handle error.
             this.logError('Fout met wegschrijven - opencard (OC003)');
@@ -169,7 +169,7 @@ export class OrderModalComponent {
         return;
       }
 
-      this.orderRepository.placeOrder().subscribe((orderSuccess) => {
+      this.orderRepository.placeOrder().subscribe(async (orderSuccess) => {
         this.activityService.done();
         if (!orderSuccess) {
           this.toast('Er is iets fout gegaan met ordering' + !orderSuccess);
@@ -177,7 +177,7 @@ export class OrderModalComponent {
           return;
         }
 
-        this.productRepository.emptyCart();
+        await this.productRepository.emptyCart();
 
         this.modalController.dismiss({
           succeeded: true,

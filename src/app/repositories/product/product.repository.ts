@@ -12,11 +12,10 @@ import { Storage } from '@ionic/storage-angular';
 @Injectable()
 export class ProductRepository {
 
-  private _cartItems: CartItem[] = [];
+  //private _cartItems: CartItem[] = [];
 
   constructor(
-    private productService: ProductService,
-    private activityService: ActivityService,
+    private productService: ProductService,    
     private storage: Storage) {
     this.readCartFromDisk();
   }
@@ -69,21 +68,14 @@ export class ProductRepository {
         });
       })
     );
-  }
-
-  // MARK - Cart methods
-
-  get cartItems(): CartItem[] {
-
-    return this._cartItems;
-  }
+  } 
 
   /**
    * Returns the item with the given id from the cart.
    */
-  private findItemInCart(id: number): CartItem {
-
-    const filtered = this.cartItems.filter((cartItem) => cartItem.product && id === cartItem.product.id);
+  private async findItemInCart(id: number): Promise<CartItem> {
+    let cartItems = await this.readCartFromDisk();
+    const filtered = cartItems.filter((cartItem) => cartItem.product && id === cartItem.product.id);
     if (filtered.length) {
       return filtered[0];
     }
@@ -94,14 +86,14 @@ export class ProductRepository {
   /**
    * Checks if an iten with the given id is in the shopping cart.
    */
-  isItemInCart(id: number): boolean {
-    const a = this.findItemInCart(id);
+  async isItemInCart(id: number): Promise<boolean> {
+    const a = await this.findItemInCart(id);
     return a != null;
   }
 
 
-  isItemInCartByEan(ean: string): boolean {
-    const filtered = this.cartItems.filter((cartItem) => ean === cartItem.ean);
+  async isItemInCartByEan(ean: string): Promise<boolean> {
+    const filtered = (await this.readCartFromDisk()).filter((cartItem) => ean === cartItem.ean);
     if (filtered.length) {
       return !!filtered[0];
     }
@@ -112,13 +104,14 @@ export class ProductRepository {
     const cartItems: CartItem[] = await this.readCartFromDisk();
     const filtered = cartItems.filter((cartItem) => ean === cartItem.ean);
     if (filtered.length) {
-      const ix = this._cartItems.indexOf(filtered[0]);
+      const ix = cartItems.indexOf(filtered[0]);
       return ix === -1 ? null : ix;
     }
     return null;
   }
 
   async addItemToCart(item: CartItem, quantity: number = null) {
+    const cartItems = await this.readCartFromDisk();
     if (!quantity) {
       quantity = await this.getItemQuantity(item);
     }
@@ -127,34 +120,34 @@ export class ProductRepository {
     if (item.product) {
 
       // If it's in the cart, increase quantity by 1.
-      if (this.isItemInCart(item.product.id)) {
+      if (await this.isItemInCart(item.product.id)) {
 
         const i = await this.indexOfItemInCartByEan(item.ean);
-        const old = this._cartItems[i];
-        this._cartItems[i] = { ...old, quantity };
+        const old = cartItems[i];
+        cartItems[i] = { ...old, quantity };
 
       } else {
 
-        this._cartItems.push({ ...item, quantity });
+        cartItems.push({ ...item, quantity });
 
       }
     } else {
       // If the product doesn't exist or is offline and isn't in the cart yet, add it.
-      if (!this.isItemInCartByEan(item.ean)) {
-        this._cartItems.push({ ...item, quantity });
+      if (!await this.isItemInCartByEan(item.ean)) {
+        cartItems.push({ ...item, quantity });
       } else {
         // If the product is in the cart, add quantity to it even if we're currently offline.
         const i = await this.indexOfItemInCartByEan(item.ean);
         if (item.offline && i) {
 
-          const old = this._cartItems[i];
+          const old = cartItems[i];
 
-          this._cartItems[i] = { ...old, quantity };
+          cartItems[i] = { ...old, quantity };
         }
       }
     }
     // Send request to write the cart to disk.
-    this.writeCartToDisk();
+    await this.writeCartToDisk(cartItems);
 
     // alert ("sdsdsdas");
     // window.location.reload();
@@ -162,23 +155,25 @@ export class ProductRepository {
   }
 
   async removeItemFromCart(item: CartItem) {
+    const cartItems = await this.readCartFromDisk();
     const i = await this.indexOfItemInCartByEan(item.ean);
-
     if (i !== null) {
-      this._cartItems.splice(i, 1);
-      this.writeCartToDisk();
+      cartItems.splice(i, 1);
+      await this.writeCartToDisk(cartItems);
     }
 
   }
 
-  emptyCart() {
-    this._cartItems.splice(0);
-    this.writeCartToDisk();
+  async emptyCart() {
+    const cartItems = await this.readCartFromDisk();
+    cartItems.splice(0);
+    await this.writeCartToDisk(cartItems);
   }
 
   async getItemQuantity(item: CartItem): Promise<number> {
+    const cartItems = await this.readCartFromDisk();
     const i = await this.indexOfItemInCartByEan(item.ean);
-    const foundItem = this._cartItems[i];
+    const foundItem = cartItems[i];
     if (foundItem && foundItem.quantity) {
 
       return foundItem.quantity;
@@ -187,17 +182,14 @@ export class ProductRepository {
   }
 
   async changeItemQuantity(item: CartItem, quantity: number) {
-
+    const cartItems = await this.readCartFromDisk();
     if (item.product) {
       const i = await this.indexOfItemInCartByEan(item.ean);
-
       if (!(i === null || undefined)) {
-
-        const old = this._cartItems[i];
-
+        const old = cartItems[i];
         if (old.quantity !== quantity) {
-          this._cartItems[i] = { ...old, quantity };
-          this.writeCartToDisk();
+          cartItems[i] = { ...old, quantity };
+          await this.writeCartToDisk(cartItems);
         }
       }
     }
@@ -206,36 +198,21 @@ export class ProductRepository {
   /**
    * Checks if the cart contains offline items.
    */
-  get hasOfflineProducts(): boolean {
-
-    this.storage.get('cartItems').then(response => {
-      if (response) {
-        this._cartItems = response;
-      }
-    }).then(() => {
-      const filtered = this._cartItems.filter((e) => e.offline);
-      console.log(JSON.stringify(filtered) + 'Gefilterd')
-
-      if (filtered.length) {
-        console.log(filtered[0] + 'Hallo')
-        return filtered[0] !== undefined;
-      }
-    })
-
-    console.log('Hier komt hij')
-
-
+  async hasOfflineProducts(): Promise<boolean> {
+    const cartItems: CartItem[] = await this.readCartFromDisk();
+    const filtered = cartItems.filter((e) => e.offline);
+    if (filtered.length) {      
+      return filtered[0] !== undefined;
+    }   
     return false;
   }
 
-  get hasUnexistingProducts(): boolean {
-
-    const filtered = this._cartItems.filter((e) => !e.exists);
-
+  async hasUnexistingProducts(): Promise<boolean> {
+    const cartItems = await this.readCartFromDisk();
+    const filtered = cartItems.filter((e) => !e.exists);
     if (filtered.length) {
       return filtered[0] !== undefined;
     }
-
     return false;
   }
 
@@ -254,7 +231,8 @@ export class ProductRepository {
       requests.push(this.productForEan(item.ean));
     });
     const results: Array<ProductResponse> = await forkJoin<ProductResponse>(requests).toPromise();
-    results.forEach(async (productResponse) => {
+    for(let i=0; i< results.length; i++){
+      const productResponse = results[i];      
       if (!productResponse) {
         return;
       }
@@ -268,20 +246,19 @@ export class ProductRepository {
         if (i !== null || undefined) {
           cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
         }
-      }
-    });
-
-    this.writeCartToDisk();
-    return this._cartItems;
+      }  
+    }    
+    await this.writeCartToDisk(cartItems);
+    return cartItems;
   }
 
-  private writeCartToDisk() {
-    this.storage.set('cartItems', this._cartItems);
+  private async writeCartToDisk(cartItems: CartItem[]) {
+    await this.storage.set('cartItems', cartItems);
   }
 
   async readCartFromDisk() {
-    this._cartItems = await this.storage.get('cartItems');
-    return this._cartItems;
+    const cartItems = await this.storage.get('cartItems');
+    return cartItems;
   }
-  
+
 }

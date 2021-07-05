@@ -104,12 +104,13 @@ export class OrderRepository {
         return this.handleStatus(this.orderService.emptyCart(), 'emptying the cart');
     }
 
-    addItemsToCart(): Observable<boolean> {
+    async addItemsToCart(): Promise<Observable<boolean>> {
+        const cartItems = await this.productRepository.readCartFromDisk();
       // eslint-disable-next-line eqeqeq
-        if (this.productRepository.cartItems.length == 0 || this.productRepository.hasOfflineProducts) {
+        if (cartItems.length == 0 || this.productRepository.hasOfflineProducts) {
             return of(false);
         }
-        const items = this.productRepository.cartItems.map((cartItem) => ({
+        const items = cartItems.map((cartItem) => ({
           // eslint-disable-next-line @typescript-eslint/naming-convention
                 product_id: cartItem.product.product_id,
                 quantity: cartItem.quantity

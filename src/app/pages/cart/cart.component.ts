@@ -108,13 +108,13 @@ export class CartComponent {
       });
   }
 
-  addToCart(data: OverlayEventDetail<any>) {
+  async addToCart(data: OverlayEventDetail<any>) {
     console.log(data?.data?.data?.cartItem + 'Hier zou hij moeten komen');
     if (data?.data?.isSend) {
       this.toast('Bericht succesvol verzonden!');
     }
     if (data?.data?.data?.cartItem && data?.data?.data?.quantity) {
-      this.productRepository.addItemToCart(data.data.data.cartItem, data.data.data.quantity);
+      await this.productRepository.addItemToCart(data.data.data.cartItem, data.data.data.quantity);
       return true;
     }
     return false;
