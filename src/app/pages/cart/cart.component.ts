@@ -48,16 +48,15 @@ export class CartComponent {
 
   async ionViewWillEnter() {
     await this.storage.create();
+    let cartItems = await this.storage.get('cartItems');
+    this._cartItems = cartItems? cartItems: [];
     this.network.onConnect().subscribe(async () => {
       setTimeout(async () => {
         if ((this.network.type === 'wifi' || this.network.type === 'mobile')) {
           await this.productRepository.updateOfflineProducts();
         }
       }, 3000);
-    });
-
-    let cartItems = await this.storage.get('cartItems');
-    this._cartItems = cartItems;
+    });    
   }
 
   onSearchChange(args) {
@@ -72,23 +71,24 @@ export class CartComponent {
     }).then(async barCodeData => {
       if (!barCodeData.cancelled) {
         this.productRepository.productForEan(barCodeData.text).subscribe(async (productResponse) => {
-
+          console.log(productResponse);
           this.activityService.busy();
           const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, barCodeData.text);
-
           const modal = await this.modalController.create({
             component: ProductModalComponent,
             componentProps: {
               cartItem,
               ean: barCodeData.text
             }
-          });  
-          await modal.present();        
+          });
+          await modal.present();
           modal.onDidDismiss().then(async (data) => {
             return this.addToCart(data)
           }).then((e) => {
             this.refreshCartAndReopenScanner(e);
-          });          
+          });
+
+
         });
       }
       this.activityService.done();
@@ -110,7 +110,7 @@ export class CartComponent {
       });
   }
 
-  addToCart(data: OverlayEventDetail<any>) {    
+  addToCart(data: OverlayEventDetail<any>) {
     console.log(data?.data?.data?.cartItem + 'Hier zou hij moeten komen');
     if (data?.data?.isSend) {
       this.toast('Bericht succesvol verzonden!');

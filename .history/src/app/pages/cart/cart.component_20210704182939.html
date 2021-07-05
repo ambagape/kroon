@@ -29,7 +29,7 @@
         </ion-thumbnail>
         <ion-label class="ion-text-wrap">
           <h3 >{{ item.product.name }}</h3>          
-          <p class="smaller">Artikelnummer: {{ item.ean }}</p>
+          <p class="smaller">Artikelnummer: {{ item.product.model }}</p>
           <p class="smaller">Verpakt per: {{ (item.product.jan ? item.product.jan : "1") }}</p>
         </ion-label>
         <ion-button fill="outline" slot="end">{{ item.quantity }}</ion-button>

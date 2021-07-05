@@ -27,9 +27,7 @@
     </ion-row>
 
   </ion-grid>
-
-
-
+  
 <ion-fab *ngIf="!cartItem.exists" vertical="bottom" horizontal="center" slot="fixed">
   <ion-fab-button (click)="takePicture()">
     <ion-icon name="camera"></ion-icon>
@@ -37,10 +35,10 @@
 </ion-fab>
   <ion-grid *ngIf="cartItem.exists">
     <ion-row class="ion-justify-content-center">
-<!--      <ion-img height="200" cache=true src="{{ cartItem.product.image }}" alt=""></ion-img>-->
+      <ion-img height="200" cache=true src="{{ cartItem.product.image }}" alt=""></ion-img>
     </ion-row>
-    <ion-row class="ion-justify-content-center ion-margin" *ngIf="cartItem.exists && !cartItem.offline">
-      <!-- <div class="ion-text-center"> -->
+    <ion-row class="ion-justify-content-center ion-margin" *ngIf="cartItem.exists">
+      
       <ion-button [disabled]="quantity <= 1" color="primary" (click)="decrementQuantity()">
         <ion-icon name="remove-circle-outline"></ion-icon>
       </ion-button>
@@ -48,7 +46,6 @@
       <ion-button color="primary" (click)="incrementQuantity()">
         <ion-icon name="add-circle-outline"></ion-icon>
       </ion-button>
-      <!-- </div> -->
     </ion-row>
     <ion-row class="ion-margin">
       <ion-label class="extra-bold">
@@ -61,49 +58,8 @@
   </ion-grid>
 </ion-content>
 
-<ion-footer *ngIf="cartItem.exists && !cartItem.offline">
-  <ion-toolbar>
-    <ion-button icon-start expand="full" class="ion-activatable ripple-parent" slot="start" color="dark"
-      (click)="addItemToCart()" style="width: 100%">
-      <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
-      Toevoegen
-      <ion-ripple-effect></ion-ripple-effect>
-    </ion-button>
-  </ion-toolbar>
-</ion-footer>
 
-
-
-
-
-
-<ion-content>
-<ion-grid>
-  <ion-row class="ion-justify-content-center" *ngIf="cartItem.offline">
-    <ion-img height="400" cache=true src="assets/connection.png" alt=""></ion-img>
-  </ion-row>
-  <ion-row class="ion-justify-content-center ion-margin" *ngIf="cartItem.offline">
-    <!-- <div class="ion-text-center"> -->
-    <ion-button [disabled]="quantity <= 1" color="primary" (click)="decrementQuantity()">
-      <ion-icon name="remove-circle-outline"></ion-icon>
-    </ion-button>
-    <h2 class="ion-margin">{{ quantity  }}</h2>
-    <ion-button color="primary" (click)="incrementQuantity()">
-      <ion-icon name="add-circle-outline"></ion-icon>
-    </ion-button>
-  </ion-row>
-  <ion-row class="ion-margin">
-    <ion-label class="extra-bold">
-      {{ cartItem && cartItem.product && (cartItem.product.meta_title || cartItem.product.name) }}</ion-label>
-  </ion-row>
-  <ion-row class="ion-margin">
-    <ion-label >
-      {{ cartItem && cartItem.product && (cartItem.product.meta_description || cartItem.product.description) }}</ion-label>
-  </ion-row>
-</ion-grid>
-</ion-content>
-
-<ion-footer >
+<ion-footer *ngIf="cartItem.exists">
   <ion-toolbar>
     <ion-button icon-start expand="full" class="ion-activatable ripple-parent" slot="start" color="dark"
                 (click)="addItemToCart()" style="width: 100%">
