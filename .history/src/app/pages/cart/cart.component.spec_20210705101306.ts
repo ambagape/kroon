@@ -91,7 +91,10 @@ describe('CartComponent', () => {
   it('should load storage', async ()=>{
     spyOn(component.productRepository,'updateOfflineProducts');
     await component.ionViewWillEnter();
-    expect(component.cartItems).toBe(cartItems);    
+    expect(component.cartItems).toBe(cartItems);
+    setTimeout(async () => {
+      expect(component.productRepository.updateOfflineProducts).toHaveBeenCalled();
+    }, 3001);
   });
 
   it('should scan and retrieve item', async ()=>{

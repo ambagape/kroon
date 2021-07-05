@@ -136,7 +136,7 @@ describe('ProductRepository', () => {
     productService.productForEan.withArgs(offlineProds[0].ean).and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[0].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
     productService.productForEan.withArgs(offlineProds[0].ean).and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[1].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
     const updatedCartItems = await productRepository.updateOfflineProducts();
-    updatedCartItems.forEach(item => {
+    cartItems.forEach(item => {
         expect(item.offline).toBeFalse();        
     })
   });  

@@ -243,7 +243,7 @@ export class ProductRepository {
    * TODO: Think of a way to handle multiple unexisting products being updated here. How do we handle that in terms of UI?
     * Loop over all the items? And for each item, you do an API request. But on the other hand you will get an lot of requests.
    */
-  async updateOfflineProducts(): Promise<CartItem[]> {
+  async updateOfflineProducts() {
     const cartItems = await this.readCartFromDisk();
     const requests = [];
     cartItems.forEach((item) => {

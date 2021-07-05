@@ -118,27 +118,27 @@ describe('ProductRepository', () => {
   });
 
   it('should update offline item when netwwork is restored', async ()=>{
-    let offlineProds = [{
+    let offlineProd = {
         offline:true,
         exists:true,
         quantity:3,
-        product:null,
-        ean: "3434"
-      },{
-        offline:true,
-        exists:true,
-        quantity:3,
-        product:null,
-        ean: "3435"
-      }]               
-    productRepository.addItemToCart(offlineProds[0], 2);
-    productRepository.addItemToCart(offlineProds[1], 2);
-    productService.productForEan.withArgs(offlineProds[0].ean).and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[0].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
-    productService.productForEan.withArgs(offlineProds[0].ean).and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[1].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
-    const updatedCartItems = await productRepository.updateOfflineProducts();
-    updatedCartItems.forEach(item => {
-        expect(item.offline).toBeFalse();        
-    })
+        product: {
+            id: null, 
+            product_id: null, 
+            ean: null, 
+            name: null,
+            model: null, 
+            jan: null, 
+            description: null, 
+            meta_title: null,
+            meta_description: null,
+            attribute_groups: null,
+            image: "assets/connection.png"
+        },
+        ean: "4444"
+      }         
+    productRepository.addItemToCart(offlineProd, 2);
+    expect(productRepository.getItemQuantity(CartItem[0])).toBe(2);  
   });  
   
 });

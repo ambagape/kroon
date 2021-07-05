@@ -58,7 +58,7 @@ export class ProductRepository {
             ean: ean,
             name: "Offline product",
             model: ean,
-            jan: "Onbekend",
+            jan:"Onbekend",
             description: null,
             meta_title: null,
             meta_description: null,
@@ -243,35 +243,45 @@ export class ProductRepository {
    * TODO: Think of a way to handle multiple unexisting products being updated here. How do we handle that in terms of UI?
     * Loop over all the items? And for each item, you do an API request. But on the other hand you will get an lot of requests.
    */
-  async updateOfflineProducts(): Promise<CartItem[]> {
+  async updateOfflineProducts() {
     const cartItems = await this.readCartFromDisk();
     const requests = [];
-    cartItems.forEach((item) => {
+
+    this._cartItems.forEach((item) => {
+      console.log(JSON.stringify(item) + ' result loop')
       if (!item.offline || !item.ean) {
         return;
       }
       requests.push(this.productForEan(item.ean));
     });
-    const results: Array<ProductResponse> = await forkJoin<ProductResponse>(requests).toPromise();
-    results.forEach((productResponse) => {
+
+    this.activityService.busy();
+    requests.forEach((productResponse) => {      
       if (!productResponse) {
         return;
       }
+
       if (productResponse.status === 'success' && productResponse.product) {
+
         const i = this.indexOfItemInCartByEan(productResponse.ean);
+
         if (i !== null || undefined) {
-          cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
+          this._cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
+
         }
       } else if (productResponse.status === 'error') {
+
         const i = this.indexOfItemInCartByEan(productResponse.ean);
+
         if (i !== null || undefined) {
-          cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
+
+          this._cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
         }
       }
     });
-
+    this.activityService.done();
     this.writeCartToDisk();
-    return this._cartItems;
+    return this._cartItems;    
   }
 
   private writeCartToDisk() {

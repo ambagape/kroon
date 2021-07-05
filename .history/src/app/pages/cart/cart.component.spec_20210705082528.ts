@@ -91,7 +91,10 @@ describe('CartComponent', () => {
   it('should load storage', async ()=>{
     spyOn(component.productRepository,'updateOfflineProducts');
     await component.ionViewWillEnter();
-    expect(component.cartItems).toBe(cartItems);    
+    expect(component.cartItems).toBe(cartItems);
+    setTimeout(async () => {
+      expect(component.productRepository.updateOfflineProducts).toHaveBeenCalled();
+    }, 3001);
   });
 
   it('should scan and retrieve item', async ()=>{
@@ -113,7 +116,9 @@ describe('CartComponent', () => {
   it('should add to cart', async ()=>{
     const cartItem = CartItem.for(ProductResponseStatus.Success, cartItems[0].product, cartItems[0].ean);    
     expect(component.addToCart({data: {data:{cartItem:cartItem,quantity:2}}})).toBeTrue();
-  });   
+  });  
+
+  
   
 });
 
