@@ -52,7 +52,7 @@ export class CartComponent {
     this._cartItems = cartItems? cartItems: [];
     this.network.onConnect().subscribe(async () => {
       setTimeout(async () => {
-        await this.productRepository.updateOfflineProducts();
+        this._cartItems = await this.productRepository.updateOfflineProducts();
       }, 3000);
     });    
   }
