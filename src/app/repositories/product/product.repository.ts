@@ -258,7 +258,7 @@ export class ProductRepository {
 
   async readCartFromDisk() {
     const cartItems = await this.storage.get('cartItems');
-    return cartItems;
+    return cartItems? cartItems: [];
   }
 
 }
