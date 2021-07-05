@@ -88,8 +88,7 @@ describe('CartComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load storage', async ()=>{
-    spyOn(component.productRepository,'updateOfflineProducts');
+  it('should load storage', async ()=>{    
     await component.ionViewWillEnter();
     expect(component.cartItems).toBe(cartItems);    
   });
@@ -97,7 +96,6 @@ describe('CartComponent', () => {
   it('should scan and retrieve item', async ()=>{
     productService.productForEan.and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[0].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
     const cartItem = CartItem.for(ProductResponseStatus.Success, cartItems[0].product, cartItems[0].ean);
-    modalElementSpy.onDidDismiss.and.returnValue(new Promise<any>((resolve,reject)=>{resolve({data:{data: {data:{cartItem:cartItem,quantity:2}}}})}));        
     component.openBarCodeScanner();
     expect(modalController.create).toHaveBeenCalledWith({
       component: ProductModalComponent,
@@ -106,8 +104,6 @@ describe('CartComponent', () => {
         ean: cartItem.ean
       }
     });  
-    expect(modalElementSpy.present).toHaveBeenCalled();  
-    expect(modalElementSpy.onDidDismiss).toHaveBeenCalled();
   });
 
   it('should add to cart', async ()=>{

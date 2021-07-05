@@ -17,12 +17,12 @@ describe('ProductRepository', () => {
   let httpTestingController: HttpTestingController;
 
   const cartItems: CartItem[] = [
-    {ean:'3434',offline:false,exists:true,quantity:3,product:{id:1,ean:'3434','model':'',product_id:1,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]}},
-    {ean:'3435',offline:false,exists:true,quantity:3,product:{id:1,ean:'3435','model':'',product_id:1,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]}}
+    {ean:'3434',offline:false,exists:true,quantity:3,product:{id:3434,ean:'3434','model':'',product_id:3434,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]}},
+    {ean:'3435',offline:false,exists:true,quantity:3,product:{id:3434,ean:'3435','model':'',product_id:3434,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]}}
   ];
   
   beforeEach(waitForAsync(() => {  
-    let store = {cartItems:[]};
+    let store = {cartItems:'[]'};
         
     const mockLocalStorage = {           
         create: () => {
@@ -57,6 +57,7 @@ describe('ProductRepository', () => {
         ]
     });
     productRepository = TestBed.inject(ProductRepository);
+    httpTestingController = TestBed.inject(HttpTestingController);
   }));
 
   it('should create', () => {
@@ -64,6 +65,7 @@ describe('ProductRepository', () => {
   });
  
   it('should always get a dummy cartItem with mage when network is down',  async ()=>{
+    //productService.productForEan.and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[0].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
     productRepository.productForEan(cartItems[0].ean)
     .subscribe(product=> {
         expect(product.ean).toBe(cartItems[0].ean);
@@ -114,11 +116,11 @@ describe('ProductRepository', () => {
 
   it('should add online item to cart', async ()=>{
     productRepository.addItemToCart(cartItems[0], 2);
-    expect(productRepository.getItemQuantity(CartItem[0])).toBe(2);  
+    expect(productRepository.getItemQuantity(cartItems[0])).toBe(2);  
   });
 
   it('should update offline item when netwwork is restored', async ()=>{
-    let offlineProds = [{
+    let offlineProds: CartItem[] = [{
         offline:true,
         exists:true,
         quantity:3,
@@ -134,11 +136,39 @@ describe('ProductRepository', () => {
     productRepository.addItemToCart(offlineProds[0], 2);
     productRepository.addItemToCart(offlineProds[1], 2);
     productService.productForEan.withArgs(offlineProds[0].ean).and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[0].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
-    productService.productForEan.withArgs(offlineProds[0].ean).and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[1].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
+    productService.productForEan.withArgs(offlineProds[1].ean).and.returnValue(of({"data":'{"data": ['+JSON.stringify(cartItems[1].product)+'],"success": 1}',"status":2,"headers":{},"url":""}));
     const updatedCartItems = await productRepository.updateOfflineProducts();
     updatedCartItems.forEach(item => {
         expect(item.offline).toBeFalse();        
     })
+  });  
+
+  it('should add offline items and online items in any order', async ()=>{
+    let offlineProds : CartItem[]= [{
+        offline:true,
+        exists:true,
+        quantity:3,        
+        product:{id:3424,ean:'3424','model':'',product_id:3424,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]},
+        ean: "3424"
+      },{
+        offline:true,
+        exists:true,
+        quantity:3,        
+        product:{id:3425,ean:'3425','model':'',product_id:3425,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]},
+        ean: "3425"
+      },{
+        offline:true,
+        exists:true,
+        quantity:3,
+        product:{id:3426,ean:'3426','model':'',product_id:3426,image:'', name:'','jan':'', description:'', meta_description:'',meta_title:'', attribute_groups:[]},
+        ean: "3426"
+      }]               
+    productRepository.addItemToCart(cartItems[0], 2);  
+    productRepository.addItemToCart(offlineProds[0], 2);
+    productRepository.addItemToCart(offlineProds[1], 2); 
+    productRepository.addItemToCart(cartItems[1], 2);  
+    productRepository.addItemToCart(offlineProds[2], 2);   
+    expect(productRepository.cartItems.length).toEqual(5);
   });  
   
 });

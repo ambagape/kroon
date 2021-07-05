@@ -53,8 +53,8 @@ export class ProductRepository {
         return of({
           status: ProductResponseStatus.Offline,
           product: {
-            id: null,
-            product_id: null,
+            id: Math.floor(Math.random() * 100000),
+            product_id: Math.floor(Math.random() * 100000),
             ean: ean,
             name: "Offline product",
             model: ean,
