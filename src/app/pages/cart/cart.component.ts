@@ -52,9 +52,7 @@ export class CartComponent {
     this._cartItems = cartItems? cartItems: [];
     this.network.onConnect().subscribe(async () => {
       setTimeout(async () => {
-        if ((this.network.type === 'wifi' || this.network.type === 'mobile')) {
-          await this.productRepository.updateOfflineProducts();
-        }
+        await this.productRepository.updateOfflineProducts();
       }, 3000);
     });    
   }

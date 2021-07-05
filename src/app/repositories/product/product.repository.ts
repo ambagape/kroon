@@ -108,8 +108,9 @@ export class ProductRepository {
     return null;
   }
 
-  indexOfItemInCartByEan(ean: string): number {
-    const filtered = this.cartItems.filter((cartItem) => ean === cartItem.ean);
+  async indexOfItemInCartByEan(ean: string): Promise<number> {
+    const cartItems: CartItem[] = await this.readCartFromDisk();
+    const filtered = cartItems.filter((cartItem) => ean === cartItem.ean);
     if (filtered.length) {
       const ix = this._cartItems.indexOf(filtered[0]);
       return ix === -1 ? null : ix;
@@ -117,9 +118,9 @@ export class ProductRepository {
     return null;
   }
 
-  addItemToCart(item: CartItem, quantity: number = null) {
+  async addItemToCart(item: CartItem, quantity: number = null) {
     if (!quantity) {
-      quantity = this.getItemQuantity(item);
+      quantity = await this.getItemQuantity(item);
     }
 
     // If the product exists
@@ -128,7 +129,7 @@ export class ProductRepository {
       // If it's in the cart, increase quantity by 1.
       if (this.isItemInCart(item.product.id)) {
 
-        const i = this.indexOfItemInCartByEan(item.ean);
+        const i = await this.indexOfItemInCartByEan(item.ean);
         const old = this._cartItems[i];
         this._cartItems[i] = { ...old, quantity };
 
@@ -143,7 +144,7 @@ export class ProductRepository {
         this._cartItems.push({ ...item, quantity });
       } else {
         // If the product is in the cart, add quantity to it even if we're currently offline.
-        const i = this.indexOfItemInCartByEan(item.ean);
+        const i = await this.indexOfItemInCartByEan(item.ean);
         if (item.offline && i) {
 
           const old = this._cartItems[i];
@@ -160,8 +161,8 @@ export class ProductRepository {
 
   }
 
-  removeItemFromCart(item: CartItem) {
-    const i = this.indexOfItemInCartByEan(item.ean);
+  async removeItemFromCart(item: CartItem) {
+    const i = await this.indexOfItemInCartByEan(item.ean);
 
     if (i !== null) {
       this._cartItems.splice(i, 1);
@@ -175,8 +176,8 @@ export class ProductRepository {
     this.writeCartToDisk();
   }
 
-  getItemQuantity(item: CartItem): number {
-    const i = this.indexOfItemInCartByEan(item.ean);
+  async getItemQuantity(item: CartItem): Promise<number> {
+    const i = await this.indexOfItemInCartByEan(item.ean);
     const foundItem = this._cartItems[i];
     if (foundItem && foundItem.quantity) {
 
@@ -185,10 +186,10 @@ export class ProductRepository {
     return 1;
   }
 
-  changeItemQuantity(item: CartItem, quantity: number) {
+  async changeItemQuantity(item: CartItem, quantity: number) {
 
     if (item.product) {
-      const i = this.indexOfItemInCartByEan(item.ean);
+      const i = await this.indexOfItemInCartByEan(item.ean);
 
       if (!(i === null || undefined)) {
 
@@ -253,17 +254,17 @@ export class ProductRepository {
       requests.push(this.productForEan(item.ean));
     });
     const results: Array<ProductResponse> = await forkJoin<ProductResponse>(requests).toPromise();
-    results.forEach((productResponse) => {
+    results.forEach(async (productResponse) => {
       if (!productResponse) {
         return;
       }
       if (productResponse.status === 'success' && productResponse.product) {
-        const i = this.indexOfItemInCartByEan(productResponse.ean);
+        const i = await this.indexOfItemInCartByEan(productResponse.ean);
         if (i !== null || undefined) {
           cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
         }
       } else if (productResponse.status === 'error') {
-        const i = this.indexOfItemInCartByEan(productResponse.ean);
+        const i = await this.indexOfItemInCartByEan(productResponse.ean);
         if (i !== null || undefined) {
           cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
         }
@@ -282,4 +283,5 @@ export class ProductRepository {
     this._cartItems = await this.storage.get('cartItems');
     return this._cartItems;
   }
+  
 }
