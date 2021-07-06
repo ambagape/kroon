@@ -53,6 +53,7 @@ export class CartComponent {
     this.network.onConnect().subscribe(async () => {
       setTimeout(async () => {
         this._cartItems = await this.productRepository.updateOfflineProducts();
+        window.location.reload()
       }, 3000);
     });    
   }

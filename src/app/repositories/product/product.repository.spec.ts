@@ -97,8 +97,8 @@ describe('ProductRepository', () => {
 
   });
 
-  it('should be empty without items and not and should also allow adding an item to cart', async ()=>{
-    expect(await productRepository.readCartFromDisk()).toBe([]);
+  it('should be empty without items and should also allow adding an item ', async ()=>{
+    expect(await productRepository.readCartFromDisk()).toEqual([]);
     await productRepository.addItemToCart(cartItems[0], 2);
     expect(await productRepository.getItemQuantity(cartItems[0])).toBe(2);  
   });

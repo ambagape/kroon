@@ -15,7 +15,6 @@ import { CartItem } from 'src/app/shared/product/cartitem.model';
 import { ProductService } from 'src/app/shared/product/product.service';
 import { ProductResponseStatus } from 'src/app/repositories/product/productresponse.model';
 import { ProductModalComponent } from 'src/app/components/product-modal/product-modal.component';
-import { componentFactoryName } from '@angular/compiler';
 
 describe('CartComponent', () => {
   let component: CartComponent;
@@ -108,7 +107,7 @@ describe('CartComponent', () => {
 
   it('should add to cart', async ()=>{
     const cartItem = CartItem.for(ProductResponseStatus.Success, cartItems[0].product, cartItems[0].ean);    
-    expect(component.addToCart({data: {data:{cartItem:cartItem,quantity:2}}})).toBeTrue();
+    expect(await component.addToCart({data: {data:{cartItem:cartItem,quantity:2}}})).toBeTrue();
   });   
   
 });

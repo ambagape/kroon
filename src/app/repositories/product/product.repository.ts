@@ -3,12 +3,12 @@
 import { Observable, forkJoin, of } from 'rxjs';
 import { ProductResponse, ProductResponseStatus } from './productresponse.model';
 import { catchError, map } from 'rxjs/operators';
-import { ActivityService } from '../../shared/activity/activity.service';
 import { CartItem } from '../../shared/product/cartitem.model';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Product } from '../../shared/product/product.model';
 import { ProductService } from '../../shared/product/product.service';
 import { Storage } from '@ionic/storage-angular';
+
 @Injectable()
 export class ProductRepository {
 
@@ -215,14 +215,9 @@ export class ProductRepository {
     }
     return false;
   }
-
-  /**
-   * Updates the products that are offline by getting their data from the server.
-   * TODO: Think of a way to handle multiple unexisting products being updated here. How do we handle that in terms of UI?
-    * Loop over all the items? And for each item, you do an API request. But on the other hand you will get an lot of requests.
-   */
+ 
   async updateOfflineProducts(): Promise<CartItem[]> {
-    const cartItems = await this.readCartFromDisk();
+    const cartItems: CartItem[] = await this.readCartFromDisk();
     const requests = [];
     cartItems.forEach((item) => {
       if (!item.offline || !item.ean) {
@@ -231,8 +226,8 @@ export class ProductRepository {
       requests.push(this.productForEan(item.ean));
     });
     const results: Array<ProductResponse> = await forkJoin<ProductResponse>(requests).toPromise();
-    for(let i=0; i< results.length; i++){
-      const productResponse = results[i];      
+    for(let count=0; count< results.length; count++){
+      const productResponse = results[count];      
       if (!productResponse) {
         return;
       }
@@ -240,25 +235,28 @@ export class ProductRepository {
         const i = await this.indexOfItemInCartByEan(productResponse.ean);
         if (i !== null || undefined) {
           cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
-        }
-      } else if (productResponse.status === 'error') {
+        }      
+      }else if (productResponse.status === 'error') {        
         const i = await this.indexOfItemInCartByEan(productResponse.ean);
         if (i !== null || undefined) {
           cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
         }
-      }  
+      } 
     }    
     await this.writeCartToDisk(cartItems);
     return cartItems;
-  }
-
-  private async writeCartToDisk(cartItems: CartItem[]) {
-    await this.storage.set('cartItems', cartItems);
-  }
+  }  
 
   async readCartFromDisk() {
     const cartItems = await this.storage.get('cartItems');
     return cartItems? cartItems: [];
   }
 
+  private productResponseShowsNonExistence(productResponse: ProductResponse): boolean{
+    return productResponse.status === 'error' && productResponse.product == null;
+  }
+
+  private async writeCartToDisk(cartItems: CartItem[]) {
+    await this.storage.set('cartItems', cartItems);
+  }
 }

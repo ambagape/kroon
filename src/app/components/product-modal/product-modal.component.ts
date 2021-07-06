@@ -1,6 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Product} from '../../shared/product/product.model';
-import {ProductResponseStatus} from '../../repositories/product/productresponse.model';
 import {CartItem} from '../../shared/product/cartitem.model';
 import {ProductRepository} from '../../repositories/product/product.repository';
 import {ModalController} from '@ionic/angular';
