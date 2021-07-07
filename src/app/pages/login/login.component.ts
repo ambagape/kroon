@@ -80,7 +80,7 @@ export class LoginComponent implements OnInit{
         if (res) {
           this.router.navigate(['cart']);
         } else {
-          this.toast('Check je gegevens');
+          this.toast('Inloggen mislukt');
         }
       });
     } else {

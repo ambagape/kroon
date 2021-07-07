@@ -1,6 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Product} from '../../shared/product/product.model';
-import {ProductResponseStatus} from '../../repositories/product/productresponse.model';
 import {CartItem} from '../../shared/product/cartitem.model';
 import {ProductRepository} from '../../repositories/product/product.repository';
 import {ModalController} from '@ionic/angular';
@@ -21,8 +19,9 @@ const { Camera } = Plugins;
 export class ProductModalComponent implements OnInit {
 
   @Input() cartItem: CartItem;
+  @Input() ean: any;
 
-  quantity = 0;
+  quantity = 1;
   // private currentNumber = 1;
   imageAsset: any = null;
   base64: string;
@@ -30,8 +29,8 @@ export class ProductModalComponent implements OnInit {
 
   constructor(
     private productRepository: ProductRepository,
-      private modalController: ModalController,
-      private activityService: ActivityService,
+    private modalController: ModalController,
+    private activityService: ActivityService,
     private orderService: OrderService,
     private router: Router,
     private nativeStorage: NativeStorage
@@ -44,12 +43,8 @@ export class ProductModalComponent implements OnInit {
     await this.nativeStorage.getItem('email').then(email => {
       this.email = email;
     }).catch(console.log);
-    this.quantity = this.productRepository.getItemQuantity(this.cartItem);
+    this.quantity = await this.productRepository.getItemQuantity(this.cartItem);
   };
-
-  // close() {
-  //   this.closed.emit();
-  // }
 
   dismiss() {
     this.modalController.dismiss({
@@ -69,15 +64,22 @@ export class ProductModalComponent implements OnInit {
     this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
   };
 
-  public addItemToCart() {
-    if (this.quantity > 0) {
-      this.productRepository.addItemToCart(this.cartItem, this.quantity);
-          this.modalController.dismiss({
-            dismissed: true,
-            data: this.cartItem
-          });
+  addItemToCart() {
 
-      // this.closed.emit();
+    if (this.quantity > 0) {
+      console.log(this.cartItem);
+      this.modalController.dismiss({
+        dismissed: true,
+        data: {
+          cartItem: this.cartItem,
+          quantity: this.quantity
+        }
+      });
+
+      // console.log(foo)
+
+      console.log(this.cartItem, this.quantity);
+
     }
   };
 
@@ -106,16 +108,17 @@ export class ProductModalComponent implements OnInit {
     this.composeEmail();
   }
 
+
+
   private composeEmail() {
 
-    this.activityService.busy();
 
 
 
     const description = '';
 
     // eslint-disable-next-line eqeqeq,max-len
-    const body = `${ this.email } meldt: Het product met deze code staat niet in de app. ${description != '' ? `<br><br>${description}` : ''}`;
+    const body = `${ this.email } meldt: Het product met de code: ${this.ean}. Staat niet in de app. ${description != '' ? `<br><br>${description}` : ''}`;
 
       return this.orderService.doSentUnknown({
         subject: `Onbekend product ( door: ${this.email} )`,
@@ -135,7 +138,9 @@ export class ProductModalComponent implements OnInit {
             // }).show();
 
             this.activityService.done();
-            this.modalController.dismiss();
+            this.modalController.dismiss({
+              isSend: true
+            });
           }
           // new Toasty({
           //   text: "Bericht versturen mislukt. Neem contact op!",

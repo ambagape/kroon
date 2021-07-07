@@ -1,5 +1,5 @@
 {
-  "name": "kroon-bestel-app-ionic",
+  "name": "nl.kroon.scanapp",
   "integrations": {
     "capacitor": {}
   },

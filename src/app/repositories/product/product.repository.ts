@@ -3,22 +3,21 @@
 import { Observable, forkJoin, of } from 'rxjs';
 import { ProductResponse, ProductResponseStatus } from './productresponse.model';
 import { catchError, map } from 'rxjs/operators';
-import { ActivityService } from '../../shared/activity/activity.service';
 import { CartItem } from '../../shared/product/cartitem.model';
-import {Injectable, OnInit} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Product } from '../../shared/product/product.model';
 import { ProductService } from '../../shared/product/product.service';
 import { Storage } from '@ionic/storage-angular';
-@Injectable()
-export class ProductRepository{
 
-  private _cartItems: CartItem[] = [];
+@Injectable()
+export class ProductRepository {
+
+  //private _cartItems: CartItem[] = [];
 
   constructor(
-    private productService: ProductService,
-    private activityService: ActivityService,
-    private storage: Storage  ) {
-      this.readCartFromDisk();
+    private productService: ProductService,    
+    private storage: Storage) {
+    this.readCartFromDisk();
   }
 
   productForEan(ean: string): Observable<ProductResponse> {
@@ -52,26 +51,31 @@ export class ProductRepository{
         console.log('Something went wrong while getting the product.' + response.message);
         return of({
           status: ProductResponseStatus.Offline,
-          product: null,
+          product: {
+            id: Math.floor(Math.random() * 100000),
+            product_id: Math.floor(Math.random() * 100000),
+            ean: ean,
+            name: "Offline product",
+            model: ean,
+            jan: "Onbekend",
+            description: null,
+            meta_title: null,
+            meta_description: null,
+            attribute_groups: null,
+            image: "assets/connection.png"
+          },
           ean
         });
       })
     );
-  }
-
-  // MARK - Cart methods
-
-  get cartItems(): CartItem[] {
-
-    return this._cartItems;
-  }
+  } 
 
   /**
    * Returns the item with the given id from the cart.
    */
-  private findItemInCart(id: number): CartItem {
-
-    const filtered = this.cartItems.filter((cartItem) => cartItem.product && id === cartItem.product.id);
+  private async findItemInCart(id: number): Promise<CartItem> {
+    let cartItems = await this.readCartFromDisk();
+    const filtered = cartItems.filter((cartItem) => cartItem.product && id === cartItem.product.id);
     if (filtered.length) {
       return filtered[0];
     }
@@ -82,89 +86,94 @@ export class ProductRepository{
   /**
    * Checks if an iten with the given id is in the shopping cart.
    */
-  isItemInCart(id: number): boolean {
-    const a = this.findItemInCart(id);
+  async isItemInCart(id: number): Promise<boolean> {
+    const a = await this.findItemInCart(id);
     return a != null;
   }
 
 
-  isItemInCartByEan(ean: string): boolean {
-    const filtered = this.cartItems.filter((cartItem) => ean === cartItem.ean);
+  async isItemInCartByEan(ean: string): Promise<boolean> {
+    const filtered = (await this.readCartFromDisk()).filter((cartItem) => ean === cartItem.ean);
     if (filtered.length) {
       return !!filtered[0];
     }
     return null;
   }
 
-  indexOfItemInCartByEan(ean: string): number {
-    const filtered = this.cartItems.filter((cartItem) => ean === cartItem.ean);
+  async indexOfItemInCartByEan(ean: string): Promise<number> {
+    const cartItems: CartItem[] = await this.readCartFromDisk();
+    const filtered = cartItems.filter((cartItem) => ean === cartItem.ean);
     if (filtered.length) {
-      const ix = this._cartItems.indexOf(filtered[0]);
+      const ix = cartItems.indexOf(filtered[0]);
       return ix === -1 ? null : ix;
     }
     return null;
   }
 
-  addItemToCart(item: CartItem, quantity: number = null) {
+  async addItemToCart(item: CartItem, quantity: number = null) {
+    const cartItems = await this.readCartFromDisk();
     if (!quantity) {
-      quantity = this.getItemQuantity(item);
+      quantity = await this.getItemQuantity(item);
     }
 
     // If the product exists
     if (item.product) {
 
       // If it's in the cart, increase quantity by 1.
-      if (this.isItemInCart(item.product.id)) {
+      if (await this.isItemInCart(item.product.id)) {
 
-        const i = this.indexOfItemInCartByEan(item.ean);
-        const old = this._cartItems[i];
-        this._cartItems[i] =  { ...old, quantity };
+        const i = await this.indexOfItemInCartByEan(item.ean);
+        const old = cartItems[i];
+        cartItems[i] = { ...old, quantity };
 
       } else {
 
-        this._cartItems.push({ ...item, quantity });
+        cartItems.push({ ...item, quantity });
 
       }
     } else {
       // If the product doesn't exist or is offline and isn't in the cart yet, add it.
-      if (!this.isItemInCartByEan(item.ean)) {
-        this._cartItems.push({ ...item, quantity });
+      if (!await this.isItemInCartByEan(item.ean)) {
+        cartItems.push({ ...item, quantity });
       } else {
         // If the product is in the cart, add quantity to it even if we're currently offline.
-        const i = this.indexOfItemInCartByEan(item.ean);
+        const i = await this.indexOfItemInCartByEan(item.ean);
         if (item.offline && i) {
 
-          const old = this._cartItems[i];
+          const old = cartItems[i];
 
-          this._cartItems[i] =  { ...old, quantity };
+          cartItems[i] = { ...old, quantity };
         }
       }
     }
     // Send request to write the cart to disk.
-    this.writeCartToDisk();
-    window.location.reload();
+    await this.writeCartToDisk(cartItems);
+
+    // alert ("sdsdsdas");
+    // window.location.reload();
 
   }
 
-  removeItemFromCart(item: CartItem) {
-    const i = this.indexOfItemInCartByEan(item.ean);
-
+  async removeItemFromCart(item: CartItem) {
+    const cartItems = await this.readCartFromDisk();
+    const i = await this.indexOfItemInCartByEan(item.ean);
     if (i !== null) {
-      this._cartItems.splice(i, 1);
-      this.writeCartToDisk();
-      window.location.reload();
+      cartItems.splice(i, 1);
+      await this.writeCartToDisk(cartItems);
     }
 
   }
 
-  emptyCart() {
-    this._cartItems.splice(0);
-    this.writeCartToDisk();
+  async emptyCart() {
+    const cartItems = await this.readCartFromDisk();
+    cartItems.splice(0);
+    await this.writeCartToDisk(cartItems);
   }
 
-  getItemQuantity(item: CartItem): number {
-    const i = this.indexOfItemInCartByEan(item.ean);
-    const foundItem = this._cartItems[i];
+  async getItemQuantity(item: CartItem): Promise<number> {
+    const cartItems = await this.readCartFromDisk();
+    const i = await this.indexOfItemInCartByEan(item.ean);
+    const foundItem = cartItems[i];
     if (foundItem && foundItem.quantity) {
 
       return foundItem.quantity;
@@ -172,18 +181,15 @@ export class ProductRepository{
     return 1;
   }
 
-  changeItemQuantity(item: CartItem, quantity: number) {
-
+  async changeItemQuantity(item: CartItem, quantity: number) {
+    const cartItems = await this.readCartFromDisk();
     if (item.product) {
-      const i = this.indexOfItemInCartByEan(item.ean);
-
+      const i = await this.indexOfItemInCartByEan(item.ean);
       if (!(i === null || undefined)) {
-
-        const old = this._cartItems[i];
-
+        const old = cartItems[i];
         if (old.quantity !== quantity) {
-          this._cartItems[i] = { ...old, quantity };
-          this.writeCartToDisk();
+          cartItems[i] = { ...old, quantity };
+          await this.writeCartToDisk(cartItems);
         }
       }
     }
@@ -192,92 +198,65 @@ export class ProductRepository{
   /**
    * Checks if the cart contains offline items.
    */
-  get hasOfflineProducts(): boolean {
-
-    const filtered = this._cartItems.filter((e) => e.offline);
-
-    if (filtered.length) {
-
+  async hasOfflineProducts(): Promise<boolean> {
+    const cartItems: CartItem[] = await this.readCartFromDisk();
+    const filtered = cartItems.filter((e) => e.offline);
+    if (filtered.length) {      
       return filtered[0] !== undefined;
-    }
-
+    }   
     return false;
   }
 
-  get hasUnexistingProducts(): boolean {
-
-    const filtered = this._cartItems.filter((e) => !e.exists);
-
+  async hasUnexistingProducts(): Promise<boolean> {
+    const cartItems = await this.readCartFromDisk();
+    const filtered = cartItems.filter((e) => !e.exists);
     if (filtered.length) {
       return filtered[0] !== undefined;
     }
-
     return false;
   }
-
-  /**
-   * Updates the products that are offline by getting their data from the server.
-   * TODO: Think of a way to handle multiple unexisting products being updated here. How do we handle that in terms of UI?
-   */
-  updateOfflineProducts() {
-
+ 
+  async updateOfflineProducts(): Promise<CartItem[]> {
+    const cartItems: CartItem[] = await this.readCartFromDisk();
     const requests = [];
-
-    this._cartItems.forEach((item) => {
-
+    cartItems.forEach((item) => {
       if (!item.offline || !item.ean) {
         return;
       }
       requests.push(this.productForEan(item.ean));
     });
-
-    this.activityService.busy();
-
-    forkJoin(requests).subscribe((results: Array<ProductResponse>) => {
-
-      results.forEach((productResponse) => {
-
-        if (!productResponse) {
-
-          return;
+    const results: Array<ProductResponse> = await forkJoin<ProductResponse>(requests).toPromise();
+    for(let count=0; count< results.length; count++){
+      const productResponse = results[count];      
+      if (!productResponse) {
+        return;
+      }
+      if (productResponse.status === 'success' && productResponse.product) {
+        const i = await this.indexOfItemInCartByEan(productResponse.ean);
+        if (i !== null || undefined) {
+          cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
+        }      
+      }else if (productResponse.status === 'error') {        
+        const i = await this.indexOfItemInCartByEan(productResponse.ean);
+        if (i !== null || undefined) {
+          cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
         }
-
-        if (productResponse.status === 'success' && productResponse.product) {
-
-          const i = this.indexOfItemInCartByEan(productResponse.ean);
-
-          if (i !== null || undefined) {
-            this._cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
-          }
-        } else if (productResponse.status === 'error') {
-
-          const i = this.indexOfItemInCartByEan(productResponse.ean);
-
-          if (i !== null || undefined) {
-
-            this._cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
-          }
-        }
-      });
-
-      this.activityService.done();
-      this.writeCartToDisk();
-
-    });
-  }
-
-  private writeCartToDisk() {
-    this.storage.set('cartItems', this._cartItems);
-  }
+      } 
+    }    
+    await this.writeCartToDisk(cartItems);
+    return cartItems;
+  }  
 
   async readCartFromDisk() {
+    const cartItems = await this.storage.get('cartItems');
+    return cartItems? cartItems: [];
+  }
 
-    await this.storage.get('cartItems').then(response => {
-      if(response) {
-        this._cartItems = response;
-      }
+  private productResponseShowsNonExistence(productResponse: ProductResponse): boolean{
+    return productResponse.status === 'error' && productResponse.product == null;
+  }
 
-    });
-
+  private async writeCartToDisk(cartItems: CartItem[]) {
+    await this.storage.set('cartItems', cartItems);
   }
 }

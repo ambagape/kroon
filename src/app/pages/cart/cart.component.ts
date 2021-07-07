@@ -1,37 +1,40 @@
 /* eslint-disable no-underscore-dangle */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Pipe } from '@angular/core';
 import { ActivityService } from '../../shared/activity/activity.service';
 import { AuthRepository } from '../../repositories/auth/auth.repository';
 import { CartItem } from '../../shared/product/cartitem.model';
 import { ProductRepository } from '../../repositories/product/product.repository';
-import {NavigationExtras, Router} from '@angular/router';
-import {ModalController, NavController} from '@ionic/angular';
-import {OrderModalComponent} from '../../components/order-modal/order-modal.component';
+import { NavigationExtras, Router } from '@angular/router';
+import { ModalController, NavController, ToastController } from '@ionic/angular';
+import { OrderModalComponent } from '../../components/order-modal/order-modal.component';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-import {ProductModalComponent} from '../../components/product-modal/product-modal.component';
-import {HTTP} from '@ionic-native/http/ngx';
+import { ProductModalComponent } from '../../components/product-modal/product-modal.component';
 import { Storage } from '@ionic/storage-angular';
 import { Network } from '@ionic-native/network/ngx';
-import {NativeStorage} from '@ionic-native/native-storage/ngx';
+import { OverlayEventDetail } from '@ionic/core';
+
 @Component({
   selector: 'app-cart',
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
 })
-export class CartComponent implements OnInit {
+export class CartComponent {
 
   showOrderModal = false;
   showSearch = false;
-  productInformation=null;
+  productInformation = null;
   barCode: any;
+  //public modal: HTMLIonModalElement;
   public noSearchResults: boolean;
   public filterText = '';
   public search: string = null;
+  public orderButtonDisabled = true;
+
   private _cartItems: CartItem[] = [];
 
   constructor(
     private router: Router,
-    private productRepository: ProductRepository,
+    private _productRepository: ProductRepository,
     private authRepository: AuthRepository,
     private activityService: ActivityService,
     public modalController: ModalController,
@@ -39,56 +42,83 @@ export class CartComponent implements OnInit {
     private storage: Storage,
     private network: Network,
     public navCtrl: NavController,
-    private nativeStorage: NativeStorage
-
+    public toastController: ToastController,
   ) {
+  }
+
+  async ionViewWillEnter() {
+    await this.storage.create();
+    let cartItems = await this.storage.get('cartItems');
+    this._cartItems = cartItems? cartItems: [];
+    this.network.onConnect().subscribe(async () => {
+      setTimeout(async () => {
+        this._cartItems = await this.productRepository.updateOfflineProducts();
+        window.location.reload()
+      }, 3000);
+    });    
   }
 
   onSearchChange(args) {
     this.filterText = args.target.value;
   }
 
-async ngOnInit() {
-    await this.storage.create();
-
-    this.storage.get('cartItems').then(res => {
-      if(res) {
-        this._cartItems = res;
-      }
-    });
-
-   this.network.onConnect().subscribe(() => {
-     if ((this.network.type === 'wifi' || this.network.type === 'mobile') && this.productRepository.hasOfflineProducts) {
-       this.productRepository.updateOfflineProducts();
-     }
-   });
-
-   this.activityService.done();
-  }
-
   openBarCodeScanner() {
     this.activityService.busy();
+    this.barcodeScanner.scan({
+      // eslint-disable-next-line max-len
+      prompt: 'Plaats een barcode binnen de rechthoek om deze te scannen. Druk op de terug-knop op uw apparaat als u alle producten gescand heeft', // Android
+    }).then(async barCodeData => {
+      if (!barCodeData.cancelled) {
+        this.productRepository.productForEan(barCodeData.text).subscribe(async (productResponse) => {
+          console.log(productResponse);
+          this.activityService.busy();
+          const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, barCodeData.text);
+          const modal = await this.modalController.create({
+            component: ProductModalComponent,
+            componentProps: {
+              cartItem,
+              ean: barCodeData.text
+            }
+          });
+          await modal.present();
+          modal.onDidDismiss().then(async (data) => {
+            return this.addToCart(data)
+          }).then((e) => {
+            this.refreshCartAndReopenScanner(e);
+          });
 
-    this.barcodeScanner.scan().then(async res => {
 
-      this.productRepository.productForEan(res.text).subscribe(async (productResponse) => {
-
-        this.activityService.busy();
-        const cartItem: CartItem = CartItem.for(productResponse.status, productResponse.product, res.text);
-
-        const modal = await this.modalController.create({
-          component: ProductModalComponent,
-          componentProps: {
-            cartItem
-          }
         });
+      }
+      this.activityService.done();
+    });
+  }
 
-        // this.activityService.done();
-
-        return await modal.present();
+  refreshCartAndReopenScanner(e) {
+    this.storage.get('cartItems')
+      .then((result) => {
+        if (result) {
+          this._cartItems = result;
+        }
+      })
+      .finally(() => {
+        this.orderButtonDisabled = false;
+        if (e) {
+          this.openBarCodeScanner();
+        }
       });
+  }
 
-      });
+  async addToCart(data: OverlayEventDetail<any>) {
+    console.log(data?.data?.data?.cartItem + 'Hier zou hij moeten komen');
+    if (data?.data?.isSend) {
+      this.toast('Bericht succesvol verzonden!');
+    }
+    if (data?.data?.data?.cartItem && data?.data?.data?.quantity) {
+      await this.productRepository.addItemToCart(data.data.data.cartItem, data.data.data.quantity);
+      return true;
+    }
+    return false;
   }
 
   orderModalClosed() {
@@ -100,13 +130,13 @@ async ngOnInit() {
     await this.router.navigate(['login']);
   };
 
-  delete = (item: CartItem) => {
+  delete = async (item: CartItem) => {
     const index = this._cartItems.indexOf(item);
 
     if (index > -1) {
       this._cartItems.splice(index, 1);
     }
-      this.productRepository.removeItemFromCart(item);
+    this.productRepository.removeItemFromCart(item);
   };
 
   public onInputClear(args: any) {
@@ -120,12 +150,27 @@ async ngOnInit() {
   };
 
   async presentOrderModal() {
+
+
     const modal = await this.modalController.create({
       component: OrderModalComponent,
       componentProps: {
         cartItems: this.cartItems
-      }
+      },
     });
+
+    modal.onDidDismiss()
+      .then((data) => {
+        if (data?.data?.succeeded) {
+          this.storage.get('cartItems').then(res => {
+            if (res) {
+              this.toast('Bestelling succesvol ontvangen');
+              this._cartItems = res;
+            }
+          });
+        }
+      });
+
     return await modal.present();
   }
 
@@ -138,4 +183,17 @@ async ngOnInit() {
 
     this.navCtrl.navigateForward(['detail'], navigationExtras);
   }
+
+  get productRepository() {
+    return this._productRepository;
+  }
+
+  async toast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 5000
+    });
+    await toast.present();
+  }
 }
+

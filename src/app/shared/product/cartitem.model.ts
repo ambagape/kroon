@@ -22,7 +22,7 @@ export class CartItem {
                 return {
                     offline: true,
                     exists: true,
-                    product: null,
+                    product,
                     quantity: 1,
                     ean
                 };
