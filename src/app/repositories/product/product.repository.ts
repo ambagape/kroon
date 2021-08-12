@@ -42,7 +42,19 @@ export class ProductRepository {
           }
           return {
             status: ProductResponseStatus.Error,
-            product: null,
+            product: {
+              id: Math.floor(Math.random() * 100000),
+              product_id: Math.floor(Math.random() * 100000),
+              ean: ean,
+              name: "Dit product staat niet in onze database",
+              model: ean,
+              jan: "Niet op voorraad",
+              description: null,
+              meta_title: null,
+              meta_description: null,
+              attribute_groups: null,
+              image: "assets/question-mark.png"
+            },
             ean
           };
         }
@@ -55,7 +67,7 @@ export class ProductRepository {
             id: Math.floor(Math.random() * 100000),
             product_id: Math.floor(Math.random() * 100000),
             ean: ean,
-            name: "Offline product",
+            name: "Geen connectie. Als de connectie hersteld is wordt er opnieuw gezocht",
             model: ean,
             jan: "Onbekend",
             description: null,

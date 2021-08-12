@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Component, Pipe } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivityService } from '../../shared/activity/activity.service';
 import { AuthRepository } from '../../repositories/auth/auth.repository';
 import { CartItem } from '../../shared/product/cartitem.model';
@@ -47,6 +47,10 @@ export class CartComponent {
   }
 
   async ionViewWillEnter() {
+    await this.update();
+  }
+
+  async update(){
     await this.storage.create();
     let cartItems = await this.storage.get('cartItems');
     this._cartItems = cartItems? cartItems: [];
@@ -86,8 +90,6 @@ export class CartComponent {
           }).then((e) => {
             this.refreshCartAndReopenScanner(e);
           });
-
-
         });
       }
       this.activityService.done();

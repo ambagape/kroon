@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Network } from '@ionic-native/network/ngx';
-import { ModalController, NavController, ToastController } from '@ionic/angular';
+import { IonicModule, ModalController, NavController, ToastController } from '@ionic/angular';
 import { of } from 'rxjs';
 import { AuthRepository } from 'src/app/repositories/auth/auth.repository';
 import { ProductRepository } from 'src/app/repositories/product/product.repository';
@@ -15,6 +15,8 @@ import { CartItem } from 'src/app/shared/product/cartitem.model';
 import { ProductService } from 'src/app/shared/product/product.service';
 import { ProductResponseStatus } from 'src/app/repositories/product/productresponse.model';
 import { ProductModalComponent } from 'src/app/components/product-modal/product-modal.component';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 describe('CartComponent', () => {
   let component: CartComponent;
@@ -62,7 +64,7 @@ describe('CartComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [ CartComponent,  mockPipe({ name: 'filter' })],
-      imports: [RouterTestingModule],      
+      imports: [RouterTestingModule, IonicModule.forRoot(), CommonModule],      
       providers: [ 
         {provide: Storage, useValue: storageSpy},
         {provide: Network, useValue: networkSpy},
@@ -74,7 +76,6 @@ describe('CartComponent', () => {
         { provide: AuthRepository, useValue: authRepository},
         { provide: ProductService, useValue: productService},
         ProductRepository,        
-        //{ provide: ProductRepository, useValue: productRepository }
       ]
     }).compileComponents();
 
@@ -108,7 +109,22 @@ describe('CartComponent', () => {
   it('should add to cart', async ()=>{
     const cartItem = CartItem.for(ProductResponseStatus.Success, cartItems[0].product, cartItems[0].ean);    
     expect(await component.addToCart({data: {data:{cartItem:cartItem,quantity:2}}})).toBeTrue();
-  });   
+  }); 
+  
+  it('should display cartItems appropriately', async ()=>{   
+    const cartItemList = [
+      CartItem.for(ProductResponseStatus.Success, cartItems[0].product, cartItems[0].ean),      
+      CartItem.for(ProductResponseStatus.Offline, { id: 3466, ean: '3466', 'model': '3466', product_id: 3466, image: '', name: '', 'jan': '', description: '', meta_description: '', meta_title: '', attribute_groups: [] }, '3466'),
+      CartItem.for(ProductResponseStatus.Offline, { id: 3456, ean: '3456', 'model': '3456', product_id: 3466, image: '', name: '', 'jan': '', description: '', meta_description: '', meta_title: '', attribute_groups: [] }, '3456')
+    ];    
+    storageSpy.get.and.returnValue(new Promise((resolve,reject)=> resolve(cartItemList)));    
+    
+    await component.update();
+    fixture.detectChanges();
+    const ionItems = fixture.nativeElement.querySelectorAll('ion-item-sliding');
+    expect(ionItems.length).toBe(3);
+    
+  }); 
   
 });
 

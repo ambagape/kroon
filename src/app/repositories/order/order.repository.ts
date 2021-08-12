@@ -61,7 +61,7 @@ export class OrderRepository {
               account = JSON.parse(account.data);
 
                 return this.handleStatus(this.orderService.selectPaymentAddress(account.data.address_id), 'settng the payment address');
-            })), 'settng the payment address');
+            })), 'setting the payment address');
         } else {
 
             return this.handleStatus(this.orderService.selectPaymentAddress(addressId), 'selecting the payment address');
