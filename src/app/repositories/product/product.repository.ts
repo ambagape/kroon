@@ -1,5 +1,4 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/naming-convention */
 import { Observable, forkJoin, of } from 'rxjs';
 import { ProductResponse, ProductResponseStatus } from './productresponse.model';
 import { catchError, map } from 'rxjs/operators';
@@ -12,10 +11,8 @@ import { Storage } from '@ionic/storage-angular';
 @Injectable()
 export class ProductRepository {
 
-  //private _cartItems: CartItem[] = [];
-
   constructor(
-    private productService: ProductService,    
+    private productService: ProductService,
     private storage: Storage) {
     this.readCartFromDisk();
   }
@@ -45,15 +42,15 @@ export class ProductRepository {
             product: {
               id: Math.floor(Math.random() * 100000),
               product_id: Math.floor(Math.random() * 100000),
-              ean: ean,
-              name: "Dit product staat niet in onze database",
+              ean,
+              name: 'Dit product staat niet in onze database',
               model: ean,
-              jan: "Niet op voorraad",
+              jan: 'Niet op voorraad',
               description: null,
               meta_title: null,
               meta_description: null,
               attribute_groups: null,
-              image: "assets/question-mark.png"
+              image: 'assets/question-mark.png'
             },
             ean
           };
@@ -66,32 +63,20 @@ export class ProductRepository {
           product: {
             id: Math.floor(Math.random() * 100000),
             product_id: Math.floor(Math.random() * 100000),
-            ean: ean,
-            name: "Geen connectie. Als de connectie hersteld is wordt er opnieuw gezocht",
+            ean,
+            name: 'Geen connectie. Als de connectie hersteld is wordt er opnieuw gezocht',
             model: ean,
-            jan: "Onbekend",
+            jan: 'Onbekend',
             description: null,
             meta_title: null,
             meta_description: null,
             attribute_groups: null,
-            image: "assets/connection.png"
+            image: 'assets/connection.png'
           },
           ean
         });
       })
     );
-  } 
-
-  /**
-   * Returns the item with the given id from the cart.
-   */
-  private async findItemInCart(id: number): Promise<CartItem> {
-    let cartItems = await this.readCartFromDisk();
-    const filtered = cartItems.filter((cartItem) => cartItem.product && id === cartItem.product.id);
-    if (filtered.length) {
-      return filtered[0];
-    }
-    return undefined;
   }
 
 
@@ -213,9 +198,9 @@ export class ProductRepository {
   async hasOfflineProducts(): Promise<boolean> {
     const cartItems: CartItem[] = await this.readCartFromDisk();
     const filtered = cartItems.filter((e) => e.offline);
-    if (filtered.length) {      
+    if (filtered.length) {
       return filtered[0] !== undefined;
-    }   
+    }
     return false;
   }
 
@@ -227,7 +212,7 @@ export class ProductRepository {
     }
     return false;
   }
- 
+
   async updateOfflineProducts(): Promise<CartItem[]> {
     const cartItems: CartItem[] = await this.readCartFromDisk();
     const requests = [];
@@ -238,8 +223,7 @@ export class ProductRepository {
       requests.push(this.productForEan(item.ean));
     });
     const results: Array<ProductResponse> = await forkJoin<ProductResponse>(requests).toPromise();
-    for(let count=0; count< results.length; count++){
-      const productResponse = results[count];      
+    for (const productResponse of results) {
       if (!productResponse) {
         return;
       }
@@ -247,28 +231,40 @@ export class ProductRepository {
         const i = await this.indexOfItemInCartByEan(productResponse.ean);
         if (i !== null || undefined) {
           cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
-        }      
-      }else if (productResponse.status === 'error') {        
+        }
+      } else if (productResponse.status === 'error') {
         const i = await this.indexOfItemInCartByEan(productResponse.ean);
         if (i !== null || undefined) {
           cartItems[i] = CartItem.for(productResponse.status, productResponse.product, productResponse.ean);
         }
-      } 
-    }    
+      }
+    }
     await this.writeCartToDisk(cartItems);
     return cartItems;
-  }  
+  }
 
   async readCartFromDisk() {
     const cartItems = await this.storage.get('cartItems');
-    return cartItems? cartItems: [];
+    return cartItems ? cartItems : [];
   }
 
-  private productResponseShowsNonExistence(productResponse: ProductResponse): boolean{
+  private productResponseShowsNonExistence(productResponse: ProductResponse): boolean {
     return productResponse.status === 'error' && productResponse.product == null;
   }
 
   private async writeCartToDisk(cartItems: CartItem[]) {
     await this.storage.set('cartItems', cartItems);
+  }
+
+  /**
+   * Returns the item with the given id from the cart.
+   */
+  private async findItemInCart(id: number): Promise<CartItem> {
+    const cartItems = await this.readCartFromDisk();
+    const filtered = cartItems.filter((cartItem) => cartItem.product && id === cartItem.product.id);
+    if (filtered.length) {
+      return filtered[0];
+    }
+    return undefined;
   }
 }

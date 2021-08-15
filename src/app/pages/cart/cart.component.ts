@@ -52,14 +52,14 @@ export class CartComponent {
 
   async update(){
     await this.storage.create();
-    let cartItems = await this.storage.get('cartItems');
+    const cartItems = await this.storage.get('cartItems');
     this._cartItems = cartItems? cartItems: [];
     this.network.onConnect().subscribe(async () => {
       setTimeout(async () => {
         this._cartItems = await this.productRepository.updateOfflineProducts();
-        window.location.reload()
+        window.location.reload();
       }, 3000);
-    });    
+    });
   }
 
   onSearchChange(args) {
@@ -85,9 +85,7 @@ export class CartComponent {
             }
           });
           await modal.present();
-          modal.onDidDismiss().then(async (data) => {
-            return this.addToCart(data)
-          }).then((e) => {
+          modal.onDidDismiss().then(async (data) => this.addToCart(data)).then((e) => {
             this.refreshCartAndReopenScanner(e);
           });
         });
