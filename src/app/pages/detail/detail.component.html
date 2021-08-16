@@ -1,16 +1,18 @@
 <ion-header translucent>
   <ion-toolbar>
     <ion-buttons slot="start" class="ion-margin-start">
-      <ion-back-button (click)="back()"></ion-back-button>
+      <ion-back-button (click)="back()" text="Terug"></ion-back-button>
     </ion-buttons>
-    <ion-img  src="assets/logo_transparent.png" class="ion-margin-start" slot="end" style="width: 30%"></ion-img>
+    <ion-img  src="assets/logo_transparent.png" class="ion-margin-end" slot="end" style="width: 30%"></ion-img>
   </ion-toolbar>
 </ion-header>
+
+
 
 <ion-content fullscreen>
   <ion-grid>
     <ion-row class="ion-justify-content-center">
-      <ion-img height="200" cache=true src="{{ cartItem.product.image }}" alt=""></ion-img>
+<!--      <ion-img height="200" cache=true src="{{ cartItem.product.image }}" alt=""></ion-img>-->
     </ion-row>
     <ion-row class="ion-justify-content-center ion-margin">
       <!-- <div class="ion-text-center"> -->
@@ -48,11 +50,11 @@
   </ion-list>
 </ion-content>
 
-<!-- <ion-footer>
-  <ion-toolbar>
-    <ion-button icon-start expand="full" slot="start" color="dark" (click)="addItemToCart()" style="width: 100%">
-      <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
-      Toevoegen
-    </ion-button>
-  </ion-toolbar>
-</ion-footer> -->
+<!--&lt;!&ndash; <ion-footer>-->
+<!--  <ion-toolbar>-->
+<!--    <ion-button icon-start expand="full" slot="start" color="dark" (click)="addItemToCart()" style="width: 100%">-->
+<!--      <ion-icon name="cart" style="margin-right: 10px"></ion-icon>-->
+<!--      Toevoegen-->
+<!--    </ion-button>-->
+<!--  </ion-toolbar>-->
+<!--</ion-footer> &ndash;&gt;-->

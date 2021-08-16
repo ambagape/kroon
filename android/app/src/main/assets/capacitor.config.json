@@ -1,6 +1,2 @@
 {
-  "server": {
-    "url": "http://10.1.0.235:8100",
-    "cleartext": true
-  }
 }
