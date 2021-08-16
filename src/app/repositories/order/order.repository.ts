@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { CartItem } from 'src/app/shared/product/cartitem.model';
 import { Address } from '../../shared/order/address.model';
 import { OrderService } from '../../shared/order/order.service';
 import { ProductRepository } from '../product/product.repository';
@@ -105,12 +106,13 @@ export class OrderRepository {
     }
 
     async addItemsToCart(): Promise<Observable<boolean>> {
-        const cartItems = await this.productRepository.readCartFromDisk();
+        const cartItems: Array<CartItem> = await this.productRepository.readCartFromDisk();
       // eslint-disable-next-line eqeqeq
-        if (cartItems.length == 0 || this.productRepository.hasOfflineProducts) {
+        if (cartItems.length == 0) {
             return of(false);
         }
-        const items = cartItems.map((cartItem) => ({
+        const items = cartItems.filter(cartItem => cartItem.exists)
+            .map((cartItem) => ({
           // eslint-disable-next-line @typescript-eslint/naming-convention
                 product_id: cartItem.product.product_id,
                 quantity: cartItem.quantity
