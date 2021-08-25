@@ -23,14 +23,14 @@ export class CartItem {
                     offline: true,
                     exists: true,
                     product,
-                    quantity: 1,
+                    quantity: null,
                     ean
                 };
             case 'error':
                 return {
                     offline: false,
                     exists: false,
-                    product: null,
+                    product,
                     quantity: null,
                     ean
                 };

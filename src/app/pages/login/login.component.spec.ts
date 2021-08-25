@@ -17,5 +17,5 @@ describe('LoginComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
-  
+
 });

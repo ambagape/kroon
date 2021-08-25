@@ -1,5 +1,5 @@
 /* eslint-disable no-underscore-dangle */
-import { Component, Pipe } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivityService } from '../../shared/activity/activity.service';
 import { AuthRepository } from '../../repositories/auth/auth.repository';
 import { CartItem } from '../../shared/product/cartitem.model';
@@ -47,15 +47,19 @@ export class CartComponent {
   }
 
   async ionViewWillEnter() {
+    await this.update();
+  }
+
+  async update(){
     await this.storage.create();
-    let cartItems = await this.storage.get('cartItems');
+    const cartItems = await this.storage.get('cartItems');
     this._cartItems = cartItems? cartItems: [];
     this.network.onConnect().subscribe(async () => {
       setTimeout(async () => {
         this._cartItems = await this.productRepository.updateOfflineProducts();
-        window.location.reload()
+        window.location.reload();
       }, 3000);
-    });    
+    });
   }
 
   onSearchChange(args) {
@@ -81,13 +85,9 @@ export class CartComponent {
             }
           });
           await modal.present();
-          modal.onDidDismiss().then(async (data) => {
-            return this.addToCart(data)
-          }).then((e) => {
+          modal.onDidDismiss().then(async (data) => this.addToCart(data)).then((e) => {
             this.refreshCartAndReopenScanner(e);
           });
-
-
         });
       }
       this.activityService.done();

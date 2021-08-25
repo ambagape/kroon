@@ -18,5 +18,5 @@ describe('DetailComponent', () => {
     fixture.detectChanges();
   }));
 
-  
+
 });
