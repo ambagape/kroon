@@ -144,7 +144,7 @@ export class OrderModalComponent {
 
   private setComment() {
 
-    const comment = 'Test';
+    const comment = this.ordernumber || 'geen code';
 
     this.orderRepository.doHandleComment(comment).subscribe((commentSuccess) => {
       if (!commentSuccess) {
