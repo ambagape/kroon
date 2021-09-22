@@ -13,7 +13,7 @@
     "build-production": "npm run build-prod",
     "test": "./node_modules/@angular/cli/bin/ng test",
     "lint": "./node_modules/@angular/cli/bin/ng lint",
-    "lint:fix": "ng lint --fix",
+    "lint:fix": "./node_modules/@angular/cli/bin/ng lint --fix",
     "e2e": "./node_modules/@angular/cli/bin/ng e2e"
   },
   "private": true,
