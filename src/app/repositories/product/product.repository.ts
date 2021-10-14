@@ -29,8 +29,11 @@ export class ProductRepository {
               ean
             };
           }
-          if (response.data.length === 1) {
-            const product: Product = response.data[0];
+          if (response.data.length > 0) {
+
+            // alert(JSON.stringify(response.data));
+
+            const product: Product = response.data[0]; //.find( (x: { ean: string })=>x.ean === ean);
             return {
               status: ProductResponseStatus.Success,
               product,
@@ -90,7 +93,7 @@ export class ProductRepository {
 
 
   async isItemInCartByEan(ean: string): Promise<boolean> {
-    const filtered = (await this.readCartFromDisk()).filter((cartItem) => ean === cartItem.ean);
+    const filtered = (await this.readCartFromDisk()).filter((cartItem: { ean: string }) => ean === cartItem.ean);
     if (filtered.length) {
       return !!filtered[0];
     }
@@ -206,7 +209,7 @@ export class ProductRepository {
 
   async hasUnexistingProducts(): Promise<boolean> {
     const cartItems = await this.readCartFromDisk();
-    const filtered = cartItems.filter((e) => !e.exists);
+    const filtered = cartItems.filter((e: { exists: any }) => !e.exists);
     if (filtered.length) {
       return filtered[0] !== undefined;
     }
@@ -261,7 +264,7 @@ export class ProductRepository {
    */
   private async findItemInCart(id: number): Promise<CartItem> {
     const cartItems = await this.readCartFromDisk();
-    const filtered = cartItems.filter((cartItem) => cartItem.product && id === cartItem.product.id);
+    const filtered = cartItems.filter((cartItem: { product: { id: number } }) => cartItem.product && id === cartItem.product.id);
     if (filtered.length) {
       return filtered[0];
     }
