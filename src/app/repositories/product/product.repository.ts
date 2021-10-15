@@ -53,7 +53,8 @@ export class ProductRepository {
               meta_title: null,
               meta_description: null,
               attribute_groups: null,
-              image: 'assets/question-mark.png'
+              image: 'assets/question-mark.png',
+              quantity: 2
             },
             ean
           };
@@ -74,7 +75,8 @@ export class ProductRepository {
             meta_title: null,
             meta_description: null,
             attribute_groups: null,
-            image: 'assets/connection.png'
+            image: 'assets/connection.png',
+            quantity: 0
           },
           ean
         });

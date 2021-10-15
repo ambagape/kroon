@@ -33,7 +33,8 @@ describe('ProductRepository', () => {
         description: '',
         meta_description: '',
         meta_title: '',
-        attribute_groups: []
+        attribute_groups: [],
+        quantity: 2
       }
     },
     { ean: '3435',
@@ -50,7 +51,8 @@ describe('ProductRepository', () => {
         description: '',
         meta_description: '',
         meta_title: '',
-        attribute_groups: []
+        attribute_groups: [],
+        quantity: 2
       }
     }
   ];
@@ -121,7 +123,8 @@ describe('ProductRepository', () => {
         meta_title: null,
         meta_description: null,
         attribute_groups: null,
-        image: 'assets/connection.png'
+        image: 'assets/connection.png',
+        quantity: 2
       },
       ean: '4444'
     };
@@ -147,7 +150,8 @@ describe('ProductRepository', () => {
         meta_title: null,
         meta_description: null,
         attribute_groups: null,
-        image: 'assets/connection.png'
+        image: 'assets/connection.png',
+        quantity: 2
       },
       ean: '4444'
     };
@@ -220,7 +224,8 @@ describe('ProductRepository', () => {
         description: '',
         meta_description: '',
         meta_title: '',
-        attribute_groups: []
+        attribute_groups: [],
+        quantity: 2
       },
       ean: '3424'
     }, {
@@ -237,7 +242,8 @@ describe('ProductRepository', () => {
         description: '',
         meta_description: '',
         meta_title: '',
-        attribute_groups: []
+        attribute_groups: [],
+        quantity: 2
       },
       ean: '3425'
     }, {
@@ -254,6 +260,7 @@ describe('ProductRepository', () => {
         description: '',
         meta_description: '',
         meta_title: '',
+        quantity: 2,
         attribute_groups: [] },
       ean: '3426'
     }];
@@ -280,7 +287,8 @@ describe('ProductRepository', () => {
         description: '',
         meta_description: '',
         meta_title: '',
-        attribute_groups: []
+        attribute_groups: [],
+        quantity: 2
      },
       ean: '3425'
     }, {
@@ -297,6 +305,7 @@ describe('ProductRepository', () => {
         description: '',
         meta_description: '',
         meta_title: '',
+        quantity: 2,
         attribute_groups: [] },
       ean: '3426'
     }];

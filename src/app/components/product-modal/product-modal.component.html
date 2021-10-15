@@ -43,7 +43,7 @@
         <ion-icon name="remove-circle-outline"></ion-icon>
       </ion-button>
       <h2 class="ion-margin">{{ quantity }}</h2>
-      <ion-button color="primary" (click)="incrementQuantity()">
+      <ion-button color="primary" [disabled] = "quantity + 1 > cartItem.product.quantity" (click)="incrementQuantity()">
         <ion-icon name="add-circle-outline"></ion-icon>
       </ion-button>
     </ion-row>

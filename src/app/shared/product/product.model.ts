@@ -10,6 +10,7 @@ export class Product {
     jan: string;
     image: string;
     description: string;
+    quantity: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
     meta_title: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
