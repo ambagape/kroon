@@ -32,7 +32,6 @@ export class ProductModalComponent implements OnInit {
     private modalController: ModalController,
     private activityService: ActivityService,
     private orderService: OrderService,
-    private router: Router,
     private nativeStorage: NativeStorage
     // private camera: Camera
 
