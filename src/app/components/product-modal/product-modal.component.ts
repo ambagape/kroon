@@ -1,11 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CartItem} from '../../shared/product/cartitem.model';
 import {ProductRepository} from '../../repositories/product/product.repository';
-import {ModalController} from '@ionic/angular';
+import {ModalController, ToastController} from '@ionic/angular';
 import {ActivityService} from '../../shared/activity/activity.service';
 import {OrderService} from '../../shared/order/order.service';
 import { Plugins, CameraResultType } from '@capacitor/core';
-import {Router} from '@angular/router';
 import {NativeStorage} from '@ionic-native/native-storage/ngx';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -32,7 +31,8 @@ export class ProductModalComponent implements OnInit {
     private modalController: ModalController,
     private activityService: ActivityService,
     private orderService: OrderService,
-    private nativeStorage: NativeStorage
+    private nativeStorage: NativeStorage,
+    private toastController: ToastController
     // private camera: Camera
 
   ) {
@@ -65,7 +65,7 @@ export class ProductModalComponent implements OnInit {
 
   addItemToCart() {
 
-    if (this.quantity > 0) {
+    if (this.quantity > 0 || this.quantity <= this.cartItem.product.quantity) {
       console.log(this.cartItem);
       this.modalController.dismiss({
         dismissed: true,
@@ -74,11 +74,10 @@ export class ProductModalComponent implements OnInit {
           quantity: this.quantity
         }
       });
-
-      // console.log(foo)
-
       console.log(this.cartItem, this.quantity);
 
+    }else{
+      this.toastController.create({message: 'Invalid qauntity'});
     }
   };
 
