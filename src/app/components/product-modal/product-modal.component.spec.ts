@@ -4,7 +4,6 @@ import { IonicModule } from '@ionic/angular';
 import { ProductModalComponent } from './product-modal.component';
 
 describe('ProductModalComponent', () => {
-  let component: ProductModalComponent;
   let fixture: ComponentFixture<ProductModalComponent>;
 
   beforeEach(waitForAsync(() => {
@@ -14,7 +13,6 @@ describe('ProductModalComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProductModalComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   }));
 
