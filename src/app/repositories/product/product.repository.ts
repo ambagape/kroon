@@ -31,7 +31,6 @@ export class ProductRepository {
           }
           if (response.data.length > 0) {
 
-            // alert(  `${p.ean} for ${p.model}`);
             const product: Product = response.data.find( ( pp: Product ) => pp.model === ean);
 
             return {
