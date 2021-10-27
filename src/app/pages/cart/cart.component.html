@@ -40,9 +40,10 @@
   </ion-list>
 </ion-content>
 <ion-footer>
+  <ion-note style="color:red">{{orderErrorMessage}}</ion-note>
   <ion-toolbar>
     <ion-button icon-start expand="full" class="ion-activatable ripple-parent" slot="start" color="dark"
-      (click)="presentOrderModal()" style="width: 80%" [disabled]="cartItems.length < 1">
+      (click)="presentOrderModal()" style="width: 80%" [disabled]="cartItems.length < 1 || orderErrorMessage">
       <ion-icon name="cart" style="margin-right: 10px"></ion-icon>
       Bestellen
       <ion-ripple-effect></ion-ripple-effect>

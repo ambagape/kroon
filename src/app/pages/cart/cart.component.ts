@@ -20,16 +20,15 @@ import { OverlayEventDetail } from '@ionic/core';
 })
 export class CartComponent {
 
+  #orderErrorMessage: string | null = null;
   showOrderModal = false;
   showSearch = false;
   productInformation = null;
   barCode: any;
-  //public modal: HTMLIonModalElement;
   public noSearchResults: boolean;
   public filterText = '';
   public search: string = null;
   public orderButtonDisabled = true;
-
   private _cartItems: CartItem[] = [];
 
   constructor(
@@ -50,15 +49,30 @@ export class CartComponent {
     await this.update();
   }
 
-  async update(){
+  async update() {
     await this.storage.create();
     const cartItems = await this.storage.get('cartItems');
-    this._cartItems = cartItems? cartItems: [];
+    this._cartItems = cartItems ? cartItems : [];
+    this.checkStock(this._cartItems);
     this.network.onConnect().subscribe(async () => {
       setTimeout(async () => {
         this._cartItems = await this.productRepository.updateOfflineProducts();
+        this.checkStock(this._cartItems);
         window.location.reload();
       }, 3000);
+    });
+  }
+
+  async checkStock(cartItems: Array<CartItem>) {
+    this.#orderErrorMessage = null;
+    const offlineProducts = cartItems.filter(item => item.offline);
+    if(offlineProducts.length > 0){
+      return;
+    }
+    cartItems.forEach(item => {
+      if (item.quantity > item.product.quantity) {
+        this.#orderErrorMessage = `${item.product.name} is niet meer dan ${item.quantity} op voorraad`;
+      }
     });
   }
 
@@ -99,6 +113,7 @@ export class CartComponent {
       .then((result) => {
         if (result) {
           this._cartItems = result;
+          this.checkStock(this._cartItems);
         }
       })
       .finally(() => {
@@ -151,7 +166,6 @@ export class CartComponent {
 
   async presentOrderModal() {
 
-
     const modal = await this.modalController.create({
       component: OrderModalComponent,
       componentProps: {
@@ -186,6 +200,10 @@ export class CartComponent {
 
   get productRepository() {
     return this._productRepository;
+  }
+
+  get orderErrorMessage() {
+    return this.#orderErrorMessage;
   }
 
   async toast(msg: string) {

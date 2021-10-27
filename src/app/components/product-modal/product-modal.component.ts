@@ -65,7 +65,7 @@ export class ProductModalComponent implements OnInit {
 
   async addItemToCart() {
 
-    if (this.quantity > 0 && this.quantity <= this.cartItem.product.quantity) {
+    if (this.cartItem.offline || this.quantity > 0 && this.quantity <= this.cartItem.product.quantity) {
       console.log(this.cartItem);
       this.modalController.dismiss({
         dismissed: true,
@@ -77,7 +77,7 @@ export class ProductModalComponent implements OnInit {
       console.log(this.cartItem, this.quantity);
 
     }else{
-      const toast = await this.toastController.create({message: 'Invalid qauntity'});
+      const toast = await this.toastController.create({message: 'Invalid qauntity', duration: 3000});
       toast.present();
     }
   };
