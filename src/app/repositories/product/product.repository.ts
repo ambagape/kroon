@@ -31,9 +31,8 @@ export class ProductRepository {
           }
           if (response.data.length > 0) {
 
-            // alert(JSON.stringify(response.data));
+            const product: Product = response.data.find( ( pp: Product ) => pp.model === ean);
 
-            const product: Product = response.data[0]; //.find( (x: { ean: string })=>x.ean === ean);
             return {
               status: ProductResponseStatus.Success,
               product,
