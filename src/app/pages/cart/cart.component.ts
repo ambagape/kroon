@@ -67,6 +67,7 @@ export class CartComponent {
     this.#orderErrorMessage = null;
     const offlineProducts = cartItems.filter(item => item.offline);
     if(offlineProducts.length > 0){
+      this.#orderErrorMessage = `kan de informatie van sommige items niet ophalen`;
       return;
     }
     cartItems.forEach(item => {
