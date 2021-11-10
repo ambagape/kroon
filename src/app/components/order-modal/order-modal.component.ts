@@ -27,7 +27,6 @@ export class OrderModalComponent {
   selectedString = 'Selecteer optie';
 
   selectedProvince = 'Drenthe';
-  ordernumber: string;
 
   adress = {
     firstName: undefined,
@@ -40,6 +39,7 @@ export class OrderModalComponent {
   };
 
   private _pickerItems: Array<Address>;
+  private _ordernumber = '';
 
   constructor(
     // private page: Page,
@@ -50,6 +50,8 @@ export class OrderModalComponent {
     private modalController: ModalController,
     private toastController: ToastController
   ) {
+
+    this._ordernumber = null;
 
     this.orderRepository.addresses().subscribe((res) => {
       if (res) {
@@ -142,10 +144,18 @@ export class OrderModalComponent {
     return this.activityService.isBusy;
   }
 
+  get ordernumber(): string {
+    return this._ordernumber;
+  }
+
+  set ordernumber(ordernumber: string) {
+    this._ordernumber = ordernumber;
+  }
+
   private setComment() {
 
     alert(this.ordernumber);
-    const comment = this.ordernumber || 'geen code';
+    const comment = this.ordernumber;
     alert(this.ordernumber);
 
     this.orderRepository.doHandleComment(comment).subscribe((commentSuccess) => {
