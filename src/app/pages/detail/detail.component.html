@@ -19,7 +19,7 @@
         <ion-button [disabled]="quantity <= 1" color="primary" (click)="decrementQuantity()">
           <ion-icon name="remove-circle-outline"></ion-icon>
         </ion-button>
-        <ion-input class="ion-text-center"  [(ngModel)]="quantity"></ion-input>
+        <ion-input class="ion-text-center"  [(ngModel)]="quantity" [debounce]="100" (ionChange)="typed($event)"></ion-input>
         <ion-button color="primary" [disabled] = "quantity + 1 > cartItem.product.quantity" (click)="incrementQuantity()">
           <ion-icon name="add-circle-outline"></ion-icon>
         </ion-button>

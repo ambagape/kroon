@@ -26,8 +26,11 @@ export class DetailComponent implements OnInit {
   }
 
   back() {
-    this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
     this.router.navigate(['cart']);
+  }
+
+  typed(e) {
+    this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
   }
 
   incrementQuantity() {
