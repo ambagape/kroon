@@ -1,2 +1,6 @@
 {
+  "appId": "nl.kroon.scanapp",
+  "appName": "nl.kroon.scanapp",
+  "webDir": "www",
+  "npmClient": "npm"
 }
