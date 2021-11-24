@@ -6,7 +6,7 @@ android {
         applicationId "nl.kroon.scanapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1015033
+        versionCode 1010540
         versionName '1.1.5'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

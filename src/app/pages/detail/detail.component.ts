@@ -26,16 +26,17 @@ export class DetailComponent implements OnInit {
   }
 
   back() {
+    this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
     this.router.navigate(['cart']);
   }
 
   incrementQuantity() {
     this.quantity++;
-    this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
+    // this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
   }
 
   decrementQuantity() {
     this.quantity--;
-    this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
+    // this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
   }
 }

@@ -23,6 +23,7 @@ npm-debug.log*
 /.sourcemaps
 /.versions
 /.vscode
+/.angular
 /coverage
 /dist
 /node_modules
@@ -30,3 +31,4 @@ npm-debug.log*
 /plugins
 /www
 /.history
+/android---

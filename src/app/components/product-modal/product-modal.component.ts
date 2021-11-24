@@ -55,7 +55,6 @@ export class ProductModalComponent implements OnInit {
   incrementQuantity() {
     this.quantity++;
     this.productRepository.changeItemQuantity(this.cartItem, this.quantity);
-    // this.quantity = quantity;
   };
 
   decrementQuantity() {
@@ -74,7 +73,6 @@ export class ProductModalComponent implements OnInit {
           quantity: this.quantity
         }
       });
-      console.log(this.cartItem, this.quantity);
 
     }else{
       const toast = await this.toastController.create({message: 'Invalid qauntity', duration: 3000});
@@ -110,9 +108,6 @@ export class ProductModalComponent implements OnInit {
 
 
   private composeEmail() {
-
-
-
 
     const description = '';
 

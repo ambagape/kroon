@@ -27,7 +27,7 @@
     </ion-row>
 
   </ion-grid>
-  
+
 <ion-fab *ngIf="!cartItem.exists" vertical="bottom" horizontal="center" slot="fixed">
   <ion-fab-button (click)="takePicture()">
     <ion-icon name="camera"></ion-icon>
@@ -38,11 +38,11 @@
       <ion-img height="200" cache=true src="{{ cartItem.product.image }}" alt=""></ion-img>
     </ion-row>
     <ion-row class="ion-justify-content-center ion-margin" *ngIf="cartItem.exists">
-      
+
       <ion-button [disabled]="quantity <= 1" color="primary" (click)="decrementQuantity()">
         <ion-icon name="remove-circle-outline"></ion-icon>
       </ion-button>
-      <ion-input [(ngModel)]="quantity"></ion-input>
+      <ion-input class="ion-text-center" [(ngModel)]="quantity"></ion-input>
       <ion-button color="primary" [disabled] = "quantity + 1 > cartItem.product.quantity" (click)="incrementQuantity()">
         <ion-icon name="add-circle-outline"></ion-icon>
       </ion-button>
