@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">nl.kroon.scanapp</string>
-    <string name="title_activity_main">nl.kroon.scanapp</string>
+    <string name="app_name">KROON scanapp</string>
+    <string name="title_activity_main">KROON scanapp</string>
     <string name="package_name">nl.kroon.scanapp</string>
     <string name="custom_url_scheme">nl.kroon.scanapp</string>
 </resources>

@@ -1,6 +1,6 @@
 {
   "appId": "nl.kroon.scanapp",
-  "appName": "nl.kroon.scanapp",
+  "appName": "KROON scanapp",
   "webDir": "www",
   "npmClient": "npm"
 }
